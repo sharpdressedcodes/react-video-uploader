@@ -1,0 +1,117 @@
+{
+    "name": "react-video-uploader",
+    "version": "1.0.0",
+    "description": "Video Uploader with React",
+    "license": "UNLICENSED",
+    "main": "start.js",
+    "contributors": [
+        {
+            "name": "Greg Kappatos",
+            "email": "sharpdressedcodes@users.noreply.github.com"
+        }
+    ],
+    "engines": {
+        "node": ">=10.16.3",
+        "npm": ">=6.9.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/sharpdressedcodes/react-video-uploader.git"
+    },
+    "homepage": "https://github.com/sharpdressedcodes/react-video-uploader#readme",
+    "postcss": {
+        "plugins": {
+            "autoprefixer": {}
+        }
+    },
+    "browserslist": [
+        "last 2 versions",
+        "ie >= 10",
+        "ios >= 9",
+        "Android >= 4"
+    ],
+    "husky": {
+        "hooks": {
+            "pre-commit": "npm run lint && npm run build && npm run test",
+            "pre-push": "npm run test"
+        }
+    },
+    "scripts": {
+        "start": "cross-env NODE_ENV=development node src/js/server/server.js",
+        "clean": "rimraf ./dist/bundle.*",
+        "build:dev": "npm run clean && cross-env NODE_ENV=development webpack --bail --hide-modules --progress --mode development",
+        "build": "npm run clean && cross-env NODE_ENV=production webpack --bail --hide-modules --progress --mode production",
+        "lint:js": "eslint --fix --ext .js ./src/js/**/*.js ./data/**/*.js",
+        "lint:scss": "sass-lint-auto-fix --config .sass-lint.yml ./src/**/*.scss",
+        "lint": "run-p lint:js lint:scss",
+        "test": "jest ./tests/unit/components -u",
+        "test:functional": "npx cypress open"
+    },
+    "dependencies": {
+        "@material-ui/core": "^4.4.3",
+        "@material-ui/icons": "^4.4.3",
+        "axios": "^0.19.0",
+        "body-parser": "^1.19.0",
+        "cookie-parser": "^1.4.4",
+        "cors": "^2.8.5",
+        "csurf": "^1.10.0",
+        "express": "^4.17.1",
+        "fluent-ffmpeg": "^2.1.2",
+        "fluxible": "^1.4.0",
+        "fluxible-addons-react": "^0.2.16",
+        "fluxible-plugin-context-config": "^2.0.0",
+        "keymirror": "^0.1.1",
+        "lodash": "^4.17.15",
+        "mkdirp": "^0.5.1",
+        "multer": "^1.4.2",
+        "prop-types": "^15.7.2",
+        "react": "^16.8.6",
+        "react-dom": "^16.8.6",
+        "react-router-dom": "^5.0.1",
+        "react-toastify": "^5.4.0",
+        "video-thumbnail-generator": "^1.1.3"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.5.5",
+        "@babel/plugin-proposal-class-properties": "^7.5.5",
+        "@babel/plugin-proposal-decorators": "^7.4.4",
+        "@babel/plugin-transform-runtime": "^7.6.2",
+        "@babel/preset-env": "^7.5.5",
+        "@babel/preset-react": "^7.0.0",
+        "autoprefixer": "^9.6.1",
+        "babel-cli": "^6.26.0",
+        "babel-eslint": "^10.0.2",
+        "babel-loader": "^8.0.6",
+        "babel-polyfill": "^6.26.0",
+        "babel-register": "^6.26.0",
+        "cross-env": "^5.2.0",
+        "css-loader": "^3.1.0",
+        "cypress": "^3.4.0",
+        "enzyme": "^3.10.0",
+        "enzyme-adapter-react-16": "^1.14.0",
+        "eslint": "^5.16.0",
+        "eslint-config-airbnb": "^17.1.1",
+        "eslint-plugin-babel": "^5.3.0",
+        "eslint-plugin-import": "^2.18.2",
+        "eslint-plugin-jsx-a11y": "^6.2.3",
+        "eslint-plugin-react": "^7.14.3",
+        "file-loader": "^4.1.0",
+        "jest": "^24.8.0",
+        "mini-css-extract-plugin": "^0.8.0",
+        "node-sass": "^4.12.0",
+        "normalize.css": "^8.0.1",
+        "npm-run-all": "^4.1.5",
+        "postcss-cli": "^6.1.3",
+        "postcss-loader": "^3.0.0",
+        "react-test-renderer": "^16.8.6",
+        "resolve-url-loader": "^3.1.0",
+        "rimraf": "^2.6.3",
+        "sass-lint": "^1.13.1",
+        "sass-lint-auto-fix": "^0.17.0",
+        "sass-loader": "^7.1.0",
+        "uglifyjs-webpack-plugin": "^2.1.3",
+        "url-loader": "^2.1.0",
+        "webpack": "^4.38.0",
+        "webpack-cli": "^3.3.6"
+    }
+}

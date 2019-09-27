@@ -1,0 +1,12 @@
+.form {
+
+    &-fields {
+        margin-bottom: 20px;
+
+        .form-field {
+            &:not(:last-child) {
+                margin-bottom: 15px;
+            }
+        }
+    }
+}

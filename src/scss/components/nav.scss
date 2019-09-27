@@ -1,0 +1,13 @@
+.navbar {
+    ul {
+        display: flex;
+        justify-content: center;
+
+        li {
+
+            &:not(:last-child) {
+                margin-right: 20px;
+            }
+        }
+    }
+}

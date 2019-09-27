@@ -1,0 +1,7 @@
+.idea
+dist
+node_modules
+tests/unit/coverage
+tests/unit/**/__snapshots__
+tests/functional/cypress/screenshots
+tests/functional/cypress/videos

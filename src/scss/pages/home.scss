@@ -1,0 +1,68 @@
+@import '../components/app';
+@import '../components/nav';
+
+.page-home {
+    //text-align: center;
+}
+
+.videos {
+    position: relative;
+    display: flex;
+    flex-flow: row wrap;
+    //justify-content: center;
+
+    li {
+        flex: 1;
+        flex-basis: 100%;
+        margin: 0 0 5px;
+        width: 100%;
+
+        @include breakpoint(medium only) {
+            max-width: calc((100% - 15px) / 2);
+            &:not(:nth-child(2n)) {
+                margin-right: 15px;
+            }
+        }
+
+        @include breakpoint(large only) {
+            max-width: calc((100% - 30px) / 3);
+            &:not(:nth-child(3n)) {
+                margin-right: 15px;
+            }
+        }
+
+        @include breakpoint(xlarge only) {
+            max-width: calc((100% - 45px) / 4);
+            &:not(:nth-child(4n)) {
+                margin-right: 15px;
+            }
+        }
+
+        .video-container {
+            position: relative;
+
+            //& > button {
+            //    position: absolute;
+            //    top: 50%;
+            //    left: 50%;
+            //    transform: translate(-50%, -50%);
+            //
+            //    & svg {
+            //        transform: scale(3);
+            //    }
+            //}
+
+            video {
+                width: 100%;
+                //height: 100%;
+                //width: 200px;
+                //object-fit: fill;
+                //object-fit: scale-down;
+            }
+
+            img {
+                cursor: pointer;
+            }
+        }
+    }
+}
