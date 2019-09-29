@@ -1,60 +1,54 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import { toast } from 'react-toastify';
-import {Link} from "react-router-dom";
+import { Link } from 'react-router-dom';
+import { connectToStores } from 'fluxible-addons-react';
+import Teaser from '../teaser';
+import TeaserList from '../teaserList';
 
 class HomePage extends Component {
-    static displayName= 'Home';
+    static displayName= 'HomePage';
+
+    static propTypes = {
+        videos: PropTypes.arrayOf(PropTypes.object),
+        videosDownloadError: PropTypes.string
+    };
+
+    static defaultProps = {
+        videos: null,
+        videosDownloadError: null
+    };
 
     static contextTypes = {
-        config: PropTypes.object
+        config: PropTypes.object,
+        getStore: PropTypes.func
     };
 
-    constructor(props, context) {
-        super(props, context);
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const { videosDownloadError } = this.props;
 
-        this.state = {
-            files: [],
-            downloading: false,
-        };
+        if (videosDownloadError) {
+            toast.error(videosDownloadError);
+        }
     }
-
-    componentDidMount = async() => {
-        await this.getVideos();
-    };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const { files, downloading } = this.state;
-        const filesChanged = files !== nextState.files;
-        const downloadingChanged = downloading !== nextState.downloading;
+        const videosChanged = this.props.videos !== nextProps.videos;
+        const videosDownloadErrorChanged = this.props.videosDownloadError !== nextProps.videosDownloadError;
 
-        return filesChanged || downloadingChanged;
+        return videosChanged || videosDownloadErrorChanged;
     }
 
-    getVideos = async() => {
-
-        const { config } = this.context;
-        let response = null;
-
-        try {
-            this.setState({ downloading: true });
-            response = await axios.get(config.app.endpoints.api.video.list);
-            this.setState({ files: response.data.items, downloading: false });
-        } catch (err) {
-            toast.error(`Error: ${err.message}`);
-            this.setState({ downloading: false });
-        }
-
-    };
-
     renderItems() {
-        return this.state.files.map((item, index) => {
+        const { config } = this.context;
+        const { videos } = this.props;
+
+        return !videos ? [] : videos.map((item, index) => {
             const key = `item-${index}`;
             return (
                 <li key={key}>
                     <Link to={`/video/${index}`}>
-                        <img src={`data/uploads/${item.thumb}`} alt={`${item.video} thumbnail`} />
+                        <Teaser imageSrc={`${config.app.videoUpload.publicPath}/${item.thumb}`} imageAlt={`${item.video} thumbnail`} />
                     </Link>
                 </li>
             );
@@ -66,17 +60,12 @@ class HomePage extends Component {
         let el = null;
         let title = null;
 
-        if (this.state.downloading) {
-
+        if (!this.props.videos) {
             el = <div className="centered">Acquiring video list...</div>;
-
         } else if (items.length) {
-
             title = <h2>{`Current Videos (${items.length})`}</h2>;
-            el = <ul className="videos">{items}</ul>;
-
+            el = <TeaserList className="videos">{items}</TeaserList>;
         } else {
-
             el = <div className="centered">No videos found. Please upload a video to begin.</div>;
         }
 
@@ -91,4 +80,15 @@ class HomePage extends Component {
     }
 }
 
-export default HomePage;
+const ConnectedHomePage = connectToStores(HomePage, ['AppStore'], (context, props) => {
+    const appStore = context.getStore('AppStore');
+    const videos = appStore.getVideos();
+    const videosDownloadError = appStore.getVideosDownloadError();
+    return {
+        videos,
+        videosDownloadError
+    };
+});
+
+export const DisconnectedHomePage = HomePage;
+export default ConnectedHomePage;

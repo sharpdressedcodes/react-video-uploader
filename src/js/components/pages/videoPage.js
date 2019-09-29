@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Video from '../video';
-import axios from 'axios';
 import { toast } from 'react-toastify';
+import { connectToStores } from 'fluxible-addons-react';
+import Video from '../video';
 
 class VideoPage extends Component {
     static displayName = 'VideoPage';
@@ -10,62 +10,48 @@ class VideoPage extends Component {
     static propTypes = {
         history: PropTypes.object.isRequired,
         location: PropTypes.object.isRequired,
-        match: PropTypes.object.isRequired
+        match: PropTypes.object.isRequired,
+        videoPlaybackError: PropTypes.string,
+        video: PropTypes.object
+    };
+
+    static defaultProps = {
+        videoPlaybackError: null,
+        video: {}
     };
 
     static contextTypes = {
-        config: PropTypes.object
+        config: PropTypes.object,
+        getStore: PropTypes.func
     };
 
-    constructor(props, context) {
-        super(props, context);
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const { videoPlaybackError } = this.props;
 
-        this.state = {
-            file: null,
-            downloading: false,
-        };
+        if (videoPlaybackError) {
+            toast.error(videoPlaybackError);
+        }
     }
-
-    componentDidMount = async() => {
-        await this.getVideo();
-    };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const { file, downloading } = this.state;
-        const fileChanged = file !== nextState.file;
-        const downloadingChanged = downloading !== nextState.downloading;
+        const errorChanged = this.props.videoPlaybackError !== nextProps.videoPlaybackError;
+        const videoChanged = this.props.video !== nextProps.video;
 
-        return fileChanged || downloadingChanged;
+        return errorChanged || videoChanged;
     }
 
-    getVideo = async() => {
-
-        const { config } = this.context;
-        let response = null;
-
-        try {
-            this.setState({ downloading: true });
-            response = await axios.get(`${config.app.endpoints.api.video.get}/${this.props.match.params.id}`);
-            this.setState({ file: response.data.item, downloading: false });
-        } catch (err) {
-            toast.error(`Error: ${err.message}`);
-            this.setState({ downloading: false });
-        }
-
-    };
-
     render() {
-        const { file, downloading } = this.state;
+        const { video } = this.props;
+        const { config } = this.context;
+        const { publicPath } = config.app.videoUpload;
         let el = null;
         let title = null;
 
-        if (downloading) {
-            el = <div className="centered">Downloading...</div>;
-        } else if (file) {
-            title = <h2>Play Video</h2>;
-            el = <Video src={`/data/uploads/${file.video}`} poster={`/data/uploads/${file.poster}`} autoPlay={true} />;
+        if (video === {}) {
+            el = <div className="centered">Acquiring...</div>;
         } else {
-            el = <div className="centered">Error</div>;
+            title = <h2>Play Video</h2>;
+            el = <Video src={`/${publicPath}/${video.video}`} poster={`/${publicPath}/${video.poster}`} autoPlay controls />;
         }
 
         return (
@@ -79,4 +65,15 @@ class VideoPage extends Component {
     }
 }
 
-export default VideoPage;
+const ConnectedVideoPage = connectToStores(VideoPage, ['AppStore'], (context, props) => {
+    const appStore = context.getStore('AppStore');
+    const videoPlaybackError = appStore.getVideoPlaybackError();
+    const video = appStore.getVideo(props.match.params.id);
+    return {
+        videoPlaybackError,
+        video
+    };
+});
+
+export const DisconnectedVideoPage = VideoPage;
+export default ConnectedVideoPage;

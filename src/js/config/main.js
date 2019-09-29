@@ -1,3 +1,6 @@
+const publicPath = 'data/uploads';
+const path = `dist/${publicPath}`;
+
 const config = {
     app: {
         port: 3001,
@@ -15,7 +18,8 @@ const config = {
                 // 'video/x-msvideo',
                 // 'video/x-ms-wmv'
             ],
-            path: 'dist/data/uploads',
+            path,
+            publicPath,
             filenameGenerator: function(fileName) {
                 return Date.now() + '-' + fileName;
             }
@@ -24,7 +28,6 @@ const config = {
             api: {
                 video: {
                     upload: '/api/video/upload',
-                    list: '/api/video/list',
                     get: '/api/video/get'
                 }
             }

@@ -2,16 +2,15 @@ const express = require('express');
 const csrf = require('csurf');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const multer = require('multer');
-const config = require('../config/main');
 const get = require('lodash/get');
-const mkdirp = require('mkdirp');
-const util = require('util');
-//const ThumbnailGenerator = require('video-thumbnail-generator').default;
+const config = require('../config/main');
 const { getVideoInfo, generatePoster, generateThumbnail } = require('./ffmpeg');
+const fileOperations = require('../helpers/fileOperations');
+const { validateFilesServer } = require('../helpers/fileValidation');
+const { formatFileSize } = require('../helpers/format');
 
 const csrfMiddleware = csrf({cookie: true});
 const parseForm = bodyParser.urlencoded({extended: true});
@@ -40,7 +39,6 @@ const uploadAsync = (req, res) => {
     });
 };
 const logErrors = (err, req, res, next) => {
-    //console.error(err.stack);
     console.error(err);
     next(err);
 };
@@ -48,11 +46,6 @@ const trapErrors = (err, req, res, next) => {
 
     let status = 500;
     let message = 'Internal server error';
-
-    // if (err.code === 'ENOENT') {
-    //     status = 404;
-    //     message = 'Not found';
-    // }
 
     switch (err.code) {
         case 'ENOENT':
@@ -71,37 +64,46 @@ const trapErrors = (err, req, res, next) => {
         res.status(status).send(`Error: ${message}`);
     }
 };
-const readFile = util.promisify(fs.readFile);
-const readDir = util.promisify(fs.readdir);
 
-if (!fs.existsSync(uploadPath)) {
-    mkdirp.sync(uploadPath);
-}
+(async function(){
+    try {
+        await fileOperations.createDirectory(uploadPath);
+    } catch (err) {
+        console.error(err);
+    }
+})();
 
 server.use(cors());
 server.use(cookieParser());
 
-server.get('/', csrfMiddleware, (req, res, next) => {
-    fs.readFile(`${root}/src/index.html`, 'utf-8', (err, data) => {
-        if (err) {
-            throw err;
-        }
+server.get('/', csrfMiddleware, async (req, res, next) => {
+
+    try {
+        let data = await fileOperations.readFile(`${root}/src/index.html`, 'utf8');
         data = data.replace('</head>', `<meta name="csrf-token" content="${req.csrfToken()}"></head>`);
         res.send(data);
-    });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+
 });
 
 server.use((req, res, next) => {
+
     if (req.url === '/upload' || req.url.startsWith('/video/')) {
         res.redirect('/');
     } else {
         next();
     }
+
 });
 
-server.get(`${config.app.endpoints.api.video.get}/:id`, async (req, res, next) => {
+server.get(`${config.app.endpoints.api.video.get}/:id?`, async (req, res, next) => {
 
-    if (fs.existsSync(uploadPath)) {
+    const { directoryExists, readDir, readFile } = fileOperations;
+    const pathExists = await directoryExists(uploadPath);
+
+    if (pathExists) {
 
         try {
 
@@ -110,52 +112,28 @@ server.get(`${config.app.endpoints.api.video.get}/:id`, async (req, res, next) =
             const len = items.length;
             const id = req.params.id;
 
-            if (isNaN(id) || id < 0 || id > len - 1) {
-                res.status(404).send('Not found');
-                return;
+            if (!id) {
+
+                const promises = items.map(async item => JSON.parse(await readFile(`${uploadPath}/${item}`)));
+
+                res.json({ items: await Promise.all(promises) });
+
+            } else {
+
+                if (id < 0 || id > len - 1) {
+                    res.status(404).send('Not found');
+                    return;
+                }
+
+                const item = JSON.parse(await readFile(`${uploadPath}/${items[id]}`));
+                res.json({ item });
+
             }
 
-            const item = JSON.parse(await readFile(`${uploadPath}/${items[id]}`));
-            res.status(200).json({ item });
-
         } catch (err) {
-            res.status(404).send('Not found');
+            console.log(err);
+            res.json({ items: [], error: err.message });
         }
-
-    //     fs.readdir(uploadPath, (err, files) => {
-    //
-    //         if (err) {
-    //             throw err;
-    //         }
-    //
-    //         files = files || [];
-    //
-    //         // const videos = files.filter(item => !item.endsWith('.png'));
-    //         // const thumbs = files.filter(item => item.endsWith('.png'));
-    //         // const len = videos.length;
-    //         const items = files.filter(item => item.endsWith('.json'));
-    //         const len = items.length;
-    //         const id = req.params.id;
-    //
-    //         if (isNaN(id) || id < 0 || id > len - 1) {
-    //             res.status(404).send('Not found');
-    //             return;
-    //         }
-    //
-    //         // const item = {
-    //         //     video: videos[id],
-    //         //     thumb: thumbs[id]
-    //         // };
-    //
-    //         fs.readFile(items[id], 'utf-8', (err, data) => {
-    //             if (err) {
-    //                 throw err;
-    //             }
-    //             res.status(200).json({ item: JSON.parse(data) });
-    //         });
-    //
-    //         //res.status(200).json({ item: JSON.parse(items[id]) });
-    //     });
 
     } else {
         res.status(404).send('Not found');
@@ -163,118 +141,26 @@ server.get(`${config.app.endpoints.api.video.get}/:id`, async (req, res, next) =
 
 });
 
-server.get(config.app.endpoints.api.video.list, async (req, res, next) => {
-
-    if (fs.existsSync(uploadPath)) {
-
-        try {
-
-            const files = await readDir(uploadPath);
-            const promises = files
-                .filter(item => item.endsWith('.json'))
-                .map(async item => JSON.parse(await readFile(`${uploadPath}/${item}`)));
-
-            // const files = await readDir(uploadPath);
-            // const a = files;
-            // const b = a.filter(item => item.endsWith('.json'));
-            // const c = b.map(async item => {
-            //     const d = await readFile(`${uploadPath}/${item}`);
-            //     const e = JSON.parse(await d);
-            //     //console.log('d', d);
-            //     //console.log('e', e);
-            //     return e;
-            // });
-            //
-            // const promises = c;
-            const items = await Promise.all(promises);
-            //console.log('ela', items);
-            res.status(200).json({ items });
-
-        } catch (err) {
-            //res.status(200).json({ items: [] });
-            //throw err;
-            res.status(200).json({ items: [] });
-        }
-
-// return;
-//
-//         fs.readdir(uploadPath, (err, files) => {
-//
-//             if (err) {
-//                 throw err;
-//             }
-//
-//             files = files || [];
-//
-//             const a = files;
-//             const b = a.filter(item => item.endsWith('.json'));
-//             const c = b.map(async item => {
-//                 const d = await readFile(`${uploadPath}/${item}`);
-//                 const e = JSON.parse(await d);
-//                 console.log('d', d);
-//                 console.log('e', e);
-//                 return e;
-//             });
-//
-//             // const items = files
-//             //     .filter(item => item.endsWith('.json'))
-//             //     .map(async item => JSON.parse(await readFile(`${uploadPath}/${item}`, 'utf-8')));
-//             const items = c;
-//
-//             console.log('items', items);
-//             // const items = files.filter(item => item.endsWith('.json'));
-//             // let json = [];
-//             //
-//             // //console.log('items', items);
-//             //
-//             // items.forEach(async item => {
-//             //     // fs.readFile(item, 'utf-8', (err, data) => {
-//             //     //     if (err) {
-//             //     //         throw err;
-//             //     //     }
-//             //     //     json.push(JSON.parse(data));
-//             //     // });
-//             //
-//             //     //json.push(JSON.parse(fs.readFileSync(item, 'utf-8')));
-//             //     const s = await readFile(`${uploadPath}/${item}`, 'utf-8');
-//             //     //console.log('s', s);
-//             //     json.push(JSON.parse(s));
-//             // });
-//             // // const videos = files.filter(item => !item.endsWith('.png'));
-//             // // const posters = files.filter(item => item.endsWith('-poster.png'));
-//             // // const thumbs = files.filter(item => item.endsWith('-thumbnail.png'));
-//             // // const items = [];
-//             // // const len = videos.length;
-//             // //
-//             // // for (let i = 0; i < len; i++) {
-//             // //     items.push({
-//             // //         video: videos[i],
-//             // //         thumb: thumbs[i],
-//             // //         poster: posters[i],
-//             // //     });
-//             // // }
-//             //
-//             // console.log('json', json);
-//             res.status(200).json({ items });
-//         });
-
-    } else {
-        res.status(200).json({ items: [] });
-    }
-
-});
-
 server.post(config.app.endpoints.api.video.upload, parseForm, csrfMiddleware, async (req, res, next) => {
+
+    const { writeFile } = fileOperations;
 
     try {
 
         await uploadAsync(req, res);
 
-        const len = req.files.length;
+        const files = Array.from(req.files);
+        const errors = await validateFilesServer(files);
+        const len = files.length;
+
+        if (Array.isArray(errors)) {
+            res.json({ errors });
+            return;
+        }
 
         for (let i = 0; i < len; i++) {
 
-            const file = req.files[i];
+            const file = files[i];
             const poster = await generatePoster(file.path);
             const thumb = await generateThumbnail(file.path);
             const info = await getVideoInfo(file.path);
@@ -282,29 +168,22 @@ server.post(config.app.endpoints.api.video.upload, parseForm, csrfMiddleware, as
                 video: path.basename(file.path),
                 poster,
                 thumb,
-                metadata: info
+                metadata: info,
+                originalFileName: file.originalname,
+                type: file.mimetype,
+                size: file.size,
+                formattedSize: formatFileSize(file.size)
             };
             const jsonFile = file.path.replace(/\.[a-z0-9]{1,}$/i, '.json');
 
-            fs.writeFileSync(jsonFile, JSON.stringify(json));
-
-            // const tg = new ThumbnailGenerator({
-            //     sourcePath: req.files[i].path,
-            //     thumbnailPath: `${uploadPath}/`
-            // });
-            // const thumbs = await tg.generate({
-            //     count: 1,
-            //     size: '320x180'
-            // });
-            // //await tg.generateGif();
+            await writeFile(jsonFile, JSON.stringify(json));
         }
 
-        console.log('finished receiving file uploads');
-
-        return res.status(200).send(req.files);
+        console.log(`Received ${len} files`, files);
+        res.send({ errors: [], files });
 
     } catch (err) {
-        console.log('tg Error', err);
+        console.error(err);
         res.status(500).json(err);
     }
 
