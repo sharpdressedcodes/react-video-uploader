@@ -30,12 +30,6 @@
         "ios >= 9",
         "Android >= 4"
     ],
-    "husky": {
-        "hooks": {
-            "pre-commit": "docker run --rm --tty --volume ./:/home/node/app --workdir /home/node/app --network react-video-uploader_custom --name precommit-hook-runner react-video-uploader_node npm run lint && npm run build && npm run test",
-            "pre-push": "docker run --rm --tty --volume ./:/home/node/app --workdir /home/node/app --network react-video-uploader_custom --name prepush-hook-runner react-video-uploader_node npm run test"
-        }
-    },
     "scripts": {
         "start": "cross-env NODE_ENV=development node ./src/js/server/server.js",
         "clean": "rimraf ./dist/bundle.*",
@@ -96,7 +90,6 @@
         "eslint-plugin-jsx-a11y": "^6.2.3",
         "eslint-plugin-react": "^7.14.3",
         "file-loader": "^4.1.0",
-        "husky": "^3.0.7",
         "jest": "^24.8.0",
         "mini-css-extract-plugin": "^0.8.0",
         "node-sass": "^4.12.0",
