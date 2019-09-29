@@ -1,12 +1,12 @@
-const config = require('../config/main');
 const get = require('lodash/get');
 const ffmpeg = require('fluent-ffmpeg');
+const config = require('../config/main');
 
 const uploadPath = get(config, 'app.videoUpload.path', 'dist/uploads');
 
 function getVideoInfo(fileName) {
     return new Promise((resolve, reject) => {
-        ffmpeg.ffprobe(fileName, function(err, data){
+        ffmpeg.ffprobe(fileName, (err, data) => {
             if (err) {
                 reject(err);
             } else {
@@ -18,7 +18,6 @@ function getVideoInfo(fileName) {
 
 function generatePoster(fileName, options) {
     return new Promise((resolve, reject) => {
-
         let result = null;
 
         function onComplete() {
@@ -34,27 +33,23 @@ function generatePoster(fileName, options) {
             filename: '%b-%r-poster.png',
             count: 1,
             timemark: '1%',
-            logger: console
-            //size: ''
+            logger: console,
+            // size: ''
         };
-
-        options = { ...defaults, ...options };
 
         ffmpeg({
             source: fileName,
-            logger: console
+            logger: console,
         })
             .on('filenames', onFilenames)
             .on('end', onComplete)
             .on('error', reject)
-            .screenshot(options);
-
+            .screenshot({ ...defaults, ...options });
     });
 }
 
 function generateThumbnail(fileName, options) {
     return new Promise((resolve, reject) => {
-
         let result = null;
 
         function onComplete() {
@@ -71,25 +66,22 @@ function generateThumbnail(fileName, options) {
             count: 1,
             timemark: '1%',
             logger: console,
-            size: '320x180' // 16:9
+            size: '320x180', // 16:9
         };
-
-        options = { ...defaults, ...options };
 
         ffmpeg({
             source: fileName,
-            logger: console
+            logger: console,
         })
             .on('filenames', onFilenames)
             .on('end', onComplete)
             .on('error', reject)
-            .screenshot(options);
-
+            .screenshot({ ...defaults, ...options });
     });
 }
 
 module.exports = {
     getVideoInfo,
     generatePoster,
-    generateThumbnail
+    generateThumbnail,
 };

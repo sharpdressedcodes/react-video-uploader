@@ -31,11 +31,15 @@ function validateFileSize(file) {
 
 function validateFileSignature(file) {
     return new Promise(async (resolve, reject) => {
-
+        /* eslint-disable */
         const path = require('path');
         // Hack for webpack to skip this require
-        const fileOperations = eval("require('./fileOperations');");
-        const { open, read, close, fileExists } = fileOperations;
+        const fileOperations = eval('require(\'./fileOperations\');');
+        /* eslint-enable */
+
+        const {
+            open, read, close, fileExists,
+        } = fileOperations;
 
         const ext = path.extname(file.path).replace(/^\./, '');
         const signature = signatures[ext];
@@ -47,31 +51,28 @@ function validateFileSignature(file) {
         }
 
         try {
-
             const stats = await fileExists(file.path);
             // The signature can be an object or an array of objects.
             const checks = Array.isArray(signature) ? signature : [signature];
-            const len = checks.length;
-
-            for (let i = 0; i < len; i++) {
-                const check = checks[i];
+            const promises = checks.map(async check => new Promise(async (innerResolve, innerReject) => {
                 if (stats.size < check.length) {
-                    resolve(false);
-                    return;
+                    innerResolve(false);
                 }
 
                 const buffer = Buffer.alloc(check.length, null, 'utf8');
+
                 fd = await open(file.path, 'r');
 
                 let startPosition = 0;
 
                 switch (check.position) {
-                    case 'start':
-
-                        break;
-                    case 'end':
-                        startPosition = stats.size - check.length - 1;
-                        break;
+                case 'start':
+                    // Do nothing
+                    break;
+                case 'end':
+                    startPosition = stats.size - check.length;
+                    break;
+                default:
                 }
 
                 await read(fd, buffer, 0, buffer.length, startPosition);
@@ -79,16 +80,14 @@ function validateFileSignature(file) {
 
                 const str = buffer.toString('utf8');
 
-                if (!check.check(str)) {
-                    resolve(false);
-                }
+                innerResolve(check.check(str));
+            }));
+            const result = await Promise.all(promises);
 
-            }
-
-            resolve(true);
-
+            // If any of the results are false, then the result will be 0
+            resolve(result.reduce((acc, curr) => acc * curr) > 0);
         } catch (err) {
-
+            // eslint-disable-next-line no-console
             console.error(err);
 
             if (fd) {
@@ -100,11 +99,8 @@ function validateFileSignature(file) {
             }
 
             reject(err);
-
         }
-
     });
-
 }
 
 /**
@@ -114,49 +110,46 @@ function validateFileSignature(file) {
  * @returns Array|boolean True if valid, an array of errors otherwise.
  */
 async function validateFilesServer(files) {
-
+    /* eslint-disable */
     // Hack for webpack to skip this require
-    const fileOperations = eval("require('./fileOperations');");
+    const fileOperations = eval('require(\'./fileOperations\');');
+    /* eslint-enable */
     const errors = [];
-    let totalSize = 0;
+    const totalSize = files.reduce((acc, curr) => acc.size + curr.size);
 
     if (!validateMaxFiles(files)) {
         errors.push(`Only ${maxFiles} files can be uploaded at a time`);
     }
 
-    files.forEach(file => {
-        totalSize += file.size;
-    });
+    let promises = files.map(file => new Promise(async (resolve, reject) => {
+        const innerErrors = [];
+        let valid = true;
 
-    let promises = files.map(file => {
-        return new Promise(async (resolve, reject) => {
-
-            const errors = [];
-            let valid = true;
-
+        try {
             if (!validateMimeType(file)) {
                 valid = false;
-                errors.push(`${getFileName(file)} is in an unsupported format (${getMimeType(file)})`);
+                innerErrors.push(`${getFileName(file)} is in an unsupported format (${getMimeType(file)})`);
             }
 
             if (!validateFileSize(file)) {
                 valid = false;
-                errors.push(`${getFileName(file)} is too large (limit ${formatFileSize(maxFileSize)}), please select a smaller file`);
+                innerErrors.push(`${getFileName(file)} is too large (limit ${formatFileSize(maxFileSize)}), please select a smaller file`);
             }
 
             if (!await validateFileSignature(file)) {
                 valid = false;
-                errors.push(`${getFileName(file)} is an invalid file`);
+                innerErrors.push(`${getFileName(file)} is an invalid file`);
             }
 
             if (!valid) {
                 await fileOperations.unlink(file.path);
             }
 
-            resolve({ errors });
-
-        });
-    });
+            resolve({ errors: innerErrors });
+        } catch (err) {
+            reject(err);
+        }
+    }));
 
     try {
         const validationResult = await Promise.all(promises);
@@ -176,8 +169,8 @@ async function validateFilesServer(files) {
 
             await Promise.all(promises);
         }
-
     } catch (err) {
+        // eslint-disable-next-line no-console
         console.error(err);
         errors.push(`Error: ${err.message}`);
     }
@@ -192,7 +185,6 @@ async function validateFilesServer(files) {
  * @returns Array|boolean True if valid, an array of errors otherwise.
  */
 function validateFiles(files) {
-
     const errors = [];
     let totalSize = 0;
 
@@ -201,7 +193,6 @@ function validateFiles(files) {
     }
 
     files.forEach(file => {
-
         totalSize += file.size;
 
         if (!validateMimeType(file)) {
@@ -211,7 +202,6 @@ function validateFiles(files) {
         if (!validateFileSize(file)) {
             errors.push(`${file.name} is too large (limit ${formatFileSize(maxFileSize)}), please select a smaller file`);
         }
-
     });
 
     if (maxTotalFileSize && totalSize > maxTotalFileSize) {
@@ -227,5 +217,5 @@ module.exports = {
     validateFileSize,
     validateFileSignature,
     validateFiles,
-    validateFilesServer
+    validateFilesServer,
 };

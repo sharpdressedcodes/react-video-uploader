@@ -4,7 +4,9 @@ import VideoActionTypes from '../constants/video';
 import UploaderActionTypes from '../constants/uploader';
 
 const { VIDEO_PLAYBACK_ERROR } = VideoActionTypes;
-const { UPLOAD_START, UPLOAD_SUCCESS, UPLOAD_ERROR, UPLOAD_VALIDATION_ERRORS, UPLOAD_PROGRESS } = UploaderActionTypes;
+const {
+    UPLOAD_START, UPLOAD_SUCCESS, UPLOAD_ERROR, UPLOAD_VALIDATION_ERRORS, UPLOAD_PROGRESS,
+} = UploaderActionTypes;
 
 class AppStore extends BaseStore {
     static storeName = 'AppStore';
@@ -22,7 +24,6 @@ class AppStore extends BaseStore {
         this.uploadResult = null;
 
         this.loadVideoList();
-
     }
 
     // Getters
@@ -35,7 +36,7 @@ class AppStore extends BaseStore {
             uploadErrors: this.uploadErrors,
             uploadUrl: this.uploadUrl,
             uploadProgress: this.uploadProgress,
-            uploadResult: this.uploadResult
+            uploadResult: this.uploadResult,
         };
     }
 
@@ -144,7 +145,6 @@ class AppStore extends BaseStore {
     }
 
     rehydrate(state) {
-
         this.videos = state.videos;
         this.videosDownloadError = state.videosDownloadError;
         this.videoPlaybackError = state.videoPlaybackError;

@@ -20,19 +20,19 @@ const config = {
             ],
             path,
             publicPath,
-            filenameGenerator: function(fileName) {
-                return Date.now() + '-' + fileName;
-            }
+            filenameGenerator(fileName) {
+                return `${Date.now()}-${fileName}`;
+            },
         },
         endpoints: {
             api: {
                 video: {
                     upload: '/api/video/upload',
-                    get: '/api/video/get'
-                }
-            }
-        }
-    }
+                    get: '/api/video/get',
+                },
+            },
+        },
+    },
 };
 
 module.exports = config;

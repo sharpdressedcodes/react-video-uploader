@@ -12,18 +12,20 @@ class Picture extends Component {
         alt: PropTypes.string,
         caption: PropTypes.string,
         order: PropTypes.arrayOf(PropTypes.string),
-        className: PropTypes.string
+        className: PropTypes.string,
     };
 
     static defaultProps = {
         caption: null,
         alt: '',
         order: Picture.DEFAULT_ORDER,
-        className: ''
+        className: '',
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const { src, alt, caption, order, className } = this.props;
+        const {
+            src, alt, caption, order, className,
+        } = this.props;
         const srcChanged = src !== nextProps.src;
         const altChanged = alt !== nextProps.alt;
         const captionChanged = caption !== nextProps.caption;
@@ -34,18 +36,24 @@ class Picture extends Component {
     }
 
     render() {
-        const { src, alt, caption, order, className } = this.props;
+        const {
+            src, alt, caption, order, className,
+        } = this.props;
         const elements = [];
 
         order.forEach((item, index) => {
             const key = `picture-${(+new Date())}-${index}-${item}`;
+
             switch (item) {
-                case 'image':
-                    elements.push(<img key={key} className="picture-image" src={src} alt={alt} />);
-                    break;
-                case 'text':
-                    caption && elements.push(<figcaption key={key} className="picture-text">{caption}</figcaption>);
-                    break;
+            case 'image':
+                elements.push(<img key={key} className="picture-image" src={src} alt={alt} />);
+                break;
+            case 'text':
+                if (caption) {
+                    elements.push(<figcaption key={key} className="picture-text">{caption}</figcaption>);
+                }
+                break;
+            default:
             }
         });
 

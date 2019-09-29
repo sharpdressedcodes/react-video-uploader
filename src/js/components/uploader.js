@@ -5,7 +5,9 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { uploadError, uploadProgress, uploadStart, uploadSuccess, uploadValidationErrors } from '../actions/uploader';
+import {
+    uploadError, uploadProgress, uploadStart, uploadSuccess, uploadValidationErrors,
+} from '../actions/uploader';
 import { formatFileSize } from '../helpers/format';
 import { validateFiles } from '../helpers/fileValidation';
 
@@ -15,24 +17,24 @@ class Uploader extends Component {
     static DEFAULT_STATE = {
         selectedFiles: null,
         loaded: 0,
-        uploading: false
+        uploading: false,
     };
 
     static propTypes = {
         url: PropTypes.string.isRequired,
         multiple: PropTypes.bool,
         progress: PropTypes.bool,
-        csrf: PropTypes.string
+        csrf: PropTypes.string,
     };
 
     static defaultProps = {
         multiple: false,
         progress: false,
-        csrf: null
+        csrf: null,
     };
 
     static contextTypes = {
-        executeAction: PropTypes.func
+        executeAction: PropTypes.func,
     };
 
     constructor(props, context) {
@@ -42,7 +44,9 @@ class Uploader extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const { url, multiple, progress, csrf } = this.props;
+        const {
+            url, multiple, progress, csrf,
+        } = this.props;
         const { selectedFiles, loaded, uploading } = this.state;
         const urlChanged = url !== nextProps.url;
         const multipleChanged = multiple !== nextProps.multiple;
@@ -52,8 +56,8 @@ class Uploader extends Component {
         const loadedChanged = loaded !== nextState.loaded;
         const uploadingChanged = uploading !== nextState.uploading;
 
-        return urlChanged || multipleChanged || progressChanged || csrfChanged ||
-            selectedFiledChanged || loadedChanged || uploadingChanged;
+        return urlChanged || multipleChanged || progressChanged || csrfChanged
+            || selectedFiledChanged || loadedChanged || uploadingChanged;
     }
 
     onChange = event => {
@@ -62,6 +66,7 @@ class Uploader extends Component {
         const errors = validateFiles(Array.from(event.target.files));
 
         if (Array.isArray(errors)) {
+            // eslint-disable-next-line no-param-reassign
             event.target.value = null;
             executeAction(uploadValidationErrors, { errors });
         } else {
@@ -81,6 +86,7 @@ class Uploader extends Component {
 
         if (!selectedFiles) {
             executeAction(uploadValidationErrors, { errors: ['Error: No files selected'] });
+
             return;
         }
 
@@ -91,16 +97,16 @@ class Uploader extends Component {
         }
 
         try {
-
             this.setState({ uploading: true, loaded: 0 });
             executeAction(uploadStart, { url });
 
             const result = await axios.post(url, data, {
                 onUploadProgress: ProgressEvent => {
                     const percentage = (ProgressEvent.loaded / ProgressEvent.total * 100);
+
                     executeAction(uploadProgress, { percentage });
                     this.setState({ loaded: percentage });
-                }
+                },
             });
 
             if (result.data.errors && result.data.errors.length) {
@@ -108,51 +114,57 @@ class Uploader extends Component {
             } else {
                 executeAction(uploadSuccess, { result: result.data });
             }
-
         } catch (err) {
-
             executeAction(uploadError, { error: err.message });
-
         } finally {
-
             this.setState({ uploading: false, loaded: 0 });
             // Uncomment below to auto reset after upload
-            //this.setState({ ...Uploader.DEFAULT_STATE });
+            // this.setState({ ...Uploader.DEFAULT_STATE });
         }
     };
 
     render() {
         const { loaded, selectedFiles, uploading } = this.state;
-        const { url, multiple, progress, csrf } = this.props;
+        const {
+            url, multiple, progress, csrf,
+        } = this.props;
         const selectButtonAttributes = {
             variant: 'contained',
             component: 'label',
-            color: 'primary'
+            color: 'primary',
         };
         const submitButtonAttributes = {
             variant: 'contained',
             component: 'button',
-            type: 'submit'
+            type: 'submit',
         };
         const inputAttributes = {
-            style: {display: 'none'},
+            style: { display: 'none' },
             type: 'file',
             name: 'file',
-            onChange: this.onChange
+            onChange: this.onChange,
         };
 
-        const files = !selectedFiles ?
-            <span>No files selected</span> :
-            <ul className="files">{Array.from(selectedFiles).map((item, index) => {
-                const key = `file-${index}`;
-                return (
-                    <li key={key} className="file">
-                        <span className="file-index">{index + 1}.</span>
-                        <span className="file-name">{item.name}</span>
-                        <span className="file-size">{formatFileSize(item.size)}</span>
-                    </li>
-                );
-            })}</ul>;
+        const files = !selectedFiles
+            ? <span>No files selected</span>
+            : (
+                <ul className="files">
+                    {Array.from(selectedFiles).map((item, index) => {
+                        const key = `file-${index}`;
+
+                        return (
+                            <li key={key} className="file">
+                                <span className="file-index">
+                                    {index + 1}
+.
+                                </span>
+                                <span className="file-name">{item.name}</span>
+                                <span className="file-size">{formatFileSize(item.size)}</span>
+                            </li>
+                        );
+                    })}
+                </ul>
+            );
 
         if (!selectedFiles || uploading) {
             submitButtonAttributes.disabled = true;
@@ -178,16 +190,16 @@ class Uploader extends Component {
 
                     <div className="form-fields">
                         <div className="form-field">
-                            <Button { ...selectButtonAttributes }>
+                            <Button {...selectButtonAttributes}>
                                 Select Files
                                 <AddIcon className="button-icon-right" />
-                                <input { ...inputAttributes } />
+                                <input {...inputAttributes} />
                             </Button>
                         </div>
                     </div>
 
                     <div className="form-controls">
-                        <Button { ...submitButtonAttributes }>
+                        <Button {...submitButtonAttributes}>
                             Upload
                             <CloudUploadIcon className="button-icon-right" />
                         </Button>

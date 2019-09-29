@@ -32,18 +32,18 @@
     ],
     "husky": {
         "hooks": {
-            "pre-commit": "npm run lint && npm run build && npm run test",
-            "pre-push": "npm run test"
+            "pre-commit": "docker run --rm --tty --volume ./:/home/node/app --workdir /home/node/app --network react-video-uploader_custom --name precommit-hook-runner react-video-uploader_node npm run lint && npm run build && npm run test",
+            "pre-push": "docker run --rm --tty --volume ./:/home/node/app --workdir /home/node/app --network react-video-uploader_custom --name prepush-hook-runner react-video-uploader_node npm run test"
         }
     },
     "scripts": {
-        "start": "cross-env NODE_ENV=development node src/js/server/server.js",
+        "start": "cross-env NODE_ENV=development node ./src/js/server/server.js",
         "clean": "rimraf ./dist/bundle.*",
         "build:dev": "npm run clean && cross-env NODE_ENV=development webpack --bail --hide-modules --progress --mode development",
         "build": "npm run clean && cross-env NODE_ENV=production webpack --bail --hide-modules --progress --mode production",
-        "lint:js": "eslint --fix --ext .js ./src/js/**/*.js ./data/**/*.js",
+        "lint:js": "eslint --fix --ext .js ./src/js/**/*.js",
         "lint:scss": "sass-lint-auto-fix --config .sass-lint.yml ./src/**/*.scss",
-        "lint": "run-p lint:js lint:scss",
+        "lint": "npm run lint:js && npm run lint:scss",
         "test": "jest ./tests/unit/components -u",
         "test:functional": "npx cypress open"
     },
@@ -96,6 +96,7 @@
         "eslint-plugin-jsx-a11y": "^6.2.3",
         "eslint-plugin-react": "^7.14.3",
         "file-loader": "^4.1.0",
+        "husky": "^3.0.7",
         "jest": "^24.8.0",
         "mini-css-extract-plugin": "^0.8.0",
         "node-sass": "^4.12.0",

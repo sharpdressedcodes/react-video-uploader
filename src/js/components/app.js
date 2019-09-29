@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Nav from './nav';
@@ -11,8 +11,8 @@ class App extends Component {
     static displayName = 'App';
 
     static NAV_LINKS = {
-        'Home':  '/',
-        'Upload': '/upload'
+        Home: '/',
+        Upload: '/upload',
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -27,9 +27,9 @@ class App extends Component {
                 <Nav links={App.NAV_LINKS} />
                 <section className="page">
                     <Switch>
-                        <Route path="/" exact render={props => <HomePage { ...props } />} />
-                        <Route path="/upload" render={props => <UploadPage { ...props } />} />
-                        <Route path="/video/:id(\d+)" render={props => <VideoPage { ...props } />} />
+                        <Route path="/" exact render={props => <HomePage {...props} />} />
+                        <Route path="/upload" render={props => <UploadPage {...props} />} />
+                        <Route path="/video/:id(\d+)" render={props => <VideoPage {...props} />} />
                     </Switch>
                 </section>
             </BrowserRouter>

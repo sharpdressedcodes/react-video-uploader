@@ -9,8 +9,10 @@ const signatures = {
         // Ignore first 4 bytes, only check the next 4
         position: 'start',
         length: 8,
-        check: function(str){ return str.endsWith('ftyp'); }
-    }
+        check(str) {
+            return str.endsWith('ftyp');
+        },
+    },
 };
 
 module.exports = signatures;

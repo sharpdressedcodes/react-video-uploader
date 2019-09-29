@@ -7,18 +7,20 @@ class InfoTable extends Component {
     static propTypes = {
         items: PropTypes.arrayOf(PropTypes.shape({
             title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-            text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
-        })).isRequired
+            text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        })).isRequired,
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const itemsChanged = this.items !== nextProps.items;
+
         return itemsChanged;
     }
 
     renderItems() {
         return this.props.items.map((item, index) => {
             const key = `${InfoTable.displayName}-${index}-${(+new Date())}`;
+
             return (
                 <tr key={key}>
                     <td>{item.title}</td>

@@ -6,7 +6,7 @@ import Picture from './picture';
 class Teaser extends Component {
     static displayName = 'Teaser';
 
-    static DEFAULT_ORDER = [ 'title', 'image', 'text'];
+    static DEFAULT_ORDER = ['title', 'image', 'text'];
 
     static propTypes = {
         title: PropTypes.string,
@@ -14,7 +14,7 @@ class Teaser extends Component {
         imageAlt: PropTypes.string,
         text: PropTypes.string,
         order: PropTypes.arrayOf(PropTypes.string),
-        className: PropTypes.string
+        className: PropTypes.string,
     };
 
     static defaultProps = {
@@ -23,11 +23,13 @@ class Teaser extends Component {
         imageAlt: '',
         text: null,
         order: Teaser.DEFAULT_ORDER,
-        className: ''
+        className: '',
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const { title, imageSrc, imageAlt, text, order, className } = this.props;
+        const {
+            title, imageSrc, imageAlt, text, order, className,
+        } = this.props;
         const titleChanged = title !== nextProps.title;
         const imageSrcChanged = imageSrc !== nextProps.imageSrc;
         const imageAltChanged = imageAlt !== nextProps.imageAlt;
@@ -39,25 +41,35 @@ class Teaser extends Component {
     }
 
     render() {
-        const { title, imageSrc, imageAlt, text, order, className } = this.props;
+        const {
+            title, imageSrc, imageAlt, text, order, className,
+        } = this.props;
         const elements = [];
 
         order.forEach((item, index) => {
             const key = `teaser-${index}-${item}`;
+
             switch (item) {
-                case 'title':
-                    title && elements.push(<div key={key} className="teaser-title">{title}</div>);
-                    break;
-                case 'image':
-                    imageSrc && elements.push(
+            case 'title':
+                if (title) {
+                    elements.push(<div key={key} className="teaser-title">{title}</div>);
+                }
+                break;
+            case 'image':
+                if (imageSrc) {
+                    elements.push(
                         <div key={key} className="teaser-image">
-                            <Picture src={imageSrc} alt={imageAlt}/>
-                        </div>
+                            <Picture src={imageSrc} alt={imageAlt} />
+                        </div>,
                     );
-                    break;
-                case 'text':
-                    text && elements.push(<div key={key} className="teaser-text">{text}</div>);
-                    break;
+                }
+                break;
+            case 'text':
+                if (text) {
+                    elements.push(<div key={key} className="teaser-text">{text}</div>);
+                }
+                break;
+            default:
             }
         });
 

@@ -12,18 +12,6 @@ const open = util.promisify(fs.open);
 const read = util.promisify(fs.read);
 const write = util.promisify(fs.write);
 
-function unlink(file) {
-    return new Promise((resolve, reject) => {
-        fileExists(file)
-            .then(result => {
-                fsUnlink(file)
-                    .then(resolve)
-                    .catch(resolve);
-            })
-            .catch(resolve);
-    });
-}
-
 function fileExists(file) {
     return new Promise((resolve, reject) => {
         try {
@@ -31,7 +19,7 @@ function fileExists(file) {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(stats);
+                    resolve(true);
                 }
             });
         } catch (err) {
@@ -47,7 +35,7 @@ function directoryExists(directory) {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(stats.isDirectory() ? stats : false);
+                    resolve(stats.isDirectory());
                 }
             });
         } catch (err) {
@@ -68,6 +56,18 @@ function createDirectory(directory) {
     });
 }
 
+function unlink(file) {
+    return new Promise((resolve, reject) => {
+        fileExists(file)
+            .then(result => {
+                fsUnlink(file)
+                    .then(resolve)
+                    .catch(resolve);
+            })
+            .catch(resolve);
+    });
+}
+
 module.exports = {
     open,
     close,
@@ -80,5 +80,5 @@ module.exports = {
     unlink,
     stat,
     read,
-    write
+    write,
 };

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { videoPlaybackError } from '../actions/video';
-//import PlayIcon from '@material-ui/icons/PlayCircleFilled';
-//import PauseIcon from '@material-ui/icons/PauseCircleFilled';
-//import IconButton from '@material-ui/core/IconButton';
+// import PlayIcon from '@material-ui/icons/PlayCircleFilled';
+// import PauseIcon from '@material-ui/icons/PauseCircleFilled';
+// import IconButton from '@material-ui/core/IconButton';
 
 class Video extends Component {
     static displayName = 'Video';
@@ -12,17 +12,17 @@ class Video extends Component {
         src: PropTypes.string.isRequired,
         poster: PropTypes.string,
         autoPlay: PropTypes.bool,
-        controls: PropTypes.bool
+        controls: PropTypes.bool,
     };
 
     static defaultProps = {
         poster: '',
         autoPlay: false,
-        controls: false
+        controls: false,
     };
 
     static contextTypes = {
-        executeAction: PropTypes.func
+        executeAction: PropTypes.func,
     };
 
     constructor(props, context) {
@@ -34,27 +34,17 @@ class Video extends Component {
     }
 
     componentDidMount() {
-
         this.video.current.addEventListener('ended', this.onStop, false);
         this.video.current.addEventListener('error', this.onError, false);
         this.video.current.addEventListener('play', this.onPlay, false);
         this.video.current.addEventListener('pause', this.onPause, false);
-        //this.container.current.addEventListener('click', this.onClick, false);
-    }
-
-    componentWillUnmount() {
-
-        this.video.current.removeEventListener('ended', this.onStop);
-        this.video.current.removeEventListener('error', this.onError);
-        this.video.current.removeEventListener('play', this.onPlay);
-        this.video.current.removeEventListener('pause', this.onPause);
-        //this.container.current.removeEventListener('click', this.onClick);
-
-        this.pause();
+        // this.container.current.addEventListener('click', this.onClick, false);
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const { src, poster, autoPlay, controls } = this.props;
+        const {
+            src, poster, autoPlay, controls,
+        } = this.props;
         const { playing } = this.state;
         const srcChanged = src !== nextProps.src;
         const posterChanged = poster !== nextProps.poster;
@@ -63,6 +53,16 @@ class Video extends Component {
         const playingChanged = playing !== nextState.playing;
 
         return srcChanged || posterChanged || autoPlayChanged || controlsChanged || playingChanged;
+    }
+
+    componentWillUnmount() {
+        this.video.current.removeEventListener('ended', this.onStop);
+        this.video.current.removeEventListener('error', this.onError);
+        this.video.current.removeEventListener('play', this.onPlay);
+        this.video.current.removeEventListener('pause', this.onPause);
+        // this.container.current.removeEventListener('click', this.onClick);
+
+        this.pause();
     }
 
     onPause = event => {
@@ -82,15 +82,13 @@ class Video extends Component {
 
         if (this.state.playing) {
             this.setState({ playing: false });
-            executeAction(videoPlaybackError, {error: event.target.error.message});
+            executeAction(videoPlaybackError, { error: event.target.error.message });
         } else {
-            executeAction(videoPlaybackError, {error: `Error loading ${this.props.src}\n${event.target.error.message}`});
+            executeAction(videoPlaybackError, { error: `Error loading ${this.props.src}\n${event.target.error.message}` });
         }
-
     };
 
     onClick = async event => {
-
         if (this.state.playing) {
             this.pause();
         } else {
@@ -103,9 +101,8 @@ class Video extends Component {
             await this.video.current.play();
             this.setState({ playing: true });
         } catch (err) {
-            this.context.executeAction(videoPlaybackError, {error: err.message});
+            this.context.executeAction(videoPlaybackError, { error: err.message });
         }
-
     };
 
     pause = () => {
@@ -114,17 +111,19 @@ class Video extends Component {
     };
 
     render() {
-        const { src, poster, autoPlay, controls } = this.props;
-        //const { playing } = this.state;
+        const {
+            src, poster, autoPlay, controls,
+        } = this.props;
+        // const { playing } = this.state;
         const videoAttributes = {
             src,
             poster,
             ref: this.video,
             preload: 'none',
             controls,
-            autoPlay
+            autoPlay,
         };
-        let el = null;
+        const el = null;
 
         // if (!playing) {
         //     el = (
@@ -134,10 +133,13 @@ class Video extends Component {
         //     );
         // }
 
+        // eslint-disable-next-line jsx-a11y/media-has-caption
+        const video = <video {...videoAttributes} />;
+
         return (
             <div ref={this.container} className="video-container">
                 {el}
-                <video { ...videoAttributes } />
+                {video}
             </div>
         );
     }
