@@ -29,6 +29,7 @@
         "indent": ["error", 4],
         "import/first": 0,
         "import/newline-after-import": ["error", { "count": 1 }],
+        "import/prefer-default-export": 0,
         "jsx-a11y/click-events-have-key-events": 0,
         "max-len": [
             "error",
@@ -41,10 +42,16 @@
                 "ignoreRegExpLiterals": true
             }
         ],
+        "no-bitwise": 0,
         "no-plusplus": 0,
         "no-unused-vars": 0,
         "no-trailing-spaces": ["error", { "ignoreComments": true }],
-        "padded-blocks": ["error", "always", { "allowSingleLineBlocks": false }],
+        "padded-blocks": ["error", "never",{ "classes": "always" ,"allowSingleLineBlocks": false }],
+        "padding-line-between-statements": [
+            "error",
+            { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*" },
+            { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"] }
+        ],
         "prefer-destructuring": 0,
         "quote-props": ["error", "as-needed", { "keywords": true, "numbers": true }],
         "quotes": ["error", "single"],

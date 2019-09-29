@@ -16,7 +16,7 @@ const config = {
     cache: false,
     devtool: production ? false : 'eval-source-map',
     context: __dirname + '/',
-    entry: ['./src/js/main.js', './src/scss/main.scss'],
+    entry: ['@babel/polyfill', './src/js/main.js', './src/scss/main.scss'],
     output: {
         publicPath: '/dist/',
         path: __dirname + '/dist/',
