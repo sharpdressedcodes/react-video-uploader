@@ -1,5 +1,6 @@
 import { BaseStore } from 'fluxible/addons';
 import axios from 'axios';
+import xhrAdapter from 'axios/lib/adapters/xhr';
 import VideoActionTypes from '../constants/video';
 import UploaderActionTypes from '../constants/uploader';
 
@@ -131,7 +132,7 @@ class AppStore extends BaseStore {
     loadVideoList() {
         const { config } = this.getContext();
 
-        axios.get(config.app.endpoints.api.video.get)
+        axios.get(config.app.endpoints.api.video.get, { adapter: xhrAdapter })
             .then(response => {
                 this.onLoadVideos({ videos: response.data.items });
             })

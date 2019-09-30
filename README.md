@@ -26,7 +26,10 @@ docker exec -it node npm run start
 Now open [http://localhost:3001/](http://localhost:3001/) in your browser.
 
 ## Tests
-...
+#### Unit
+```shell script
+docker exec -it node npm test
+```
 
 
 ### TODO

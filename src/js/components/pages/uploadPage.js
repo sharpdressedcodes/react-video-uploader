@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { connectToStores } from 'fluxible-addons-react';
 import get from 'lodash/get';
-import { formatFileSize } from '../../helpers/format';
 import { toast } from 'react-toastify';
+import { formatFileSize } from '../../helpers/format';
 import InfoTable from '../infoTable';
 import Uploader from '../uploader';
 
@@ -71,11 +71,23 @@ class UploadPage extends Component {
         ];
     }
 
+    getCsrfToken() {
+        const element = document.querySelector('meta[name="csrf-token"]');
+        let token = null;
+
+        if (element) {
+            token = element.getAttribute('content');
+            if (token) {
+                axios.defaults.headers.post['X-XSRF-TOKEN'] = token;
+            }
+        }
+
+        return token;
+    }
+
     render() {
         const { config } = this.context;
-        // TODO: change this
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        axios.defaults.headers.post['X-XSRF-TOKEN'] = token;
+        const token = this.getCsrfToken();
 
         return (
             <div className="page-upload">

@@ -47,7 +47,7 @@ class VideoPage extends Component {
         let el = null;
         let title = null;
 
-        if (video === {}) {
+        if (Object.keys(video).length === 0) {
             el = <div className="centered">Acquiring...</div>;
         } else {
             title = <h2>Play Video</h2>;

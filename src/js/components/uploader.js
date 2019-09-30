@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import xhrAdapter from 'axios/lib/adapters/xhr';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
@@ -86,7 +87,6 @@ class Uploader extends Component {
 
         if (!selectedFiles) {
             executeAction(uploadValidationErrors, { errors: ['Error: No files selected'] });
-
             return;
         }
 
@@ -107,6 +107,7 @@ class Uploader extends Component {
                     executeAction(uploadProgress, { percentage });
                     this.setState({ loaded: percentage });
                 },
+                adapter: xhrAdapter
             });
 
             if (result.data.errors && result.data.errors.length) {
@@ -179,7 +180,7 @@ class Uploader extends Component {
         }
 
         const csrfElement = csrf ? <input type="hidden" name="_csrf" value={csrf} /> : null;
-        const progressElement = progress ? <LinearProgress variant="determinate" value={loaded} /> : null;
+        const progressElement = progress ? <LinearProgress className="status-progress" variant="determinate" value={loaded} /> : null;
 
         return (
             <section className="uploader">
