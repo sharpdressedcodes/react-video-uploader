@@ -1,10 +1,14 @@
 module.exports = {
     "verbose": true,
-    //"collectCoverage": true,
+    "collectCoverage": true,
     "collectCoverageFrom": [
         "./src/js/**/*.{js,jsx}",
         "!./src/js/**/node_modules/**"
     ],
     "coverageDirectory": "./tests/unit/coverage",
-    "testURL": "http://127.0.0.1:3001/"
+    "testURL": "http://localhost:3001/",
+    "moduleNameMapper": {
+        "\\.(css|scss)$": "<rootDir>/tests/unit/__mocks__/styleMock.js",
+        "/config/main$": "<rootDir>/tests/unit/__mocks__/configMock.js"
+    }
 };
