@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import xhrAdapter from 'axios/lib/adapters/xhr';
+import { connect } from 'react-redux';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
@@ -9,8 +10,8 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import {
     uploadError, uploadProgress, uploadStart, uploadSuccess, uploadValidationErrors,
 } from '../actions/uploader';
-import { formatFileSize } from '../helpers/format';
-import { validateFiles } from '../helpers/fileValidation';
+import { formatFileSize } from '../shared/format';
+import { validateFiles } from '../browser/fileValidator';
 
 class Uploader extends Component {
     static displayName = 'Uploader';
@@ -25,18 +26,16 @@ class Uploader extends Component {
         url: PropTypes.string.isRequired,
         multiple: PropTypes.bool,
         progress: PropTypes.bool,
-        csrf: PropTypes.string,
     };
 
     static defaultProps = {
         multiple: false,
         progress: false,
-        csrf: null,
     };
 
-    static contextTypes = {
-        executeAction: PropTypes.func,
-    };
+    // static contextTypes = {
+    //     executeAction: PropTypes.func,
+    // };
 
     constructor(props, context) {
         super(props, context);
@@ -46,30 +45,30 @@ class Uploader extends Component {
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const {
-            url, multiple, progress, csrf,
+            url, multiple, progress,
         } = this.props;
         const { selectedFiles, loaded, uploading } = this.state;
         const urlChanged = url !== nextProps.url;
         const multipleChanged = multiple !== nextProps.multiple;
         const progressChanged = progress !== nextProps.progress;
-        const csrfChanged = csrf !== nextProps.csrf;
         const selectedFiledChanged = selectedFiles !== nextState.selectedFiles;
         const loadedChanged = loaded !== nextState.loaded;
         const uploadingChanged = uploading !== nextState.uploading;
 
-        return urlChanged || multipleChanged || progressChanged || csrfChanged
-            || selectedFiledChanged || loadedChanged || uploadingChanged;
+        return urlChanged || multipleChanged || progressChanged ||
+            selectedFiledChanged || loadedChanged || uploadingChanged;
     }
 
     onChange = event => {
-        const { executeAction } = this.context;
+        //const { executeAction } = this.context;
+        const { uploadValidationErrors } = this.props;
         const state = { ...Uploader.DEFAULT_STATE };
         const errors = validateFiles(Array.from(event.target.files));
 
         if (Array.isArray(errors)) {
             // eslint-disable-next-line no-param-reassign
             event.target.value = null;
-            executeAction(uploadValidationErrors, { errors });
+            uploadValidationErrors({ errors });
         } else {
             state.selectedFiles = event.target.files;
         }
@@ -79,14 +78,14 @@ class Uploader extends Component {
 
     onSubmit = async event => {
         const { selectedFiles } = this.state;
-        const { executeAction } = this.context;
-        const { url } = this.props;
+        //const { executeAction } = this.context;
+        const { url, uploadValidationErrors, uploadStart, uploadProgress, uploadSuccess, uploadError } = this.props;
         const data = new FormData();
 
         event.preventDefault();
 
         if (!selectedFiles) {
-            executeAction(uploadValidationErrors, { errors: ['Error: No files selected'] });
+            uploadValidationErrors({ errors: ['Error: No files selected'] });
             return;
         }
 
@@ -98,25 +97,25 @@ class Uploader extends Component {
 
         try {
             this.setState({ uploading: true, loaded: 0 });
-            executeAction(uploadStart, { url });
+            uploadStart({ url });
 
             const result = await axios.post(url, data, {
                 onUploadProgress: ProgressEvent => {
                     const percentage = (ProgressEvent.loaded / ProgressEvent.total * 100);
 
-                    executeAction(uploadProgress, { percentage });
+                    uploadProgress({ percentage });
                     this.setState({ loaded: percentage });
                 },
                 adapter: xhrAdapter
             });
 
             if (result.data.errors && result.data.errors.length) {
-                executeAction(uploadValidationErrors, { errors: result.data.errors });
+                uploadValidationErrors({ errors: result.data.errors });
             } else {
-                executeAction(uploadSuccess, { result: result.data });
+                uploadSuccess({ result: result.data });
             }
         } catch (err) {
-            executeAction(uploadError, { error: err.message });
+            uploadError({ error: err.message });
         } finally {
             this.setState({ uploading: false, loaded: 0 });
             // Uncomment below to auto reset after upload
@@ -127,7 +126,7 @@ class Uploader extends Component {
     render() {
         const { loaded, selectedFiles, uploading } = this.state;
         const {
-            url, multiple, progress, csrf,
+            url, multiple, progress
         } = this.props;
         const selectButtonAttributes = {
             variant: 'contained',
@@ -179,15 +178,12 @@ class Uploader extends Component {
             inputAttributes.multiple = true;
         }
 
-        const csrfElement = csrf ? <input type="hidden" name="_csrf" value={csrf} /> : null;
         const progressElement = progress ? <LinearProgress className="status-progress" variant="determinate" value={loaded} /> : null;
 
         return (
             <section className="uploader">
 
                 <form className="form form-upload" action={url} method="post" onSubmit={this.onSubmit}>
-
-                    {csrfElement}
 
                     <div className="form-fields">
                         <div className="form-field">
@@ -218,4 +214,16 @@ class Uploader extends Component {
     }
 }
 
-export default Uploader;
+const mapDispatchToProps = dispatch => {
+    return {
+        uploadError: payload => dispatch(uploadError(payload.error)),
+        uploadProgress: payload => dispatch(uploadProgress(payload.progress)),
+        uploadStart: payload => dispatch(uploadStart(payload.url)),
+        uploadSuccess: payload => dispatch(uploadSuccess(payload.result)),
+        uploadValidationErrors: payload => dispatch(uploadValidationErrors(payload.errors))
+    };
+};
+
+const ConnectedUploader = connect(null, mapDispatchToProps)(Uploader);
+const DisconnectedUploader = Uploader;
+export default ConnectedUploader;

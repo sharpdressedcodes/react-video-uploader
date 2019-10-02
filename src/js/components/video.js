@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { videoPlaybackError } from '../actions/video';
 // import PlayIcon from '@material-ui/icons/PlayCircleFilled';
 // import PauseIcon from '@material-ui/icons/PauseCircleFilled';
@@ -19,10 +20,6 @@ class Video extends Component {
         poster: '',
         autoPlay: false,
         controls: false,
-    };
-
-    static contextTypes = {
-        executeAction: PropTypes.func,
     };
 
     constructor(props, context) {
@@ -78,13 +75,13 @@ class Video extends Component {
     };
 
     onError = event => {
-        const { executeAction } = this.context;
+        const { videoPlaybackError } = this.props;
 
         if (this.state.playing) {
             this.setState({ playing: false });
-            executeAction(videoPlaybackError, { error: event.target.error.message });
+            videoPlaybackError({ error: event.target.error.message });
         } else {
-            executeAction(videoPlaybackError, { error: `Error loading ${this.props.src}\n${event.target.error.message}` });
+            videoPlaybackError({ error: `Error loading ${this.props.src}\n${event.target.error.message}` });
         }
     };
 
@@ -101,7 +98,7 @@ class Video extends Component {
             await this.video.current.play();
             this.setState({ playing: true });
         } catch (err) {
-            this.context.executeAction(videoPlaybackError, { error: err.message });
+            this.props.videoPlaybackError({ error: err.message });
         }
     };
 
@@ -145,4 +142,12 @@ class Video extends Component {
     }
 }
 
-export default Video;
+const mapDispatchToProps = dispatch => {
+    return {
+        videoPlaybackError: payload => dispatch(videoPlaybackError(payload.error))
+    };
+};
+
+const ConnectedVideo = connect(null, mapDispatchToProps)(Video);
+const DisconnectedVideo = Video;
+export default ConnectedVideo;

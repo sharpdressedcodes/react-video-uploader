@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
-import { connectToStores } from 'fluxible-addons-react';
+import { connect } from 'react-redux';
 import Video from '../video';
+import config from '../../config/main';
 
 class VideoPage extends Component {
     static displayName = 'VideoPage';
@@ -18,11 +19,6 @@ class VideoPage extends Component {
     static defaultProps = {
         videoPlaybackError: null,
         video: {}
-    };
-
-    static contextTypes = {
-        config: PropTypes.object,
-        getStore: PropTypes.func
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -42,12 +38,11 @@ class VideoPage extends Component {
 
     render() {
         const { video } = this.props;
-        const { config } = this.context;
         const { publicPath } = config.app.videoUpload;
         let el = null;
         let title = null;
 
-        if (Object.keys(video).length === 0) {
+        if (!video || Object.keys(video).length === 0) {
             el = <div className="centered">Acquiring...</div>;
         } else {
             title = <h2>Play Video</h2>;
@@ -65,15 +60,15 @@ class VideoPage extends Component {
     }
 }
 
-const ConnectedVideoPage = connectToStores(VideoPage, ['AppStore'], (context, props) => {
-    const appStore = context.getStore('AppStore');
-    const videoPlaybackError = appStore.getVideoPlaybackError();
-    const video = appStore.getVideo(props.match.params.id);
-    return {
-        videoPlaybackError,
-        video
+const mapStateToProps = () => {
+    return (state, ownProps) => {
+        return {
+            videoPlaybackError: state.videoReducer.videoPlaybackError,
+            video: !state.loadVideosReducer.videos ? null : state.loadVideosReducer.videos[ownProps.match.params.id]
+        };
     };
-});
+};
 
+const ConnectedVideoPage = connect(mapStateToProps)(VideoPage);
 export const DisconnectedVideoPage = VideoPage;
 export default ConnectedVideoPage;

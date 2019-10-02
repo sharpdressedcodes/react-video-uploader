@@ -1,18 +1,18 @@
-const fs = require('fs');
-const mkdirp = require('mkdirp');
-const util = require('util');
+import fs from 'fs';
+import mkdirp from 'mkdirp';
+import util from 'util';
 
-const readFile = util.promisify(fs.readFile);
-const readDir = util.promisify(fs.readdir);
-const writeFile = util.promisify(fs.writeFile);
-const fsUnlink = util.promisify(fs.unlink);
-const stat = util.promisify(fs.stat);
-const close = util.promisify(fs.close);
-const open = util.promisify(fs.open);
-const read = util.promisify(fs.read);
-const write = util.promisify(fs.write);
+export const readFile = util.promisify(fs.readFile);
+export const readDir = util.promisify(fs.readdir);
+export const writeFile = util.promisify(fs.writeFile);
+export const fsUnlink = util.promisify(fs.unlink);
+export const stat = util.promisify(fs.stat);
+export const close = util.promisify(fs.close);
+export const open = util.promisify(fs.open);
+export const read = util.promisify(fs.read);
+export const write = util.promisify(fs.write);
 
-function fileExists(file) {
+export function fileExists(file) {
     return new Promise((resolve, reject) => {
         try {
             fs.stat(file, (err, stats) => {
@@ -28,7 +28,7 @@ function fileExists(file) {
     });
 }
 
-function directoryExists(directory) {
+export function directoryExists(directory) {
     return new Promise((resolve, reject) => {
         try {
             fs.stat(directory, (err, stats) => {
@@ -44,7 +44,7 @@ function directoryExists(directory) {
     });
 }
 
-function createDirectory(directory) {
+export function createDirectory(directory) {
     return new Promise((resolve, reject) => {
         try {
             mkdirp.mkdirP(directory, {}, () => {
@@ -56,7 +56,7 @@ function createDirectory(directory) {
     });
 }
 
-function unlink(file) {
+export function unlink(file) {
     return new Promise((resolve, reject) => {
         fileExists(file)
             .then(result => {
@@ -67,18 +67,3 @@ function unlink(file) {
             .catch(resolve);
     });
 }
-
-module.exports = {
-    open,
-    close,
-    writeFile,
-    readFile,
-    readDir,
-    fileExists,
-    directoryExists,
-    createDirectory,
-    unlink,
-    stat,
-    read,
-    write,
-};

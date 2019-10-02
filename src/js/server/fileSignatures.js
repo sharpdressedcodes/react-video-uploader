@@ -15,4 +15,4 @@ const signatures = {
     },
 };
 
-module.exports = signatures;
+export default signatures;

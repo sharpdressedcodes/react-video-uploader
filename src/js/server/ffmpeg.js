@@ -1,10 +1,10 @@
-const get = require('lodash/get');
-const ffmpeg = require('fluent-ffmpeg');
-const config = require('../config/main');
+import get from 'lodash/get';
+import ffmpeg from 'fluent-ffmpeg';
+import config from '../config/main';
 
 const uploadPath = get(config, 'app.videoUpload.path', 'dist/uploads');
 
-function getVideoInfo(fileName) {
+export function getVideoInfo(fileName) {
     return new Promise((resolve, reject) => {
         ffmpeg.ffprobe(fileName, (err, data) => {
             if (err) {
@@ -16,7 +16,7 @@ function getVideoInfo(fileName) {
     });
 }
 
-function generatePoster(fileName, options) {
+export function generatePoster(fileName, options) {
     return new Promise((resolve, reject) => {
         let result = null;
 
@@ -48,7 +48,7 @@ function generatePoster(fileName, options) {
     });
 }
 
-function generateThumbnail(fileName, options) {
+export function generateThumbnail(fileName, options) {
     return new Promise((resolve, reject) => {
         let result = null;
 
@@ -79,9 +79,3 @@ function generateThumbnail(fileName, options) {
             .screenshot({ ...defaults, ...options });
     });
 }
-
-module.exports = {
-    getVideoInfo,
-    generatePoster,
-    generateThumbnail,
-};

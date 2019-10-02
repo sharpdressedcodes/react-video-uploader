@@ -33,15 +33,9 @@ docker exec -it node npm test
 
 
 ### TODO
-Have a look at combining react-router with fluxible
-https://github.com/yahoo/fluxible/blob/master/examples/react-router/actions/navigate.js
-https://github.com/yahoo/fluxible/issues/86
-https://www.google.com/search?q=the+react-router+fluxible+example
-
 Build custom docker image after installing all the conversion software
-Have a look at encoding the videos after they are uploaded, this way we can accept more formats like flv
 
-Have a look at the way csrf is implemented
+Have a look at encoding the videos after they are uploaded, this way we can accept more formats like flv
 
 Generate preview gif of video
 
