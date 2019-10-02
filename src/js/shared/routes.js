@@ -7,18 +7,18 @@ const routes = [
     {
         path: '/',
         exact: true,
-        component: HomePage,
-        //fetchInitialData: (path = '') => fetchVideos(),
+        component: HomePage
+        // fetchInitialData: (path = '') => fetchVideos(),
     },
     {
         path: '/upload',
-        component: UploadPage,
-        //fetchInitialData: (path) => fetchVideos()
+        component: UploadPage
+        // fetchInitialData: (path) => fetchVideos()
     },
     {
         path: '/video/:id',
-        component: VideoPage,
-        //fetchInitialData: (path) => fetchVideos()
+        component: VideoPage
+        // fetchInitialData: (path) => fetchVideos()
     }
 ];
 

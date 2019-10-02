@@ -14,7 +14,7 @@ class Teaser extends Component {
         imageAlt: PropTypes.string,
         text: PropTypes.string,
         order: PropTypes.arrayOf(PropTypes.string),
-        className: PropTypes.string,
+        className: PropTypes.string
     };
 
     static defaultProps = {
@@ -23,12 +23,12 @@ class Teaser extends Component {
         imageAlt: '',
         text: null,
         order: Teaser.DEFAULT_ORDER,
-        className: '',
+        className: ''
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const {
-            title, imageSrc, imageAlt, text, order, className,
+            title, imageSrc, imageAlt, text, order, className
         } = this.props;
         const titleChanged = title !== nextProps.title;
         const imageSrcChanged = imageSrc !== nextProps.imageSrc;
@@ -42,7 +42,7 @@ class Teaser extends Component {
 
     render() {
         const {
-            title, imageSrc, imageAlt, text, order, className,
+            title, imageSrc, imageAlt, text, order, className
         } = this.props;
         const elements = [];
 

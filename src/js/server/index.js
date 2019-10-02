@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import express from 'express';
 import csrf from 'csurf';
 import bodyParser from 'body-parser';
@@ -34,7 +34,7 @@ server.get(
     checkVideoId,
     handleGetVideos,
     logErrors,
-    trapErrors
+    trapErrors,
 );
 
 server.post(
@@ -44,7 +44,7 @@ server.post(
     handleVideoCreate,
     handleGetVideos,
     logErrors,
-    trapErrors
+    trapErrors,
 );
 
 server.get(
@@ -54,7 +54,7 @@ server.get(
     handleLoadVideos,
     handleRender,
     logErrors,
-    trapErrors
+    trapErrors,
 );
 
 const listener = server.listen(process.env.PORT || get(config, 'app.port', 3001), err => {

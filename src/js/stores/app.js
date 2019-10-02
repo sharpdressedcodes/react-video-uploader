@@ -6,7 +6,6 @@ import videoReducer from '../reducers/video';
 import loadVideosReducer from '../reducers/loadVideos';
 
 export default function configureStore(preloadedState = null) {
-
     const reducers = combineReducers({
         uploaderReducer,
         videoReducer,
@@ -19,7 +18,6 @@ export default function configureStore(preloadedState = null) {
 
     if (preloadedState) {
         return createStore(reducers, preloadedState, composedEnhancers);
-    } else {
-        return createStore(reducers, composedEnhancers);
     }
+    return createStore(reducers, composedEnhancers);
 }

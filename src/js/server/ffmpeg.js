@@ -33,13 +33,13 @@ export function generatePoster(fileName, options) {
             filename: '%b-%r-poster.png',
             count: 1,
             timemark: '1%',
-            logger: console,
+            logger: console
             // size: ''
         };
 
         ffmpeg({
             source: fileName,
-            logger: console,
+            logger: console
         })
             .on('filenames', onFilenames)
             .on('end', onComplete)
@@ -66,12 +66,12 @@ export function generateThumbnail(fileName, options) {
             count: 1,
             timemark: '1%',
             logger: console,
-            size: '320x180', // 16:9
+            size: '320x180' // 16:9
         };
 
         ffmpeg({
             source: fileName,
-            logger: console,
+            logger: console
         })
             .on('filenames', onFilenames)
             .on('end', onComplete)

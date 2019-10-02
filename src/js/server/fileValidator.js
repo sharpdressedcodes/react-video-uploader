@@ -1,7 +1,11 @@
 import path from 'path';
 import get from 'lodash/get';
-import { getFileName, getMimeType, validateMaxFiles, validateMimeType, validateFileSize } from '../shared/fileValidations';
-import { open, read, close, fileExists, unlink } from './fileOperations';
+import {
+    getFileName, getMimeType, validateMaxFiles, validateMimeType, validateFileSize
+} from '../shared/fileValidations';
+import {
+    open, read, close, fileExists, unlink
+} from './fileOperations';
 import { formatFileSize } from '../shared/format';
 import signatures from './fileSignatures';
 import config from '../config/main';
@@ -12,7 +16,6 @@ const maxTotalFileSize = get(config, 'app.videoUpload.maxTotalFileSize', 0);
 
 export function validateFileSignature(file) {
     return new Promise(async (resolve, reject) => {
-
         const ext = path.extname(file.path).replace(/^\./, '');
         const signature = signatures[ext];
         let fd = null;
@@ -38,13 +41,13 @@ export function validateFileSignature(file) {
                 let startPosition = 0;
 
                 switch (check.position) {
-                    case 'start':
-                        // Do nothing
-                        break;
-                    case 'end':
-                        startPosition = stats.size - check.length;
-                        break;
-                    default:
+                case 'start':
+                    // Do nothing
+                    break;
+                case 'end':
+                    startPosition = stats.size - check.length;
+                    break;
+                default:
                 }
 
                 await read(fd, buffer, 0, buffer.length, startPosition);
@@ -76,7 +79,6 @@ export function validateFileSignature(file) {
 }
 
 export async function validateFiles(files) {
-
     const errors = [];
     const totalSize = files.reduce((acc, curr) => acc.size + curr.size);
 

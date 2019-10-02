@@ -26,6 +26,7 @@
     ],
     "rules": {
         "arrow-parens": ["error", "as-needed"],
+        "comma-dangle": ["error", "never"],
         "indent": ["error", 4],
         "import/first": 0,
         "import/newline-after-import": ["error", { "count": 1 }],

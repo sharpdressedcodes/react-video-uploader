@@ -12,19 +12,19 @@ class Picture extends Component {
         alt: PropTypes.string,
         caption: PropTypes.string,
         order: PropTypes.arrayOf(PropTypes.string),
-        className: PropTypes.string,
+        className: PropTypes.string
     };
 
     static defaultProps = {
         caption: null,
         alt: '',
         order: Picture.DEFAULT_ORDER,
-        className: '',
+        className: ''
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const {
-            src, alt, caption, order, className,
+            src, alt, caption, order, className
         } = this.props;
         const srcChanged = src !== nextProps.src;
         const altChanged = alt !== nextProps.alt;
@@ -37,7 +37,7 @@ class Picture extends Component {
 
     render() {
         const {
-            src, alt, caption, order, className,
+            src, alt, caption, order, className
         } = this.props;
         const elements = [];
 

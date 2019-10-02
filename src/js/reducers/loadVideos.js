@@ -6,22 +6,21 @@ export const initialState = {
 };
 
 export default function reducer(state = initialState, action) {
-
     switch (action.type) {
-        case LoadVideosActionTypes.LOAD_VIDEOS_SUCCESS:
-            return {
-                ...state,
-                videosDownloadError: null,
-                videos: action.payload,
-            };
+    case LoadVideosActionTypes.LOAD_VIDEOS_SUCCESS:
+        return {
+            ...state,
+            videosDownloadError: null,
+            videos: action.payload
+        };
 
-        case LoadVideosActionTypes.LOAD_VIDEOS_ERROR:
-            return {
-                ...state,
-                videosDownloadError: action.payload
-            };
+    case LoadVideosActionTypes.LOAD_VIDEOS_ERROR:
+        return {
+            ...state,
+            videosDownloadError: action.payload
+        };
 
-        default:
+    default:
         // Do nothing
     }
 
