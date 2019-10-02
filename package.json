@@ -31,8 +31,9 @@
         "Android >= 4"
     ],
     "scripts": {
-        "start": "cross-env NODE_ENV=development node ./dist/server.js",
-        "clean": "rimraf ./dist/bundle.*",
+        "start:dev": "cross-env NODE_ENV=development node ./dist/server.js",
+        "start": "cross-env NODE_ENV=production node ./dist/server.js",
+        "clean": "rimraf ./dist/bundle.* && mkdirp ./dist/data/uploads",
         "build:dev": "npm run clean && cross-env NODE_ENV=development webpack --bail --hide-modules --progress --mode development",
         "build": "npm run clean && cross-env NODE_ENV=production webpack --bail --hide-modules --progress --mode production",
         "lint:js": "eslint --fix --ext .js ./src/js/**/*.js",

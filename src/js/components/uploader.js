@@ -10,6 +10,7 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import {
     uploadError, uploadProgress, uploadStart, uploadSuccess, uploadValidationErrors,
 } from '../actions/uploader';
+import { loadVideosSuccess } from '../actions/loadVideos';
 import { formatFileSize } from '../shared/format';
 import { validateFiles } from '../browser/fileValidator';
 
@@ -32,10 +33,6 @@ class Uploader extends Component {
         multiple: false,
         progress: false,
     };
-
-    // static contextTypes = {
-    //     executeAction: PropTypes.func,
-    // };
 
     constructor(props, context) {
         super(props, context);
@@ -60,7 +57,6 @@ class Uploader extends Component {
     }
 
     onChange = event => {
-        //const { executeAction } = this.context;
         const { uploadValidationErrors } = this.props;
         const state = { ...Uploader.DEFAULT_STATE };
         const errors = validateFiles(Array.from(event.target.files));
@@ -78,8 +74,7 @@ class Uploader extends Component {
 
     onSubmit = async event => {
         const { selectedFiles } = this.state;
-        //const { executeAction } = this.context;
-        const { url, uploadValidationErrors, uploadStart, uploadProgress, uploadSuccess, uploadError } = this.props;
+        const { url, uploadValidationErrors, uploadStart, uploadProgress, uploadSuccess, uploadError, loadVideosSuccess } = this.props;
         const data = new FormData();
 
         event.preventDefault();
@@ -113,6 +108,7 @@ class Uploader extends Component {
                 uploadValidationErrors({ errors: result.data.errors });
             } else {
                 uploadSuccess({ result: result.data });
+                loadVideosSuccess({ items: result.data.items });
             }
         } catch (err) {
             uploadError({ error: err.message });
@@ -220,7 +216,8 @@ const mapDispatchToProps = dispatch => {
         uploadProgress: payload => dispatch(uploadProgress(payload.progress)),
         uploadStart: payload => dispatch(uploadStart(payload.url)),
         uploadSuccess: payload => dispatch(uploadSuccess(payload.result)),
-        uploadValidationErrors: payload => dispatch(uploadValidationErrors(payload.errors))
+        uploadValidationErrors: payload => dispatch(uploadValidationErrors(payload.errors)),
+        loadVideosSuccess: payload => dispatch(loadVideosSuccess(payload.items))
     };
 };
 

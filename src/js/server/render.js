@@ -6,62 +6,43 @@ import serialize from 'serialize-javascript';
 import get from 'lodash/get';
 import { readFile } from './fileOperations';
 import routes from '../shared/routes';
-import AppStore from '../stores/app';
+import configureStore from '../stores/app';
 import config from '../config/main';
 import App from '../shared/app';
 
 function renderFullPage(html, data, state) {
-    // return new Promise((resolve, reject) => {
-    //
-    //     readFile(`${process.cwd()}/src/index.html`, 'utf8')
-    //         .then(page => {
-    //
-    //             const parsedPage = page
-    //                 .replace('{{pageTitle}}', get(config, 'app.title', 'Video Uploader'))
-    //                 .replace('{{html}}', html)
-    //                 .replace('{{data}}', serialize(data))
-    //                 .replace('{{state}}', serialize(state));
-    //
-    //            // console.log(parsedPage);
-    //
-    //             resolve(parsedPage);
-    //
-    //         })
-    //         .catch(reject);
-    // });
-    return `
-    <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no">
-    <title>Video Uploader</title>
-    <link rel="stylesheet" media="screen" type="text/css" href="/bundle.css">
-</head>
-<body>
-    <div id="app">${html}</div>
-    <script charset="utf-8" src="/bundle.js"></script>
-    <script>window.__INITIAL_DATA__ = ${serialize(data)};</script>
-    <script>window.__PRELOADED_STATE__ = ${serialize(state)};</script>
-</body>
-</html>
-    `;
+    return new Promise((resolve, reject) => {
+
+        readFile(`${process.cwd()}/src/index.html`, 'utf8')
+            .then(page => {
+                const parsedPage = page
+                    .replace('{{pageTitle}}', get(config, 'app.title', 'Video Uploader'))
+                    .replace('{{html}}', html)
+                    .replace('{{data}}', serialize(data))
+                    .replace('{{state}}', serialize(state));
+
+                resolve(parsedPage);
+            })
+            .catch(reject);
+    });
 }
 
 export default async function handleRender(req, res, next) {
 
-    const activeRoute = routes.find(route => matchPath(req.url, route)) || {};
-    const promise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(req) : Promise.resolve(null);
-
     try {
-        const response = await promise || {};
-        const { data = {} } = response;
+
+        const activeRoute = routes.find(route => matchPath(req.url, route)) || {};
+        //const fetchPromise = activeRoute.fetchInitialData ? activeRoute.fetchInitialData(req) : Promise.resolve(null);
+        const data = req.app.locals.data.videos;
+        //const response = await fetchPromise || {};
+        //const { data = {} } = response;
         //const data = { videos };
 
-        console.log('handleRender', data.items);
+        //console.log('handleRender', data.items);
 
+        const store = configureStore();
         const markup = renderToString(
-            <Provider store={AppStore}>
+            <Provider store={store}>
                 <StaticRouter location={req.url} context={{ data, config }}>
                     <App data={data}/>
                 </StaticRouter>
@@ -69,12 +50,7 @@ export default async function handleRender(req, res, next) {
         );
 
 
-        const s = AppStore.getState();
-        console.log('handleRender::beforeSend state', s);
-
-
-        //res.send(await renderFullPage(markup, data, AppStore.getState()));
-        res.send(renderFullPage(markup, data, AppStore.getState()));
+        res.send(await renderFullPage(markup, data, store.getState()));
 
     } catch (err) {
         next(err);

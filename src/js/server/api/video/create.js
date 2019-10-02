@@ -69,7 +69,8 @@ export default async function handleVideoCreate(req, res, next) {
 
         const result = await Promise.all(promises);
         console.log(`Received ${len} files`, files, result);
-        res.send({ errors: [], files });
+        //res.send({ errors: [], files });
+        next();
 
     } catch (err) {
         next(err);
