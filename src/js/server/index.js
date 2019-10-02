@@ -14,6 +14,7 @@ import handleRender from './render';
 import injectCsrf from './middleware/injectCsrf';
 import logErrors from './middleware/logErrors';
 import trapErrors from './middleware/trapErrors';
+import fakeFavIcon from './middleware/fakeFavIcon';
 
 import serialize from "serialize-javascript";
 import routes from "../shared/routes";
@@ -77,6 +78,7 @@ function renderFullPage(html, data, state) {
 
 server.use(cors());
 server.use(cookieParser());
+server.use(fakeFavIcon);
 server.use(express.static('dist', {
     maxAge: production ? '1y' : 0,
     index: false
