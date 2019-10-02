@@ -39,7 +39,7 @@
         "lint:js": "eslint --fix --ext .js ./src/js/**/*.js",
         "lint:scss": "sass-lint-auto-fix --config .sass-lint.yml ./src/**/*.scss",
         "lint": "npm run lint:js && npm run lint:scss",
-        "test": "jest ./tests/unit/components -u",
+        "test": "jest ./tests/unit/components/app.spec.js -u",
         "test:functional": "npx cypress open"
     },
     "dependencies": {
