@@ -34,8 +34,8 @@ class Uploader extends Component {
         progress: false,
     };
 
-    constructor(props, context) {
-        super(props, context);
+    constructor(props) {
+        super(props);
 
         this.state = { ...Uploader.DEFAULT_STATE };
     }
@@ -147,17 +147,15 @@ class Uploader extends Component {
                 <ul className="files">
                     {Array.from(selectedFiles).map((item, index) => {
                         const key = `file-${index}`;
-
+                        /* eslint-disable */
                         return (
                             <li key={key} className="file">
-                                <span className="file-index">
-                                    {index + 1}
-.
-                                </span>
+                                <span className="file-index">{index + 1}.</span>
                                 <span className="file-name">{item.name}</span>
                                 <span className="file-size">{formatFileSize(item.size)}</span>
                             </li>
                         );
+                        /* eslint-enable */
                     })}
                 </ul>
             );

@@ -1,7 +1,7 @@
 import HomePage from '../components/pages/homePage';
 import UploadPage from '../components/pages/uploadPage';
 import VideoPage from '../components/pages/videoPage';
-import { fetchVideos } from './api';
+// import { fetchVideos } from './api';
 
 const routes = [
     {
@@ -18,7 +18,6 @@ const routes = [
     {
         path: '/video/:id',
         component: VideoPage,
-        //fetchInitialData: (path = '') => fetchVideos(path.split('/').pop())
         //fetchInitialData: (path) => fetchVideos()
     }
 ];

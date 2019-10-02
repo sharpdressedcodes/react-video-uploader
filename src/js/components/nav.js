@@ -9,10 +9,6 @@ class Nav extends Component {
         links: PropTypes.object.isRequired,
     };
 
-    // static contextTypes = {
-    //     router: React.PropTypes.object.isRequired,
-    // };
-
     shouldComponentUpdate(nextProps, nextState) {
         const linksChanged = nextProps.links !== this.props.links;
 

@@ -22,8 +22,8 @@ class Video extends Component {
         controls: false,
     };
 
-    constructor(props, context) {
-        super(props, context);
+    constructor(props) {
+        super(props);
 
         this.container = React.createRef();
         this.video = React.createRef();

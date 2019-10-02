@@ -13,7 +13,6 @@ export default function reducer(state = initialState, action) {
     switch (action.type) {
         case UploaderActionTypes.UPLOAD_START:
             return {
-                //...state,
                 ...initialState,
                 uploadUrl: action.payload
             };
@@ -28,14 +27,12 @@ export default function reducer(state = initialState, action) {
 
         case UploaderActionTypes.UPLOAD_ERROR:
             return {
-                //...state,
                 ...initialState,
                 uploadError: action.payload
             };
 
         case UploaderActionTypes.UPLOAD_VALIDATION_ERRORS:
             return {
-                //...state,
                 ...initialState,
                 uploadValidationErrors: action.payload
             };
