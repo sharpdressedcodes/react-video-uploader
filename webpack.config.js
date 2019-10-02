@@ -1,26 +1,24 @@
 const path = require('path');
 const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
 const autoprefixer = require('autoprefixer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const production = process.env.NODE_ENV === 'production';
-//const isDebug = process.env.APP_DEBUG === 'true';
 
-//if (isDebug) {
 process.traceDeprecation = true;
-//}
 
-const config = {
+const defaultConfig = {
     bail: true,
     cache: false,
     devtool: production ? false : 'eval-source-map',
-    context: __dirname + '/',
-    entry: ['@babel/polyfill', './src/js/main.js', './src/scss/main.scss'],
+    context: `${__dirname}/`,
+    entry: ['@babel/polyfill'],
     output: {
+        path: path.join(__dirname, 'dist/'),
         publicPath: '/dist/',
-        path: __dirname + '/dist/',
-        filename: 'bundle.js'
+        filename: 'bundle.js',
     },
     resolve: {
         extensions: ['.js', '.jsx'],
@@ -94,27 +92,64 @@ const config = {
     plugins: [
         new MiniCssExtractPlugin({
             filename: `bundle.css`
-        })
+        }),
     ]
 };
 
 if (production) {
-    config.plugins.push(
-        new UglifyJsPlugin({
-            sourceMap: false,
-            parallel: true,
-            uglifyOptions: {
-                beautify: false,
-                mangle: false,
-                compress: false
-            }
-        })
-    );
-    config.plugins.push(
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('production')
-        })
-    );
+    const uglifyPlugin = new UglifyJsPlugin({
+        sourceMap: false,
+        parallel: true,
+        uglifyOptions: {
+            beautify: false,
+            mangle: false,
+            compress: false
+        }
+    });
+
+    const definePlugin = new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('production')
+    });
+
+    defaultConfig.plugins.push(uglifyPlugin);
+    defaultConfig.plugins.push(definePlugin);
 }
 
-module.exports = config;
+const browserConfig = {
+    ...defaultConfig,
+    entry: [...defaultConfig.entry, './src/js/browser/index.js', './src/scss/main.scss'],
+    output: {
+        ...defaultConfig.output,
+        filename: 'bundle.js',
+    },
+    plugins: [
+        ...defaultConfig.plugins,
+        new webpack.DefinePlugin({
+            __isBrowser__: "true"
+        })
+    ]
+};
+
+const serverConfig = {
+    ...defaultConfig,
+    entry: [...defaultConfig.entry, './src/js/server/index.js'],
+    target: 'node',
+    externals: [nodeExternals({
+        whitelist: ['react-toastify/dist/ReactToastify.css']
+    })],
+    output: {
+        ...defaultConfig.output,
+        filename: 'server.js',
+    },
+    plugins: [
+        ...defaultConfig.plugins,
+        new webpack.DefinePlugin({
+            __isBrowser__: "false"
+        })
+    ]
+};
+
+module.exports = [
+    serverConfig,
+    browserConfig
+];

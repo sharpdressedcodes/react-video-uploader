@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
-import { connectToStores } from 'fluxible-addons-react';
+import { connect } from 'react-redux';
 import get from 'lodash/get';
 import { toast } from 'react-toastify';
-import { formatFileSize } from '../../helpers/format';
+import { formatFileSize } from '../../shared/format';
 import InfoTable from '../infoTable';
 import Uploader from '../uploader';
+import config from '../../config/main';
 
 class UploadPage extends Component {
     static displayName= 'UploadPage';
@@ -14,18 +14,13 @@ class UploadPage extends Component {
     static propTypes = {
         uploadValidationErrors: PropTypes.arrayOf(PropTypes.string),
         uploadError: PropTypes.string,
-        uploadResult: PropTypes.object
+        uploadResult: PropTypes.object,
     };
 
     static defaultProps = {
         uploadValidationErrors: [],
         uploadError: null,
-        uploadResult: null
-    };
-
-    static contextTypes = {
-        config: PropTypes.object,
-        getStore: PropTypes.func
+        uploadResult: null,
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -55,7 +50,6 @@ class UploadPage extends Component {
     }
 
     generateInfo() {
-        const { config } = this.context;
         const maxFiles = get(config, 'app.videoUpload.maxFiles', 0);
         const maxFileSize = get(config, 'app.videoUpload.maxFileSize', 0);
         const maxTotalFileSize = get(config, 'app.videoUpload.maxTotalFileSize', 0);
@@ -71,23 +65,7 @@ class UploadPage extends Component {
         ];
     }
 
-    getCsrfToken() {
-        const element = document.querySelector('meta[name="csrf-token"]');
-        let token = null;
-
-        if (element) {
-            token = element.getAttribute('content');
-            if (token) {
-                axios.defaults.headers.post['X-XSRF-TOKEN'] = token;
-            }
-        }
-
-        return token;
-    }
-
     render() {
-        const { config } = this.context;
-        const token = this.getCsrfToken();
 
         return (
             <div className="page-upload">
@@ -96,7 +74,6 @@ class UploadPage extends Component {
                     <InfoTable items={this.generateInfo()} />
                     <Uploader
                         url={config.app.endpoints.api.video.upload}
-                        csrf={token}
                         multiple
                         progress
                     />
@@ -106,18 +83,16 @@ class UploadPage extends Component {
     }
 }
 
-const ConnectedUploadPage = connectToStores(UploadPage, ['AppStore'], (context, props) => {
-    const appStore = context.getStore('AppStore');
-    const uploadValidationErrors = appStore.getUploadValidationErrors();
-    const uploadError = appStore.getUploadError();
-    const uploadResult = appStore.getUploadResult();
+const mapStateToProps = state => {
+    const { uploaderReducer: reducer } = state;
+    const { uploadValidationErrors, uploadError, uploadResult } = reducer;
     return {
         uploadValidationErrors,
         uploadError,
-        uploadResult
+        uploadResult,
     };
+};
 
-});
-
+const ConnectedUploadPage = connect(mapStateToProps)(UploadPage);
 export const DisconnectedUploadPage = UploadPage;
 export default ConnectedUploadPage;

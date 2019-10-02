@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { videoPlaybackError } from '../actions/video';
 // import PlayIcon from '@material-ui/icons/PlayCircleFilled';
 // import PauseIcon from '@material-ui/icons/PauseCircleFilled';
@@ -13,20 +14,18 @@ class Video extends Component {
         poster: PropTypes.string,
         autoPlay: PropTypes.bool,
         controls: PropTypes.bool,
+        actions: PropTypes.object
     };
 
     static defaultProps = {
         poster: '',
         autoPlay: false,
         controls: false,
+        actions: {}
     };
 
-    static contextTypes = {
-        executeAction: PropTypes.func,
-    };
-
-    constructor(props, context) {
-        super(props, context);
+    constructor(props) {
+        super(props);
 
         this.container = React.createRef();
         this.video = React.createRef();
@@ -43,7 +42,7 @@ class Video extends Component {
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const {
-            src, poster, autoPlay, controls,
+            src, poster, autoPlay, controls
         } = this.props;
         const { playing } = this.state;
         const srcChanged = src !== nextProps.src;
@@ -78,13 +77,14 @@ class Video extends Component {
     };
 
     onError = event => {
-        const { executeAction } = this.context;
+        const { actions, src } = this.props;
+        const message = event.target.error.message;
 
         if (this.state.playing) {
             this.setState({ playing: false });
-            executeAction(videoPlaybackError, { error: event.target.error.message });
+            actions.videoPlaybackError({ error: message });
         } else {
-            executeAction(videoPlaybackError, { error: `Error loading ${this.props.src}\n${event.target.error.message}` });
+            actions.videoPlaybackError({ error: `Error loading ${src}\n${message}` });
         }
     };
 
@@ -101,7 +101,7 @@ class Video extends Component {
             await this.video.current.play();
             this.setState({ playing: true });
         } catch (err) {
-            this.context.executeAction(videoPlaybackError, { error: err.message });
+            this.props.actions.videoPlaybackError({ error: err.message });
         }
     };
 
@@ -112,7 +112,7 @@ class Video extends Component {
 
     render() {
         const {
-            src, poster, autoPlay, controls,
+            src, poster, autoPlay, controls
         } = this.props;
         // const { playing } = this.state;
         const videoAttributes = {
@@ -121,7 +121,7 @@ class Video extends Component {
             ref: this.video,
             preload: 'none',
             controls,
-            autoPlay,
+            autoPlay
         };
         const el = null;
 
@@ -145,4 +145,13 @@ class Video extends Component {
     }
 }
 
-export default Video;
+const mapDispatchToProps = dispatch => ({
+    actions: {
+        videoPlaybackError: payload => dispatch(videoPlaybackError(payload.error))
+    }
+});
+
+const ConnectedVideo = connect(null, mapDispatchToProps)(Video);
+const DisconnectedVideo = Video;
+
+export default ConnectedVideo;

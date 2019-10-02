@@ -11,8 +11,8 @@ const signatures = {
         length: 8,
         check(str) {
             return str.endsWith('ftyp');
-        },
-    },
+        }
+    }
 };
 
-module.exports = signatures;
+export default signatures;

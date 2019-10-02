@@ -1,4 +1,4 @@
-function roundTo(bytes, precision) {
+export function roundTo(bytes, precision) {
     return +(`${Math.round(`${bytes}e+${precision}`)}e-${precision}`);
 }
 /**
@@ -6,7 +6,7 @@ function roundTo(bytes, precision) {
  * @param bytes
  * @param precision
  */
-function formatFileSize(bytes, precision = 2) {
+export function formatFileSize(bytes, precision = 2) {
     const modes = ['B', 'KB', 'MB', 'GB', 'TB'];
 
     let b = Math.max(bytes, 0);
@@ -17,8 +17,3 @@ function formatFileSize(bytes, precision = 2) {
 
     return `${roundTo(b, precision)} ${modes[pow]}`;
 }
-
-module.exports = {
-    roundTo,
-    formatFileSize,
-};

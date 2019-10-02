@@ -1,46 +1,21 @@
-const get = require('lodash/get');
-const config = require('../config/main');
-const { formatFileSize } = require('./format');
-const signatures = require('./fileSignatures');
+import path from 'path';
+import get from 'lodash/get';
+import {
+    getFileName, getMimeType, validateMaxFiles, validateMimeType, validateFileSize
+} from '../shared/fileValidations';
+import {
+    open, read, close, fileExists, unlink
+} from './fileOperations';
+import { formatFileSize } from '../shared/format';
+import signatures from './fileSignatures';
+import config from '../config/main';
 
 const maxFiles = get(config, 'app.videoUpload.maxFiles', 0);
 const maxFileSize = get(config, 'app.videoUpload.maxFileSize', 0);
 const maxTotalFileSize = get(config, 'app.videoUpload.maxTotalFileSize', 0);
-const allowedFileTypes = get(config, 'app.videoUpload.allowedFileTypes', []);
 
-function getFileName(file) {
-    return file.name || file.originalname;
-}
-
-function getMimeType(file) {
-    return file.type || file.mimetype;
-}
-
-// Exports
-function validateMaxFiles(files) {
-    return maxFiles === 0 || files.length <= maxFiles;
-}
-
-function validateMimeType(file) {
-    return allowedFileTypes.length === 0 || allowedFileTypes.indexOf(getMimeType(file)) > -1;
-}
-
-function validateFileSize(file) {
-    return maxFileSize === 0 || file.size <= maxFileSize;
-}
-
-function validateFileSignature(file) {
+export function validateFileSignature(file) {
     return new Promise(async (resolve, reject) => {
-        /* eslint-disable */
-        const path = require('path');
-        // Hack for webpack to skip this require
-        const fileOperations = eval('require(\'./fileOperations\');');
-        /* eslint-enable */
-
-        const {
-            open, read, close, fileExists,
-        } = fileOperations;
-
         const ext = path.extname(file.path).replace(/^\./, '');
         const signature = signatures[ext];
         let fd = null;
@@ -103,17 +78,7 @@ function validateFileSignature(file) {
     });
 }
 
-/**
- * Server side validation.
- *
- * @param files The files to validate.
- * @returns Array|boolean True if valid, an array of errors otherwise.
- */
-async function validateFilesServer(files) {
-    /* eslint-disable */
-    // Hack for webpack to skip this require
-    const fileOperations = eval('require(\'./fileOperations\');');
-    /* eslint-enable */
+export async function validateFiles(files) {
     const errors = [];
     const totalSize = files.reduce((acc, curr) => acc.size + curr.size);
 
@@ -142,7 +107,7 @@ async function validateFilesServer(files) {
             }
 
             if (!valid) {
-                await fileOperations.unlink(file.path);
+                await unlink(file.path);
             }
 
             resolve({ errors: innerErrors });
@@ -165,7 +130,7 @@ async function validateFilesServer(files) {
 
             promises = files
                 .map(file => file.path)
-                .map(fileOperations.unlink);
+                .map(unlink);
 
             await Promise.all(promises);
         }
@@ -177,45 +142,3 @@ async function validateFilesServer(files) {
 
     return errors.length ? errors : true;
 }
-
-/**
- * Client side validation.
- *
- * @param files The files to validate.
- * @returns Array|boolean True if valid, an array of errors otherwise.
- */
-function validateFiles(files) {
-    const errors = [];
-    let totalSize = 0;
-
-    if (!validateMaxFiles(files)) {
-        errors.push(`Only ${maxFiles} files can be uploaded at a time`);
-    }
-
-    files.forEach(file => {
-        totalSize += file.size;
-
-        if (!validateMimeType(file)) {
-            errors.push(`${file.name} is in an unsupported format (${file.type})`);
-        }
-
-        if (!validateFileSize(file)) {
-            errors.push(`${file.name} is too large (limit ${formatFileSize(maxFileSize)}), please select a smaller file`);
-        }
-    });
-
-    if (maxTotalFileSize && totalSize > maxTotalFileSize) {
-        errors.push(`Error: Total file size exceeds limit of ${formatFileSize(maxTotalFileSize)}`);
-    }
-
-    return errors.length ? errors : true;
-}
-
-module.exports = {
-    validateMaxFiles,
-    validateMimeType,
-    validateFileSize,
-    validateFileSignature,
-    validateFiles,
-    validateFilesServer,
-};

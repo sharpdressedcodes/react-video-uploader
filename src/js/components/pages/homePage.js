@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
-import { connectToStores } from 'fluxible-addons-react';
+import { connect } from 'react-redux';
 import Teaser from '../teaser';
 import TeaserList from '../teaserList';
+import config from '../../config/main';
 
 class HomePage extends Component {
     static displayName= 'HomePage';
@@ -17,11 +18,6 @@ class HomePage extends Component {
     static defaultProps = {
         videos: null,
         videosDownloadError: null
-    };
-
-    static contextTypes = {
-        config: PropTypes.object,
-        getStore: PropTypes.func
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -40,7 +36,6 @@ class HomePage extends Component {
     }
 
     renderItems() {
-        const { config } = this.context;
         const { videos } = this.props;
 
         return !videos ? [] : videos.map((item, index) => {
@@ -80,15 +75,15 @@ class HomePage extends Component {
     }
 }
 
-const ConnectedHomePage = connectToStores(HomePage, ['AppStore'], (context, props) => {
-    const appStore = context.getStore('AppStore');
-    const videos = appStore.getVideos();
-    const videosDownloadError = appStore.getVideosDownloadError();
+const mapStateToProps = state => {
+    const { loadVideosReducer: reducer } = state;
+    const { videos, videosDownloadError } = reducer;
     return {
         videos,
         videosDownloadError
     };
-});
+};
 
+const ConnectedHomePage = connect(mapStateToProps)(HomePage);
 export const DisconnectedHomePage = HomePage;
 export default ConnectedHomePage;

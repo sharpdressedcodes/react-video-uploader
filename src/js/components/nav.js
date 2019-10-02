@@ -6,7 +6,7 @@ class Nav extends Component {
     static displayName = 'Nav';
 
     static propTypes = {
-        links: PropTypes.object.isRequired,
+        links: PropTypes.object.isRequired
     };
 
     shouldComponentUpdate(nextProps, nextState) {
