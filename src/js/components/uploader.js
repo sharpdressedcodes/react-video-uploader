@@ -222,6 +222,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const ConnectedUploader = connect(null, mapDispatchToProps)(Uploader);
+
 export const DisconnectedUploader = Uploader;
 
 export default ConnectedUploader;
