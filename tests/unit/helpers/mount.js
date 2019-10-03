@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { mount, shallow } from 'enzyme';
+import { mount as enzymeMount } from 'enzyme';
 import configureStore from '../../../src/js/stores/app';
 
-function MyProvider(props) {
+function CustomProvider(props) {
     const { children, customStore } = props;
     const store = customStore || configureStore();
     return (
@@ -17,41 +17,83 @@ function MyProvider(props) {
     );
 }
 
-MyProvider.propTypes = {
+CustomProvider.propTypes = {
     children: PropTypes.node,
     customStore: PropTypes.shape({}),
 };
-MyProvider.defaultProps = {
+CustomProvider.defaultProps = {
     children: null,
     customStore: null,
 };
 
-export default function mountWithProviderAndRouter(component, options = {}, preloadedState = null) {
+/**
+ * Usage:
 
-    // const wrapper = shallow(component, {
-    //     ...options,
-    //     wrappingComponent: MyProvider,
-    // });
-    //
-    // if (preloadedState) {
-    //     const provider = wrapper.getWrappingComponent();
-    //     const store = configureStore(preloadedState);
-    //     provider.setProps({ customStore: store });
-    // }
-    //
-    // return wrapper;
+import { mountCustom } from '../../helpers/mount';
+const { wrapper, provider, store } = mountCustom(<HomePage/>);
+const component = wrapper.find(DisconnectedHomePage);
 
-    const store = configureStore(preloadedState);
+You can also access the store like this:
+const provider = wrapper.getWrappingComponent();
+const store = provider.props().customStore;
 
-    const wrapper = mount(component);
+...
 
-    // const wrapper = mount(
-    //     <Provider store={store}>
-    //         <BrowserRouter>
-    //             {component}
-    //         </BrowserRouter>
-    //     </Provider>
-    // );
+store.dispatch({ type: ActionTypes.LOAD_VIDEOS_SUCCESS, payload: videosMock });
+wrapper.update();
 
-    return wrapper;
+ *
+ * @param component
+ * @param state
+ * @returns {{provider: *, wrapper: *, store: *}}
+ */
+export function mountCustom(component, state = null) {
+
+    const wrapper = enzymeMount(component, { wrappingComponent: CustomProvider });
+    const provider = wrapper.getWrappingComponent();
+    const store = configureStore(state);
+
+    provider.setProps({ customStore: store });
+
+    return {
+        wrapper,
+        provider,
+        store
+    };
+}
+
+/**
+ * Usage:
+
+import mount from '../../helpers/mount';
+const { wrapper, store } = mount(<HomePage/>);
+const component = wrapper.find(DisconnectedHomePage);
+
+You can also access the store like this:
+const store = wrapper.props().store;
+
+...
+
+store.dispatch({ type: ActionTypes.LOAD_VIDEOS_SUCCESS, payload: videosMock });
+wrapper.update();
+
+ * @param component
+ * @param state
+ * @returns {{wrapper: *, store: *}}
+ */
+export default function mount(component, state = null) {
+
+    const store = configureStore(state);
+    const wrapper = enzymeMount(
+        <Provider store={store}>
+            <BrowserRouter>
+                {component}
+            </BrowserRouter>
+        </Provider>
+    );
+
+    return {
+        wrapper,
+        store
+    };
 }

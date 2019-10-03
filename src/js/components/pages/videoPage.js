@@ -64,7 +64,7 @@ const mapStateToProps = () => {
     return (state, ownProps) => {
         return {
             videoPlaybackError: state.videoReducer.videoPlaybackError,
-            video: !state.loadVideosReducer.videos ? null : state.loadVideosReducer.videos[ownProps.match.params.id]
+            video: !state.loadVideosReducer.videos ? {} : state.loadVideosReducer.videos[ownProps.match.params.id]
         };
     };
 };
