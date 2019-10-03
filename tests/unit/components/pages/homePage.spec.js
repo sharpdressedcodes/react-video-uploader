@@ -1,39 +1,36 @@
 import React from 'react';
-// import { configure } from 'enzyme';
-// import Adapter from 'enzyme-adapter-react-16';
-// import { DisconnectedHomePage as HomePage } from '../../../../src/js/components/pages/homePage';
-// import videosMock from '../../__mocks__/videosMock';
-// import { shallowWithContext } from '../../helpers/context';
-// import '../../helpers/unhandledRejection';
-//import '../../helpers/bootstrap';
 import mount from '../../helpers/mount';
-//import HomePage from '../../../../src/js/components/pages/homePage';
-import {DisconnectedHomePage as HomePage} from '../../../../src/js/components/pages/homePage';
 import videosMock from '../../__mocks__/videosMock';
+import ActionTypes from '../../../../src/js/constants/loadVideos';
+import HomePage, {DisconnectedHomePage} from '../../../../src/js/components/pages/homePage';
 
 describe(`Making sure the HomePage renders correctly`, () => {
 
     it(`Renders the HomePage component`, () => {
 
-        let component = mount(<HomePage/>);
+        const { wrapper, store } = mount(<HomePage/>);
+        const component = wrapper.find(DisconnectedHomePage);
 
-        //expect(component.instance().props.videos).toEqual(null);
-        expect(component.find('h2').length).toEqual(0);
-        expect(component.find('.videos').length).toEqual(0);
+        expect(component.instance().props.videos).toEqual(null);
+        expect(wrapper.find('h2').length).toEqual(0);
+        expect(wrapper.find('.teaserlist').length).toEqual(0);
+        expect(component.text()).toContain('Acquiring video list');
 
-        component.setProps({videos: videosMock});
+        store.dispatch({ type: ActionTypes.LOAD_VIDEOS_SUCCESS, payload: videosMock });
+        wrapper.update();
 
-        //expect(component.instance().props.videos.length).toEqual(1);
-        expect(component.find('h2').length).toEqual(1);
-        expect(component.find('.videos').length).toEqual(1);
+        expect(component.instance().props.videos.length).toEqual(1);
+        expect(wrapper.find('h2').length).toEqual(1);
+        expect(wrapper.find('.teaserlist').length).toEqual(1);
+        expect(wrapper.find('.teaserlist li').length).toEqual(1);
 
-        component.setProps({videos: []});
+        store.dispatch({ type: ActionTypes.LOAD_VIDEOS_SUCCESS, payload: [] });
+        wrapper.update();
 
-        //expect(component.instance().props.videos.length).toEqual(0);
-        expect(component.find('h2').length).toEqual(0);
-        expect(component.find('.videos').length).toEqual(0);
+        expect(component.instance().props.videos.length).toEqual(0);
+        expect(wrapper.find('h2').length).toEqual(0);
+        expect(wrapper.find('.teaserlist').length).toEqual(0);
         expect(component.text()).toContain('No videos found');
-
 
     });
 });

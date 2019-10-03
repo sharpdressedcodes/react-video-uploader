@@ -1,13 +1,8 @@
 import React from 'react';
-import { configure } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-import config from '../../../src/js/config/main';
-import Uploader from '../../../src/js/components/uploader';
+import mount from '../helpers/mount';
+import config from '../../../src/js/config/main'; // config has been mocked
 import filesMock from '../__mocks__/filesMock';
-import { mountWithContext } from '../helpers/context';
-import '../helpers/unhandledRejection';
-
-configure({ adapter: new Adapter() });
+import Uploader, { DisconnectedUploader } from '../../../src/js/components/uploader';
 
 // Used to capture the callback for the progress event
 let componentCallback = null;
@@ -45,20 +40,22 @@ function createXHRMock(data = mockData) {
 
 describe(`Ensure the Uploader works correctly`, () => {
 
+    let wrapper = null;
     let component = null;
+    let store = null;
     let input = null;
     let mockXHR = null;
 
     beforeEach(() => {
 
-        component = mountWithContext(
+        ({ wrapper, store } = mount(
             <Uploader
                 url={config.app.endpoints.api.video.upload}
                 multiple
                 progress
             />
-        );
-
+        ));
+        component = wrapper.find(DisconnectedUploader);
         input = component.find('input[type="file"]');
 
     });
@@ -199,12 +196,12 @@ describe(`Ensure the Uploader works correctly`, () => {
         });
 
         expect(component.text()).not.toContain('No files selected');
-        expect(component.find('.files').length).toEqual(1);
+        expect(wrapper.find('.files').length).toEqual(1);
         expect(component.instance().state.selectedFiles).toEqual(filesMock.pass);
-        expect(component.find('.file-index').length).toEqual(1);
+        expect(wrapper.find('.file-index').length).toEqual(1);
 
-        const name = component.find('.file-name');
-        const size = component.find('.file-size');
+        const name = wrapper.find('.file-name');
+        const size = wrapper.find('.file-size');
 
         expect(name.length).toEqual(1);
         expect(size.length).toEqual(1);
