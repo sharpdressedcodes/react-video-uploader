@@ -1,7 +1,7 @@
 import React from 'react';
 import mount from '../helpers/mount';
-import config from '../../../src/js/config/main'; // config has been mocked
-import filesMock from '../__mocks__/filesMock';
+import config from 'react-global-configuration';
+import filesMock from '../../fixtures/filesMock';
 import Uploader, { DisconnectedUploader } from '../../../src/js/components/uploader';
 
 // Used to capture the callback for the progress event
@@ -50,7 +50,7 @@ describe(`Ensure the Uploader works correctly`, () => {
 
         ({ wrapper, store } = mount(
             <Uploader
-                url={config.app.endpoints.api.video.upload}
+                url={config.get('app.endpoints.api.video.upload')}
                 multiple
                 progress
             />
@@ -124,25 +124,6 @@ describe(`Ensure the Uploader works correctly`, () => {
         expect(component.instance().state).toEqual(Uploader.DEFAULT_STATE);
 
     });
-
-    // it(`Should fail validation because the file has the wrong file header`, () => {
-    //
-    //     expect(input.length).toEqual(1);
-    //     expect(component.text()).toContain('No files selected');
-    //     expect(component.find('.files').length).toEqual(0);
-    //     expect(component.instance().state).toEqual(Uploader.DEFAULT_STATE);
-    //
-    //     input.simulate('change', {
-    //         target: {
-    //             files: filesMock.fileBadHeader
-    //         }
-    //     });
-    //
-    //     expect(component.text()).toContain('No files selected');
-    //     expect(component.find('.files').length).toEqual(0);
-    //     expect(component.instance().state).toEqual(Uploader.DEFAULT_STATE);
-    //
-    // });
 
     it(`Should fail validation because the total size of files is too large`, () => {
 

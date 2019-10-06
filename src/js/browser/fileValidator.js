@@ -1,13 +1,11 @@
-import get from 'lodash/get';
+import config from 'react-global-configuration';
 import { validateMaxFiles, validateMimeType, validateFileSize } from '../shared/fileValidations';
 import { formatFileSize } from '../shared/format';
-import config from '../config/main';
-
-const maxFiles = get(config, 'app.videoUpload.maxFiles', 0);
-const maxFileSize = get(config, 'app.videoUpload.maxFileSize', 0);
-const maxTotalFileSize = get(config, 'app.videoUpload.maxTotalFileSize', 0);
 
 export function validateFiles(files) {
+    const maxFiles = config.get('app.videoUpload.maxFiles', 0);
+    const maxFileSize = config.get('app.videoUpload.maxFileSize', 0);
+    const maxTotalFileSize = config.get('app.videoUpload.maxTotalFileSize', 0);
     const errors = [];
     let totalSize = 0;
 

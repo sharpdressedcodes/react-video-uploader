@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import config from 'react-global-configuration';
 import Teaser from '../teaser';
 import TeaserList from '../teaserList';
-import config from '../../config/main';
 
 class HomePage extends Component {
     static displayName= 'HomePage';
@@ -43,7 +43,7 @@ class HomePage extends Component {
             return (
                 <li key={key}>
                     <Link to={`/video/${index}`}>
-                        <Teaser imageSrc={`${config.app.videoUpload.publicPath}/${item.thumb}`} imageAlt={`${item.video} thumbnail`} />
+                        <Teaser imageSrc={`${config.get('app.videoUpload.publicPath')}/${item.thumb}`} imageAlt={`${item.video} thumbnail`} />
                     </Link>
                 </li>
             );

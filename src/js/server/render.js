@@ -2,12 +2,11 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { matchPath, StaticRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import config from 'react-global-configuration';
 import serialize from 'serialize-javascript';
-import get from 'lodash/get';
 import { readFile } from './fileOperations';
 import routes from '../shared/routes';
 import configureStore from '../stores/app';
-import config from '../config/main';
 import App from '../shared/app';
 
 function renderFullPage(html, data, state) {
@@ -15,9 +14,10 @@ function renderFullPage(html, data, state) {
         readFile(`${process.cwd()}/src/index.html`, 'utf8')
             .then(page => {
                 const parsedPage = page
-                    .replace('{{pageTitle}}', get(config, 'app.title', 'Video Uploader'))
+                    .replace('{{pageTitle}}', config.get('app.title', 'Video Uploader'))
                     .replace('{{html}}', html)
                     .replace('{{data}}', serialize(data))
+                    .replace('{{config}}', config.serialize())
                     .replace('{{state}}', serialize(state));
 
                 resolve(parsedPage);
@@ -35,7 +35,7 @@ export default async function handleRender(req, res, next) {
         const store = configureStore();
         const markup = renderToString(
             <Provider store={store}>
-                <StaticRouter location={req.url} context={{ data, config }}>
+                <StaticRouter location={req.url} context={{ data, config: {app: config.get('app')} }}>
                     <App data={data} />
                 </StaticRouter>
             </Provider>

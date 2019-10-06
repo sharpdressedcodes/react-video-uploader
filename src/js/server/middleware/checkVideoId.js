@@ -1,11 +1,8 @@
-import get from 'lodash/get';
+import config from 'react-global-configuration';
 import {readDir} from '../fileOperations';
-import config from '../../config/main';
-
-const uploadPath = get(config, 'app.videoUpload.path', 'dist/uploads');
 
 export default async function checkVideoId(req, res, next) {
-
+    const uploadPath = config.get('app.videoUpload.path', 'dist/uploads');
     const id = req.params.id;
 
     if (id) {

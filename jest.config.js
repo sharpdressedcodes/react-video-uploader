@@ -8,8 +8,7 @@ module.exports = {
     "coverageDirectory": "./tests/unit/coverage",
     "testURL": "http://localhost:3001/",
     "moduleNameMapper": {
-        "\\.(css|scss)$": "<rootDir>/tests/unit/__mocks__/styleMock.js",
-        "/config/main$": "<rootDir>/tests/unit/__mocks__/configMock.js"
+        "\\.(css|scss)$": "<rootDir>/tests/unit/__mocks__/styleMock.js"
     },
     "setupFilesAfterEnv": ["<rootDir>tests/unit/helpers/bootstrap.js"]
 };

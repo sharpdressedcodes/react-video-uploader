@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import get from 'lodash/get';
 import { toast } from 'react-toastify';
+import config from 'react-global-configuration';
 import { formatFileSize } from '../../shared/format';
 import InfoTable from '../infoTable';
 import Uploader from '../uploader';
-import config from '../../config/main';
 
 class UploadPage extends Component {
     static displayName= 'UploadPage';
@@ -50,10 +49,10 @@ class UploadPage extends Component {
     }
 
     generateInfo() {
-        const maxFiles = get(config, 'app.videoUpload.maxFiles', 0);
-        const maxFileSize = get(config, 'app.videoUpload.maxFileSize', 0);
-        const maxTotalFileSize = get(config, 'app.videoUpload.maxTotalFileSize', 0);
-        const allowedFileTypes = get(config, 'app.videoUpload.allowedFileTypes', []);
+        const maxFiles = config.get('app.videoUpload.maxFiles', 0);
+        const maxFileSize = config.get('app.videoUpload.maxFileSize', 0);
+        const maxTotalFileSize = config.get('app.videoUpload.maxTotalFileSize', 0);
+        const allowedFileTypes = config.get('app.videoUpload.allowedFileTypes', []);
         const formattedMaxFileSize = formatFileSize(maxFileSize);
         const formattedMaxTotalFileSize = formatFileSize(maxTotalFileSize);
 
@@ -73,7 +72,7 @@ class UploadPage extends Component {
                 <section className="content">
                     <InfoTable items={this.generateInfo()} />
                     <Uploader
-                        url={config.app.endpoints.api.video.upload}
+                        url={config.get('app.endpoints.api.video.upload')}
                         multiple
                         progress
                     />

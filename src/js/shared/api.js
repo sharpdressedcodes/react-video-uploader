@@ -1,8 +1,7 @@
 import axios from 'axios';
 // import xhrAdapter from 'axios/lib/adapters/xhr';
-import config from '../config/main';
+import config from 'react-global-configuration';
 
 export function fetchVideos(id = null) {
-    // return axios.get(`http://localhost:3001${config.app.endpoints.api.video.get}${id ? `/${id}` : ''}`);//, { adapter: xhrAdapter });
-    return axios.get(`${config.app.endpoints.api.video.get}${id ? `/${id}` : ''}`);// , { adapter: xhrAdapter });
+    return axios.get(`${config.get('app.endpoints.api.video.get')}${id ? `/${id}` : ''}`);// , { adapter: xhrAdapter });
 }

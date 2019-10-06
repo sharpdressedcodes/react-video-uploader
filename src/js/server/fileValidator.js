@@ -1,5 +1,5 @@
 import path from 'path';
-import get from 'lodash/get';
+import config from 'react-global-configuration';
 import {
     getFileName, getMimeType, validateMaxFiles, validateMimeType, validateFileSize
 } from '../shared/fileValidations';
@@ -8,11 +8,6 @@ import {
 } from './fileOperations';
 import { formatFileSize } from '../shared/format';
 import signatures from './fileSignatures';
-import config from '../config/main';
-
-const maxFiles = get(config, 'app.videoUpload.maxFiles', 0);
-const maxFileSize = get(config, 'app.videoUpload.maxFileSize', 0);
-const maxTotalFileSize = get(config, 'app.videoUpload.maxTotalFileSize', 0);
 
 export function validateFileSignature(file) {
     return new Promise(async (resolve, reject) => {
@@ -79,6 +74,9 @@ export function validateFileSignature(file) {
 }
 
 export async function validateFiles(files) {
+    const maxFiles = config.get('app.videoUpload.maxFiles', 0);
+    const maxFileSize = config.get('app.videoUpload.maxFileSize', 0);
+    const maxTotalFileSize = config.get('app.videoUpload.maxTotalFileSize', 0);
     const errors = [];
     const totalSize = files.reduce((acc, curr) => acc.size + curr.size);
 

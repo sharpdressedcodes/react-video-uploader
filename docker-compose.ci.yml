@@ -1,0 +1,39 @@
+version: '3.4'
+
+networks:
+  custom:
+    driver: bridge
+
+services:
+  node:
+    #image: 'node:10.16.3-alpine'
+    build:
+      context: ./docker/node
+      dockerfile: Dockerfile
+    container_name: node
+    volumes:
+      - ./:/home/node/app
+    networks:
+      - custom
+    ports:
+      - '3001:3001'
+    restart: unless-stopped
+    tty: 'true'
+    working_dir: /home/node/app
+
+  cypress:
+    image: 'sharpdressedcodes/node:10.16.3-stretch-slim-cypress-3.4.1'
+    #build:
+    #  context: ./docker/cypress
+    #  dockerfile: Dockerfile
+    #  network: host
+    network_mode: 'host'
+    container_name: cypress
+    volumes:
+      - ./:/home/node/app
+    restart: unless-stopped
+    tty: 'true'
+    working_dir: /home/node/app
+    environment:
+      - DISPLAY=
+      - CYPRESS_BASE_URL=http://172.17.0.1:3001/

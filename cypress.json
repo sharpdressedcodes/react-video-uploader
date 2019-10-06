@@ -1,10 +1,11 @@
 {
-    "baseUrl": "http://127.0.0.1:3001/",
+    "baseUrl": "http://localhost:3001/",
     "testFiles": "**/*spec.js",
-    "fixturesFolder": "./tests/functional/cypress/fixtures",
-    "integrationFolder": "./tests/functional/cypress/integration",
-    "pluginsFile": "./tests/functional/cypress/plugins/index.js",
-    "screenshotsFolder": "./tests/functional/cypress/screenshots",
-    "videosFolder": "./tests/functional/cypress/videos",
-    "supportFile": "./tests/functional/cypress/support/index.js"
+    "fixturesFolder": "./tests/functional/fixtures",
+    "integrationFolder": "./tests/functional/integration",
+    "pluginsFile": "./tests/functional/plugins/index.js",
+    "screenshotsFolder": "./tests/functional/screenshots",
+    "videosFolder": "./tests/functional/videos",
+    "supportFile": "./tests/functional/support/index.js",
+    "video": false
 }

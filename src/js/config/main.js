@@ -35,4 +35,19 @@ const config = {
     }
 };
 
+export const testConfig = {
+    app: {
+        ...config.app,
+        videoUpload: {
+            ...config.app.videoUpload,
+            maxFileSize: 10,
+            maxTotalFileSize: 40,
+            maxFiles: 5,
+            allowedFileTypes: [
+                'video/mp4',
+            ],
+        }
+    }
+};
+
 export default config;

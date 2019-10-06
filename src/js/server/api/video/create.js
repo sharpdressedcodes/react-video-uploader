@@ -1,19 +1,17 @@
 import path from 'path';
-import get from 'lodash/get';
 import multer from 'multer';
+import config from 'react-global-configuration';
 import {validateFiles} from '../../fileValidator';
 import {formatFileSize} from '../../../shared/format';
 import {generatePoster, generateThumbnail, getVideoInfo} from '../../ffmpeg';
 import {writeFile} from '../../fileOperations';
-import config from '../../../config/main';
 
-const uploadPath = get(config, 'app.videoUpload.path', 'dist/uploads');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, uploadPath);
+        cb(null, config.get('app.videoUpload.path', 'dist/uploads'));
     },
     filename: (req, file, cb) => {
-        cb(null, get(config, 'app.videoUpload.filenameGenerator', str => str)(file.originalname));
+        cb(null, config.get('app.videoUpload.filenameGenerator', str => str)(file.originalname));
     },
 });
 const upload = multer({ storage }).array('file');
@@ -69,7 +67,6 @@ export default async function handleVideoCreate(req, res, next) {
 
         const result = await Promise.all(promises);
         console.log(`Received ${len} files`, files, result);
-        //res.send({ errors: [], files });
         next();
 
     } catch (err) {
