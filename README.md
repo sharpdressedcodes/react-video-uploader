@@ -52,7 +52,7 @@ npm run test:functional
 
 With docker:
 ```
-docker run --rm --tty --name cypress --volume $PWD/:/home/node/app --workdir /home/node/app --network host -e DISPLAY= -e CYPRESS_BASE_URL='http://172.17.0.1:3001/' sharpdressedcodes/node:10.16.3-stretch-slim-cypress-3.4.1 cypress run
+docker run --rm --tty --name cypress --volume $PWD/:/home/node/app --workdir /home/node/app --network host -e DISPLAY= -e CYPRESS_BASE_URL='http://172.17.0.1:3001/' sharpdressedcodes/node:10.16.3-stretch-slim-cypress-3.4.1 npm run test:functional
 ```
 
 ### TODO
