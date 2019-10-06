@@ -4,12 +4,13 @@ import csrf from 'csurf';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import get from 'lodash/get';
-import config from '../config/main';
+import mainConfig  from '../config/main';
+import config from 'react-global-configuration';
 import handleGetVideos from './api/video/read';
 import handleVideoCreate from './api/video/create';
 import handleRender from './render';
 import injectCsrf from './middleware/injectCsrf';
+import loadConfig from './middleware/loadConfig';
 import logErrors from './middleware/logErrors';
 import trapErrors from './middleware/trapErrors';
 import fakeFavIcon from './middleware/fakeFavIcon';
@@ -23,14 +24,18 @@ const parseForm = bodyParser.urlencoded({ extended: true });
 
 server.use(cors());
 server.use(cookieParser());
+server.use(loadConfig);
 server.use(fakeFavIcon);
 server.use(express.static('dist', {
     maxAge: production ? '1y' : 0,
     index: false
 }));
 
+// Set default config. If testing, this will be overridden by middleware
+config.set(mainConfig, { freeze: false });
+
 server.get(
-    `${config.app.endpoints.api.video.get}/:id?`,
+    `${config.get('app.endpoints.api.video.get')}/:id?`,
     checkVideoId,
     handleGetVideos,
     logErrors,
@@ -38,7 +43,7 @@ server.get(
 );
 
 server.post(
-    config.app.endpoints.api.video.upload,
+    config.get('app.endpoints.api.video.upload'),
     parseForm,
     csrfMiddleware,
     handleVideoCreate,
@@ -57,7 +62,7 @@ server.get(
     trapErrors,
 );
 
-const listener = server.listen(process.env.PORT || get(config, 'app.port', 3001), err => {
+const listener = server.listen(process.env.PORT || config.get('app.port', 3001), err => {
     if (err) {
         throw err;
     }

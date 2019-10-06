@@ -1,11 +1,9 @@
-import get from 'lodash/get';
 import { readDir, readFile } from '../../fileOperations';
-import config from '../../../config/main';
-
-const uploadPath = get(config, 'app.videoUpload.path', 'dist/uploads');
+import config from 'react-global-configuration';
 
 export function loadVideos(id = null) {
     return new Promise((resolve, reject) => {
+        const uploadPath = config.get('app.videoUpload.path', 'dist/uploads');
 
         readDir(uploadPath)
             .then(files => {

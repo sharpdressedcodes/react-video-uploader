@@ -1,8 +1,5 @@
-import get from 'lodash/get';
 import ffmpeg from 'fluent-ffmpeg';
-import config from '../config/main';
-
-const uploadPath = get(config, 'app.videoUpload.path', 'dist/uploads');
+import config from 'react-global-configuration';
 
 export function getVideoInfo(fileName) {
     return new Promise((resolve, reject) => {
@@ -18,6 +15,7 @@ export function getVideoInfo(fileName) {
 
 export function generatePoster(fileName, options) {
     return new Promise((resolve, reject) => {
+        const uploadPath = config.get('app.videoUpload.path', 'dist/uploads');
         let result = null;
 
         function onComplete() {
@@ -50,6 +48,7 @@ export function generatePoster(fileName, options) {
 
 export function generateThumbnail(fileName, options) {
     return new Promise((resolve, reject) => {
+        const uploadPath = config.get('app.videoUpload.path', 'dist/uploads');
         let result = null;
 
         function onComplete() {

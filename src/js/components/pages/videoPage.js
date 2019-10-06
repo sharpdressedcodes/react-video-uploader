@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { connect } from 'react-redux';
+import config from 'react-global-configuration';
 import Video from '../video';
-import config from '../../config/main';
 
 class VideoPage extends Component {
     static displayName = 'VideoPage';
@@ -38,7 +38,7 @@ class VideoPage extends Component {
 
     render() {
         const { video } = this.props;
-        const { publicPath } = config.app.videoUpload;
+        const publicPath = config.get('app.videoUpload.publicPath', 'dist/uploads');
         let el = null;
         let title = null;
 
