@@ -35,7 +35,7 @@ export default async function handleRender(req, res, next) {
         const store = configureStore();
         const markup = renderToString(
             <Provider store={store}>
-                <StaticRouter location={req.url} context={{ data, config: {app: config.get('app')} }}>
+                <StaticRouter location={req.url} context={{ data, config: { app: config.get('app') } }}>
                     <App data={data} />
                 </StaticRouter>
             </Provider>

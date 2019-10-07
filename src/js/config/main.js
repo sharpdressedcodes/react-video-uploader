@@ -5,6 +5,7 @@ const config = {
     app: {
         port: 3001,
         videoUpload: {
+            thumbnailDimensions: '320x180', // 16:9
             maxFileSize: 1024 * 1024 * 150,
             maxTotalFileSize: 1024 * 1024 * 1024,
             maxFiles: 10,
@@ -44,8 +45,8 @@ export const testConfig = {
             maxTotalFileSize: 40,
             maxFiles: 5,
             allowedFileTypes: [
-                'video/mp4',
-            ],
+                'video/mp4'
+            ]
         }
     }
 };

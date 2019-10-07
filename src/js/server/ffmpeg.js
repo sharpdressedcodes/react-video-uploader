@@ -1,5 +1,5 @@
+import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
-import config from 'react-global-configuration';
 
 export function getVideoInfo(fileName) {
     return new Promise((resolve, reject) => {
@@ -13,9 +13,8 @@ export function getVideoInfo(fileName) {
     });
 }
 
-export function generatePoster(fileName, options) {
+export function generatePoster(fileName, options = {}) {
     return new Promise((resolve, reject) => {
-        const uploadPath = config.get('app.videoUpload.path', 'dist/uploads');
         let result = null;
 
         function onComplete() {
@@ -27,7 +26,7 @@ export function generatePoster(fileName, options) {
         }
 
         const defaults = {
-            folder: uploadPath,
+            folder: path.dirname(fileName),
             filename: '%b-%r-poster.png',
             count: 1,
             timemark: '1%',
@@ -35,20 +34,24 @@ export function generatePoster(fileName, options) {
             // size: ''
         };
 
+        const merged = {
+            ...defaults,
+            ...options
+        };
+
         ffmpeg({
             source: fileName,
-            logger: console
+            logger: merged.logger
         })
             .on('filenames', onFilenames)
             .on('end', onComplete)
             .on('error', reject)
-            .screenshot({ ...defaults, ...options });
+            .screenshot(merged);
     });
 }
 
-export function generateThumbnail(fileName, options) {
+export function generateThumbnail(fileName, options = {}) {
     return new Promise((resolve, reject) => {
-        const uploadPath = config.get('app.videoUpload.path', 'dist/uploads');
         let result = null;
 
         function onComplete() {
@@ -60,7 +63,7 @@ export function generateThumbnail(fileName, options) {
         }
 
         const defaults = {
-            folder: uploadPath,
+            folder: path.dirname(fileName),
             filename: '%b-%r-thumbnail.png',
             count: 1,
             timemark: '1%',
@@ -68,13 +71,70 @@ export function generateThumbnail(fileName, options) {
             size: '320x180' // 16:9
         };
 
+        const merged = {
+            ...defaults,
+            ...options
+        };
+
         ffmpeg({
             source: fileName,
-            logger: console
+            logger: merged.logger
         })
             .on('filenames', onFilenames)
             .on('end', onComplete)
             .on('error', reject)
-            .screenshot({ ...defaults, ...options });
+            .screenshot(merged);
+    });
+}
+
+export function generateGif(fileName, options = {}) {
+    // Examples (using command line):
+    // ffmpeg -ss 61.0 -t 2.5 -i test.mp4 -filter_complex "[0:v] fps=12,scale=320:-1,split [a][b];[a] palettegen [p];[b][p] paletteuse" test.gif
+    // ffmpeg -ss 1.0 -t 2.5 -i test.mp4 -filter_complex "[0:v] fps=12,scale=320:180,split [a][b];[a] palettegen [p];[b][p] paletteuse" test.gif
+
+    return new Promise((resolve, reject) => {
+        const ext = path.extname(fileName);
+        let outputFileName = null;
+
+        function onComplete() {
+            resolve(path.basename(outputFileName));
+        }
+
+        const defaults = {
+            filename: '%b-%r-thumbnail.gif',
+            progress: progress => { /* progress.percent */ },
+            fps: 10,
+            multiplier: 1,
+            duration: 2.5,
+            timemark: 5.0,
+            logger: console,
+            size: '320x180' // 16:9
+        };
+        const merged = {
+            ...defaults,
+            ...options
+        };
+        const multiplier = merged.multiplier === 1 ? '' : `,setpts=(1/${merged.multiplier})*PTS`;
+        const scale = merged.size.replace('x', ':');
+        const inputOptions = [
+            `-ss ${merged.timemark}`,
+            `-t ${merged.duration}`
+        ];
+
+        outputFileName = merged.filename
+            .replace('%b', fileName.substr(0, fileName.length - ext.length))
+            .replace('%r', merged.size.replace('?', ''));
+
+        ffmpeg({
+            source: fileName,
+            logger: merged.logger
+        })
+            .on('progress', merged.progress)
+            .on('end', onComplete)
+            .on('error', reject)
+            .inputOptions(inputOptions)
+            .addOutputOption('-filter_complex', `[0:v] fps=${merged.fps}${multiplier},scale=${scale},split [a][b];[a] palettegen [p];[b][p] paletteuse`)
+            .output(outputFileName)
+            .run();
     });
 }

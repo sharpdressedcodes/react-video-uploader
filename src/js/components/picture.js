@@ -9,6 +9,7 @@ class Picture extends Component {
 
     static propTypes = {
         src: PropTypes.string.isRequired,
+        animatedSrc: PropTypes.string,
         alt: PropTypes.string,
         caption: PropTypes.string,
         order: PropTypes.arrayOf(PropTypes.string),
@@ -16,29 +17,69 @@ class Picture extends Component {
     };
 
     static defaultProps = {
+        animatedSrc: null,
         caption: null,
         alt: '',
         order: Picture.DEFAULT_ORDER,
         className: ''
     };
 
+    constructor(props) {
+        super(props);
+
+        this.container = React.createRef();
+        this.state = {
+            mouseEntered: false
+        };
+    }
+
+    componentDidMount() {
+        this.container.current.addEventListener('mouseenter', this.onMouseEnter, false);
+        this.container.current.addEventListener('mouseleave', this.onMouseLeave, false);
+    }
+
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const {
-            src, alt, caption, order, className
+            src, animatedSrc, alt, caption, order, className
         } = this.props;
+        const { mouseEntered } = this.state;
         const srcChanged = src !== nextProps.src;
         const altChanged = alt !== nextProps.alt;
         const captionChanged = caption !== nextProps.caption;
         const orderChanged = order !== nextProps.order;
         const classNameChanged = className !== nextProps.className;
+        const animatedSrcChanged = animatedSrc !== nextProps.animatedSrc;
+        const mouseEnteredChanged = mouseEntered !== nextState.mouseEntered;
 
-        return srcChanged || altChanged || captionChanged || orderChanged || classNameChanged;
+        return srcChanged || animatedSrcChanged || altChanged || captionChanged || orderChanged || classNameChanged || mouseEnteredChanged;
     }
+
+    componentWillUnmount() {
+        this.container.current.removeEventListener('mouseenter', this.onMouseEnter);
+        this.container.current.removeEventListener('mouseleave', this.onMouseLeave);
+    }
+
+    onMouseEnter = event => {
+        const { animatedSrc } = this.props;
+
+        if (animatedSrc) {
+            this.setState({ mouseEntered: true });
+        }
+    };
+
+    onMouseLeave = event => {
+        const { animatedSrc } = this.props;
+
+        if (animatedSrc) {
+            this.setState({ mouseEntered: false });
+        }
+    };
 
     render() {
         const {
-            src, alt, caption, order, className
+            src, animatedSrc, alt, caption, order, className
         } = this.props;
+        const { mouseEntered } = this.state;
         const elements = [];
 
         order.forEach((item, index) => {
@@ -46,7 +87,7 @@ class Picture extends Component {
 
             switch (item) {
             case 'image':
-                elements.push(<img key={key} className="picture-image" src={src} alt={alt} />);
+                elements.push(<img key={key} className="picture-image" src={mouseEntered && animatedSrc ? animatedSrc : src} alt={alt} />);
                 break;
             case 'text':
                 if (caption) {
@@ -57,7 +98,7 @@ class Picture extends Component {
             }
         });
 
-        return <figure className={classNames('picture', className)}>{elements}</figure>;
+        return <figure className={classNames('picture', className)} ref={this.container}>{elements}</figure>;
     }
 }
 

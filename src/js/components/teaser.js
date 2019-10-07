@@ -11,6 +11,7 @@ class Teaser extends Component {
     static propTypes = {
         title: PropTypes.string,
         imageSrc: PropTypes.string,
+        animatedImageSrc: PropTypes.string,
         imageAlt: PropTypes.string,
         text: PropTypes.string,
         order: PropTypes.arrayOf(PropTypes.string),
@@ -20,6 +21,7 @@ class Teaser extends Component {
     static defaultProps = {
         title: null,
         imageSrc: null,
+        animatedImageSrc: null,
         imageAlt: '',
         text: null,
         order: Teaser.DEFAULT_ORDER,
@@ -28,21 +30,23 @@ class Teaser extends Component {
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         const {
-            title, imageSrc, imageAlt, text, order, className
+            title, imageSrc, animatedImageSrc, imageAlt, text, order, className
         } = this.props;
         const titleChanged = title !== nextProps.title;
         const imageSrcChanged = imageSrc !== nextProps.imageSrc;
+        const animatedImageSrcChanged = animatedImageSrc !== nextProps.animatedImageSrc;
         const imageAltChanged = imageAlt !== nextProps.imageAlt;
         const textChanged = text !== nextProps.text;
         const orderChanged = order !== nextProps.order;
         const classNameChanged = className !== nextProps.className;
 
-        return titleChanged || imageSrcChanged || imageAltChanged || textChanged || orderChanged || classNameChanged;
+        return titleChanged || imageSrcChanged || animatedImageSrcChanged
+            || imageAltChanged || textChanged || orderChanged || classNameChanged;
     }
 
     render() {
         const {
-            title, imageSrc, imageAlt, text, order, className
+            title, imageSrc, animatedImageSrc, imageAlt, text, order, className
         } = this.props;
         const elements = [];
 
@@ -59,7 +63,7 @@ class Teaser extends Component {
                 if (imageSrc) {
                     elements.push(
                         <div key={key} className="teaser-image">
-                            <Picture src={imageSrc} alt={imageAlt} />
+                            <Picture src={imageSrc} animatedSrc={animatedImageSrc} alt={imageAlt} />
                         </div>,
                     );
                 }
