@@ -1,9 +1,9 @@
 # React Video Uploader
 
-This project uses ffmpeg to generate preview thumbnails.
+This project uses [fluent-ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg) to generate preview thumbnails, gifs, posters and media info.
 
 To get going, you can either use with or without docker.
-If you use without docker, you'll need node, npm and ffmpeg installed. You can get away without having ffmpeg, as long as you don't upload any files.
+If you use without docker, you'll need node, npm, cypress, ffmpeg, ffprobe and either flvtool2 or flvmeta installed. You can get away without having ffmpeg, ffprobe and either flvtool2 or flvmeta, as long as you don't upload any files. You can also get away without having Cypress, as long as you dont run any functional tests.
 
 
 ## With docker
@@ -34,6 +34,9 @@ npm run start
 ```
 Now open [http://localhost:3001/](http://localhost:3001/) in your browser.
 
+## Config
+Config file is located in `./src/js/config.main.js`. Change any values in here as you see fit. Don't forget to rebuild the project afterwards.
+
 ## Tests
 #### Unit
 ```shell script
@@ -57,8 +60,8 @@ docker run --rm --tty --name cypress --volume $PWD/:/home/node/app --workdir /ho
 
 ### TODO
 * Build custom docker image after installing all the conversion software
-* Have a look at encoding the videos after they are uploaded, this way we can accept more formats like flv
-* Generate preview gif of video
+* Have a look at encoding the videos after they are uploaded, this way we can accept more formats like flv. Will need to use web sockets for this to show progress to the user.
 * Authenticating the user before allowing to POST
 * Split up js and css + hot reloading
 * Git hooks
+* Stub the api return calls during `__IS_TESTING__`, then assert on the items in TeaserList in HomePage

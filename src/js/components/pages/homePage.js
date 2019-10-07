@@ -37,13 +37,18 @@ class HomePage extends Component {
 
     renderItems() {
         const { videos } = this.props;
+        const videoPath = config.get('app.videoUpload.publicPath');
 
         return !videos ? [] : videos.map((item, index) => {
             const key = `item-${index}`;
             return (
                 <li key={key}>
                     <Link to={`/video/${index}`}>
-                        <Teaser imageSrc={`${config.get('app.videoUpload.publicPath')}/${item.thumb}`} imageAlt={`${item.video} thumbnail`} />
+                        <Teaser
+                            imageSrc={`${videoPath}/${item.thumb}`}
+                            animatedImageSrc={`${videoPath}/${item.animatedThumb}`}
+                            imageAlt={`${item.video} thumbnail`}
+                        />
                     </Link>
                 </li>
             );

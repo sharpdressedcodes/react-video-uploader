@@ -3,7 +3,7 @@ import multer from 'multer';
 import config from 'react-global-configuration';
 import {validateFiles} from '../../fileValidator';
 import {formatFileSize} from '../../../shared/format';
-import {generatePoster, generateThumbnail, getVideoInfo} from '../../ffmpeg';
+import {generateGif, generatePoster, generateThumbnail, getVideoInfo} from '../../ffmpeg';
 import {writeFile} from '../../fileOperations';
 
 const storage = multer.diskStorage({
@@ -42,13 +42,20 @@ export default async function handleVideoCreate(req, res, next) {
 
         const promises = files.map(file => new Promise(async (resolve, reject) => {
             try {
+                const thumbnailDimensions = config.get('app.videoUpload.thumbnailDimensions');
+                const options = {};
+                if (thumbnailDimensions) {
+                    options.size = thumbnailDimensions;
+                }
                 const poster = await generatePoster(file.path);
-                const thumb = await generateThumbnail(file.path);
+                const thumb = await generateThumbnail(file.path, options);
+                const animatedThumb = await generateGif(file.path, options);
                 const info = await getVideoInfo(file.path);
                 const json = {
                     video: path.basename(file.path),
                     poster,
                     thumb,
+                    animatedThumb,
                     metadata: info,
                     originalFileName: file.originalname,
                     type: file.mimetype,
