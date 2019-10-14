@@ -33,7 +33,7 @@
     "scripts": {
         "start:dev": "cross-env NODE_ENV=development node ./dist/server.js",
         "start": "cross-env NODE_ENV=production node ./dist/server.js",
-        "clean": "rimraf ./dist/bundle.* && mkdirp ./dist/data/uploads",
+        "clean": "rimraf ./dist/bundle.* ./dist/server.js && mkdirp ./dist/data/uploads",
         "build:dev": "npm run clean && cross-env NODE_ENV=development webpack --bail --hide-modules --progress --mode development",
         "build": "npm run clean && cross-env NODE_ENV=production webpack --bail --hide-modules --progress --mode production",
         "lint:js": "eslint --fix --ext .js ./src/js/**/*.js",
@@ -68,7 +68,8 @@
         "redux": "^4.0.4",
         "redux-devtools-extension": "^2.13.8",
         "redux-thunk": "^2.3.0",
-        "serialize-javascript": "^2.1.0"
+        "serialize-javascript": "^2.1.0",
+        "socket.io": "^2.3.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.6.2",

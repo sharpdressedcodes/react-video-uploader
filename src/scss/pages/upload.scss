@@ -20,27 +20,21 @@
         .file {
             margin-bottom: 15px;
 
-            &-index {
-                display: block;
-            }
-            &-name {
-                display: block;
-            }
-            &-size {
+            & > span[class*=file-] {
                 display: block;
             }
 
             @include breakpoint(medium up) {
-                &-index {
+                & > span[class*=file-] {
                     display: initial;
-                    margin-right: 10px;
+                    &:not(:last-child) {
+                        margin-right: 10px;
+                    }
                 }
-                &-name {
-                    display: initial;
-                    margin-right: 10px;
-                }
-                &-size {
-                    display: initial;
+                & > span.file-progress {
+                    display: inline-block;
+                    max-width: 100px;
+                    width: 100%;
                 }
             }
         }

@@ -65,3 +65,4 @@ docker run --rm --tty --name cypress --volume $PWD/:/home/node/app --workdir /ho
 * Split up js and css + hot reloading
 * Git hooks
 * Stub the api return calls during `__IS_TESTING__`, then assert on the items in TeaserList in HomePage
+* Drag and drop

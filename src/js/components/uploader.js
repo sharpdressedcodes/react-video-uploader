@@ -7,6 +7,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import io from 'socket.io-client/dist/socket.io';
 import {
     uploadError, uploadProgress, uploadStart, uploadSuccess, uploadValidationErrors
 } from '../actions/uploader';
@@ -20,7 +21,8 @@ class Uploader extends Component {
     static DEFAULT_STATE = {
         selectedFiles: null,
         loaded: 0,
-        uploading: false
+        uploading: false,
+        uploadedFiles: []
     };
 
     static propTypes = {
@@ -39,24 +41,64 @@ class Uploader extends Component {
     constructor(props) {
         super(props);
 
+        this.socket = null;
         this.state = { ...Uploader.DEFAULT_STATE };
     }
 
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const {
-            url, multiple, progress
-        } = this.props;
-        const { selectedFiles, loaded, uploading } = this.state;
-        const urlChanged = url !== nextProps.url;
-        const multipleChanged = multiple !== nextProps.multiple;
-        const progressChanged = progress !== nextProps.progress;
-        const selectedFiledChanged = selectedFiles !== nextState.selectedFiles;
-        const loadedChanged = loaded !== nextState.loaded;
-        const uploadingChanged = uploading !== nextState.uploading;
-
-        return urlChanged || multipleChanged || progressChanged
-            || selectedFiledChanged || loadedChanged || uploadingChanged;
+    componentDidMount() {
+        this.socket = io();
+        this.socket.on('upload.step', this.onUploadStep);
+        this.socket.on('upload.step.file', this.onUploadStepFile);
+        this.socket.on('upload.step.file.progress', this.onUploadStepFileProgress);
     }
+
+    // shouldComponentUpdate(nextProps, nextState, nextContext) {
+    //     const {
+    //         url, multiple, progress
+    //     } = this.props;
+    //     const { selectedFiles, loaded, uploading, uploadedFiles } = this.state;
+    //     const urlChanged = url !== nextProps.url;
+    //     const multipleChanged = multiple !== nextProps.multiple;
+    //     const progressChanged = progress !== nextProps.progress;
+    //     const selectedFiledChanged = selectedFiles !== nextState.selectedFiles;
+    //     const loadedChanged = loaded !== nextState.loaded;
+    //     const uploadingChanged = uploading !== nextState.uploading;
+    //     const uploadedFilesChanged = uploadedFiles !== nextState.uploadedFiles;
+    //
+    //     return urlChanged || multipleChanged || progressChanged || uploadedFilesChanged
+    //         || selectedFiledChanged || loadedChanged || uploadingChanged;
+    // }
+
+    componentWillUnmount() {
+        this.socket.off('upload.step', this.onUploadStep);
+        this.socket.off('upload.step.file', this.onUploadStepFile);
+        this.socket = null;
+    }
+
+    onUploadStep = params => {
+        const { step, total, status } = params;
+        /*step: 3,
+        total: 3,
+        status: 'Parsing'*/
+    };
+
+    onUploadStepFile = params => {
+        const { index } = params;
+        const { uploadedFiles } = this.state;
+
+        uploadedFiles[index] = params;
+        this.setState({ uploadedFiles });
+    };
+
+    onUploadStepFileProgress = params => {
+        const { index } = params;
+        const { uploadedFiles } = this.state;
+
+        uploadedFiles[index] = params;
+        this.setState({ uploadedFiles });
+
+        //console.log('upload.step.file.progress', params);
+    };
 
     onChange = event => {
         const { actions } = this.props;
@@ -122,7 +164,7 @@ class Uploader extends Component {
     };
 
     render() {
-        const { loaded, selectedFiles, uploading } = this.state;
+        const { loaded, selectedFiles, uploading, uploadedFiles } = this.state;
         const {
             url, multiple, progress
         } = this.props;
@@ -149,12 +191,30 @@ class Uploader extends Component {
                 <ul className="files">
                     {Array.from(selectedFiles).map((item, index) => {
                         const key = `file-${index}`;
+                        const uploadItem = uploadedFiles[index];
+
+                        let s = 'Uploading...';
+                        let progress = 0;
+
+                        if (uploadItem && uploadItem.status) {
+                            const { step, total, status } = uploadItem;
+                            s = `Step ${step} of ${total} - ${status}`;
+                        }
+
+                        if (uploadItem && uploadItem.percent) {
+                            progress = uploadItem.percent;
+                        }
+
                         /* eslint-disable */
                         return (
                             <li key={key} className="file">
                                 <span className="file-index">{index + 1}.</span>
                                 <span className="file-name">{item.name}</span>
                                 <span className="file-size">{formatFileSize(item.size)}</span>
+                                <span className="file-status">{s}</span>
+                                <span className="file-progress">
+                                    <LinearProgress className="status-progress" variant="determinate" value={progress} />
+                                </span>
                             </li>
                         );
                         /* eslint-enable */

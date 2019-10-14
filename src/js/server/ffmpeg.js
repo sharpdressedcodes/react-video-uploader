@@ -138,3 +138,52 @@ export function generateGif(fileName, options = {}) {
             .run();
     });
 }
+
+export function convertVideo(fileName, options = {}) {
+    return new Promise((resolve, reject) => {
+        const ext = path.extname(fileName);
+        let outputFileName = null;
+
+        function onComplete() {
+            resolve(path.basename(outputFileName));
+        }
+
+        const defaults = {
+            filename: '%b-converted.%f',
+            progress: progress => { /* progress.percent */ },
+            //fps: 10,
+            //multiplier: 1,
+            //duration: 2.5,
+            //timemark: 5.0,
+            logger: console,
+            //audioCodec: 'libfaac',
+            audioCodec: 'libmp3lame',
+            videoCodec: 'libx264',
+            format: 'mp4'
+            //size: '320x180' // 16:9
+        };
+        const merged = {
+            ...defaults,
+            ...options
+        };
+
+        outputFileName = merged.filename
+            .replace('%b', fileName.substr(0, fileName.length - ext.length))
+            .replace('%f', merged.format);
+
+        ffmpeg({
+            source: fileName,
+            logger: merged.logger
+        })
+            .on('end', onComplete)
+            .on('error', reject)
+            .on('progress', merged.progress)
+            .audioCodec(merged.audioCodec)
+            .videoCodec(merged.videoCodec)
+            .addOutputOption('-preset', 'faster')
+            //.addOutputOption('-c:a', 'copy')
+            .format(merged.format)
+            .save(outputFileName);
+
+    });
+}

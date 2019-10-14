@@ -11,6 +11,7 @@ export const close = util.promisify(fs.close);
 export const open = util.promisify(fs.open);
 export const read = util.promisify(fs.read);
 export const write = util.promisify(fs.write);
+export const rename = util.promisify(fs.rename);
 
 export function fileExists(file) {
     return new Promise((resolve, reject) => {
