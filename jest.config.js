@@ -6,7 +6,7 @@ module.exports = {
         "!./src/js/**/node_modules/**"
     ],
     "coverageDirectory": "./tests/unit/coverage",
-    "testURL": "http://localhost:3001/",
+    "testURL": "http://localhost:3000/",
     "moduleNameMapper": {
         "\\.(css|scss)$": "<rootDir>/tests/unit/__mocks__/styleMock.js"
     },

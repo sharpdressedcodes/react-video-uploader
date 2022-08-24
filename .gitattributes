@@ -1,6 +1,8 @@
-composer.lock -diff
 package-lock.json -diff
-src/vendor/**/* -diff
-src/public/bundle.css -diff
-src/public/bundle.js -diff
-src/public/fonts/* -diff
+yarn.lock -diff
+*.ico -diff
+*.png -diff
+*.jpg -diff
+*.jpeg -diff
+*.gif -diff
+*.js.snap -diff

@@ -1,9 +1,14 @@
-const path = require('path');
+const path = require('node:path');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
-const autoprefixer = require('autoprefixer');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const babelClassPropertiesPlugin = require('@babel/plugin-proposal-class-properties').default;
+const babelDecoratorsPlugin = require('@babel/plugin-proposal-decorators').default;
+const babelExportDefaultFromPlugin = require('@babel/plugin-proposal-export-default-from').default;
+const babelTransformRuntimePlugin = require('@babel/plugin-transform-runtime').default;
+const pkg = require('./package.json');
 
 const production = process.env.NODE_ENV === 'production';
 
@@ -14,19 +19,19 @@ const defaultConfig = {
     cache: false,
     devtool: production ? false : 'eval-source-map',
     context: `${__dirname}/`,
-    entry: ['@babel/polyfill'],
+    // entry: ['@babel/polyfill'],
+    //entry: ['@core-js'],
+    entry: [],
     output: {
-        path: path.join(__dirname, 'dist/'),
-        publicPath: '/dist/',
+        globalObject: 'this',
+        path: path.join(__dirname, 'build/'),
+        publicPath: '/',
         filename: 'bundle.js',
     },
     resolve: {
         extensions: ['.js', '.jsx'],
         alias: {
-            /*
-                ensure there is only one instance of react when resolving modules
-                this helps with symlinks
-            */
+            // Ensure there is only one instance of react when resolving modules. This helps with symlinks
             react: path.join(__dirname, 'node_modules/react'),
             'react-dom': path.join(__dirname, 'node_modules/react-dom')
         }
@@ -38,7 +43,7 @@ const defaultConfig = {
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 exclude: [/node_modules/],
                 use: {
                     loader: 'babel-loader',
@@ -47,41 +52,27 @@ const defaultConfig = {
                             '@babel/preset-env',
                             '@babel/preset-react'
                         ],
-                        plugins: [[require('@babel/plugin-proposal-decorators'), { legacy: true }]]
+                        plugins: [
+                            babelClassPropertiesPlugin,
+                            babelExportDefaultFromPlugin,
+                            [babelDecoratorsPlugin, { legacy: true }],
+                            [babelTransformRuntimePlugin, { regenerator: true }],
+                            //['styled-components', { ssr: true }]
+                        ]
                     }
                 }
             },
             {
-                test: /\.s?css$/,
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            sourceMap: false,
-                        }
-                    },
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            sourceMap: false,
-                            plugins: () => [
-                                autoprefixer({})
-                            ]
-                        }
-                    },
-                    'resolve-url-loader',
-                    {
-                        loader: 'sass-loader',
-                        options: {
-                            sourceMap: false,
-                            outputStyle: 'compressed'
-                        }
-                    }
-                ]
+                test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+                issuer: /\.jsx?$/,
+                use: ['babel-loader', '@svgr/webpack', 'url-loader']
             },
             {
-                test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+                test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'url-loader'
+            },
+            {
+                test: /\.(png|jpg|gif|eot|ttf|woff|woff2)$/,
                 loader: 'url-loader',
                 options: {
                     limit: 10000
@@ -90,61 +81,161 @@ const defaultConfig = {
         ]
     },
     plugins: [
-        new MiniCssExtractPlugin({
-            filename: `bundle.css`
-        }),
+        // new webpack.HotModuleReplacementPlugin(),
+        // new webpack.NoEmitOnErrorsPlugin()
     ]
 };
 
 if (production) {
-    const uglifyPlugin = new UglifyJsPlugin({
-        sourceMap: false,
-        parallel: true,
-        uglifyOptions: {
-            beautify: false,
-            mangle: false,
-            compress: false
-        }
-    });
-
-    const definePlugin = new webpack.DefinePlugin({
+    defaultConfig.plugins.push(new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('production')
-    });
-
-    defaultConfig.plugins.push(uglifyPlugin);
-    defaultConfig.plugins.push(definePlugin);
+    }));
 }
 
 const browserConfig = {
     ...defaultConfig,
-    entry: [...defaultConfig.entry, './src/js/browser/index.js', './src/scss/main.scss'],
+    entry: [
+        ...defaultConfig.entry,
+        './node_modules/normalize.css/normalize.css',
+        './src/styles/main.scss',
+        './src/index.js'
+    ],
     output: {
         ...defaultConfig.output,
         filename: 'bundle.js',
     },
+    module: {
+        ...defaultConfig.module,
+        rules: [
+            ...defaultConfig.module.rules,
+            {
+                test: /\.s?css$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: false
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            sourceMap: false
+                        }
+                    },
+                    'resolve-url-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sassOptions: {
+                                outputStyle: 'compressed'
+                            }
+                            // sourceMap: false
+                        }
+                    }
+                ]
+            }
+        ]
+    },
     plugins: [
         ...defaultConfig.plugins,
+        new MiniCssExtractPlugin({
+            filename: 'bundle.css'
+        }),
         new webpack.DefinePlugin({
-            __isBrowser__: "true"
+            __isBrowser__: 'true',
+            'process.env': JSON.stringify(process.env)
+        }),
+        new HtmlWebpackPlugin({
+            version: pkg.version,
+            template: path.resolve(__dirname, './src/server/index.html')
         })
     ]
 };
 
+if (production) {
+    const terserPlugin = new TerserPlugin({
+        parallel: true,
+        extractComments: false,
+        terserOptions: {
+            format: {
+                ecma: 5,
+                comments: false,
+                ascii_only: true
+            }
+        }
+    });
+
+    browserConfig.optimization = {
+        minimize: true,
+        minimizer: [
+            '...',
+            terserPlugin
+        ]
+    };
+}
+
 const serverConfig = {
     ...defaultConfig,
-    entry: [...defaultConfig.entry, './src/js/server/index.js'],
-    target: 'node',
+    entry: [
+        ...defaultConfig.entry,
+        './src/server/index.js'
+    ],
+    //target: 'node',
+    externalsPresets: { node: true },
     externals: [nodeExternals({
-        whitelist: ['react-toastify/dist/ReactToastify.css']
+        allowlist: ['react-toastify/dist/ReactToastify.css']
     })],
     output: {
         ...defaultConfig.output,
         filename: 'server.js',
     },
+    module: {
+        ...defaultConfig.module,
+        rules: [
+            ...defaultConfig.module.rules,
+            {
+                test: /\.s?css$/,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: { emit: false }
+                    },
+                    // MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: false
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            sourceMap: false
+                        }
+                    },
+                    'resolve-url-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sassOptions: {
+                                outputStyle: 'compressed'
+                            }
+                            // sourceMap: false
+                        }
+                    }
+                ]
+            }
+        ]
+    },
     plugins: [
         ...defaultConfig.plugins,
+        new MiniCssExtractPlugin({
+            // filename: 'server.css'
+        }),
         new webpack.DefinePlugin({
-            __isBrowser__: "false"
+            __isBrowser__: 'false'
         })
     ]
 };

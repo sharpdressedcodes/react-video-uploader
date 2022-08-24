@@ -16,9 +16,9 @@ services:
     networks:
       - custom
     ports:
-      - '3001:3001'
+      - '3000:3000'
     restart: unless-stopped
-    tty: 'true'
+    tty: true
     working_dir: /home/node/app
 
   cypress:
@@ -32,8 +32,8 @@ services:
     volumes:
       - ./:/home/node/app
     restart: unless-stopped
-    tty: 'true'
+    tty: true
     working_dir: /home/node/app
     environment:
       - DISPLAY=
-      - CYPRESS_BASE_URL=http://172.17.0.1:3001/
+      - CYPRESS_BASE_URL=http://172.17.0.1:3000/
