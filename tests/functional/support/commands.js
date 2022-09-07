@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.overwrite('visit', (originalFn, url, options) => {
-    cy.setCookie('__IS_TESTING__', '1');
+    cy.setCookie('IS_TESTING', '1');
     originalFn(url, options);
 });
 

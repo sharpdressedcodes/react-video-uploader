@@ -7,6 +7,8 @@ configure({ adapter: new Adapter() });
 
 config.set(testConfig);
 
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+
 process.on('unhandledRejection', err => {
     throw err;
 });

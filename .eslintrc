@@ -2,12 +2,13 @@
     "extends": [
         "airbnb"
     ],
-    "parser": "babel-eslint",
+    "parser": "@babel/eslint-parser",
     "parserOptions": {
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "legacyDecorators": true
-        }
+        "ecmaVersion": "latest",
+        "babelOptions": {
+             "configFile": "./babel.config.js"
+        },
+        "sourceType": "module"
     },
     "env": {
         "browser": true,
@@ -22,12 +23,21 @@
         "Promise": true
     },
     "plugins": [
-        // none
+        "@babel",
+        "destructuring",
+        "import",
+        "jsx-a11y",
+        "react"
     ],
     "rules": {
+        "@babel/new-cap": "error",
+        "@babel/no-invalid-this": "error",
+        "@babel/no-unused-expressions": 0,
+        "@babel/object-curly-spacing": 0,
+        "@babel/semi": "error",
         "arrow-parens": ["error", "as-needed"],
         "comma-dangle": ["error", "never"],
-        "indent": ["error", 4],
+        "indent": ["error", 4, { "ignoredNodes": ["ConditionalExpression"], "SwitchCase": 1 }],
         "import/first": 0,
         "import/newline-after-import": ["error", { "count": 1 }],
         "import/prefer-default-export": 0,
@@ -45,9 +55,26 @@
         ],
         "no-bitwise": 0,
         "no-plusplus": 0,
-        "no-unused-vars": 0,
+        "no-restricted-exports": 0,
+        "no-restricted-syntax": [
+            "error",
+            {
+                "selector": "ForInStatement",
+                "message": "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array."
+            },
+            {
+                "selector": "LabeledStatement",
+                "message": "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand."
+            },
+            {
+                "selector": "WithStatement",
+                "message": "`with` is disallowed in strict mode because it makes code impossible to predict and optimise."
+            }
+        ],
         "no-trailing-spaces": ["error", { "ignoreComments": true }],
-        "padded-blocks": ["error", "never",{ "classes": "always" ,"allowSingleLineBlocks": false }],
+        "no-unused-vars": 0,
+        "object-curly-newline": 0,
+        "padded-blocks": ["error", "never", { "allowSingleLineBlocks": false }],
         "padding-line-between-statements": [
             "error",
             { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*" },
@@ -55,14 +82,45 @@
         ],
         "prefer-destructuring": 0,
         "quote-props": ["error", "as-needed", { "keywords": true, "numbers": true }],
-        "quotes": ["error", "single"],
+        "quotes": [
+            "error",
+            "single",
+            { "avoidEscape": true, "allowTemplateLiterals": true }
+        ],
         "react/destructuring-assignment": 0,
-        "react/forbid-prop-types": ["error", { "forbid": "any" }],
+        "react/function-component-definition": 0,
+        "react/forbid-prop-types": ["error", { "forbid": ["any"] }],
+        "react/jsx-curly-spacing": ["error", { "when": "always" }],
         "react/jsx-filename-extension": 0,
         "react/jsx-indent": ["error", 4],
         "react/jsx-indent-props": ["error", 4],
+        "react/jsx-one-expression-per-line": 0,
         "react/jsx-no-target-blank": 0,
+        "react/jsx-props-no-spreading": 0,
         "react/no-danger": 0,
+        "react/static-property-placement": ["error", "static public field"],
+        "react/sort-comp": [2, {
+            "order": [
+                "type-annotations",
+                "static-variables",
+                "static-methods",
+                "getters",
+                "setters",
+                "lifecycle",
+                "instance-variables",
+                "instance-methods",
+                "everything-else",
+                "render"
+            ],
+            "groups": {
+                // split your render method into smaller ones and keep them just before render
+                "rendering": [
+                    "/^render.+$/",
+                    "render"
+                ]
+            }
+        }],
+        "semi-style": 0,
         "strict": 0
     }
 }

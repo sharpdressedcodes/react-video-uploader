@@ -6,7 +6,7 @@ networks:
 
 services:
   node:
-    #image: 'node:10.16.3-alpine'
+    #image: sharpdressedcodes/node:16.15.0-bullseye-slim
     build:
       context: ./docker/node
       dockerfile: Dockerfile
@@ -16,7 +16,11 @@ services:
     networks:
       - custom
     ports:
-      - '3001:3001'
+      - '3000:3000'
+      - '8080:8080'
     restart: unless-stopped
-    tty: 'true'
+    tty: true
     working_dir: /home/node/app
+    environment:
+      IS_DOCKER: 1
+      TZ: ${TZ:-Australia/Sydney}
