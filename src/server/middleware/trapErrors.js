@@ -16,9 +16,11 @@ export default function trapErrors(err, req, res, next) {
             message = 'Internal server error';
     }
 
+    const error = `Error: ${message}`;
+
     if (req.xhr) {
-        res.status(status).json({ error: `Error: ${message}` });
+        res.status(status).json({ error });
     } else {
-        res.status(status).send(`Error: ${message}`);
+        res.status(status).send(error);
     }
-};
+}

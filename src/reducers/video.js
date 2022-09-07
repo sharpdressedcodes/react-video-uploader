@@ -5,16 +5,16 @@ export const initialState = {
     video: null
 };
 
-export default function reducer(state = initialState, action) {
+export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
-    case VideoActionTypes.VIDEO_PLAYBACK_ERROR:
-        return {
-            ...state,
-            videoPlaybackError: action.payload
-        };
+        case VideoActionTypes.VIDEO_PLAYBACK_ERROR:
+            return {
+                ...state,
+                videoPlaybackError: action.payload
+            };
 
-    default:
-        // Do nothing
+        default:
+            // Do nothing
     }
 
     return state;

@@ -17,6 +17,7 @@ services:
       - custom
     ports:
       - '3000:3000'
+      - '8080:8080'
     restart: unless-stopped
     tty: true
     working_dir: /home/node/app

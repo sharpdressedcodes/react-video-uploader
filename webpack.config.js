@@ -4,29 +4,29 @@ const nodeExternals = require('webpack-node-externals');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const babelClassPropertiesPlugin = require('@babel/plugin-proposal-class-properties').default;
-const babelDecoratorsPlugin = require('@babel/plugin-proposal-decorators').default;
-const babelExportDefaultFromPlugin = require('@babel/plugin-proposal-export-default-from').default;
-const babelTransformRuntimePlugin = require('@babel/plugin-transform-runtime').default;
-const pkg = require('./package.json');
+const packageJson = require('./package.json');
 
-const production = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV?.toString().toLowerCase() === 'production';
+const { version } = packageJson;
 
 process.traceDeprecation = true;
 
 const defaultConfig = {
-    bail: true,
     cache: false,
-    devtool: production ? false : 'eval-source-map',
+    devtool: isProduction ? false : 'eval-source-map',
     context: `${__dirname}/`,
-    // entry: ['@babel/polyfill'],
-    //entry: ['@core-js'],
-    entry: [],
+    entry: [
+        // Currently, @babel/preset-env is unaware that using import() with Webpack relies on Promise internally.
+        // Environments which do not have builtin support for Promise, like Internet Explorer, will require both
+        // the promise and iterator polyfills be added manually.
+        'core-js/modules/es.promise',
+        'core-js/modules/es.array.iterator'
+    ],
     output: {
         globalObject: 'this',
         path: path.join(__dirname, 'build/'),
         publicPath: '/',
-        filename: 'bundle.js',
+        filename: 'bundle.js'
     },
     resolve: {
         extensions: ['.js', '.jsx'],
@@ -46,20 +46,7 @@ const defaultConfig = {
                 test: /\.jsx?$/,
                 exclude: [/node_modules/],
                 use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [
-                            '@babel/preset-env',
-                            '@babel/preset-react'
-                        ],
-                        plugins: [
-                            babelClassPropertiesPlugin,
-                            babelExportDefaultFromPlugin,
-                            [babelDecoratorsPlugin, { legacy: true }],
-                            [babelTransformRuntimePlugin, { regenerator: true }],
-                            //['styled-components', { ssr: true }]
-                        ]
-                    }
+                    loader: 'babel-loader'
                 }
             },
             {
@@ -86,7 +73,7 @@ const defaultConfig = {
     ]
 };
 
-if (production) {
+if (isProduction) {
     defaultConfig.plugins.push(new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('production')
     }));
@@ -94,6 +81,7 @@ if (production) {
 
 const browserConfig = {
     ...defaultConfig,
+    target: 'web',
     entry: [
         ...defaultConfig.entry,
         './node_modules/normalize.css/normalize.css',
@@ -102,7 +90,7 @@ const browserConfig = {
     ],
     output: {
         ...defaultConfig.output,
-        filename: 'bundle.js',
+        filename: 'bundle.js'
     },
     module: {
         ...defaultConfig.module,
@@ -148,13 +136,13 @@ const browserConfig = {
             'process.env': JSON.stringify(process.env)
         }),
         new HtmlWebpackPlugin({
-            version: pkg.version,
+            version,
             template: path.resolve(__dirname, './src/server/index.html')
         })
     ]
 };
 
-if (production) {
+if (isProduction) {
     const terserPlugin = new TerserPlugin({
         parallel: true,
         extractComments: false,
@@ -182,14 +170,14 @@ const serverConfig = {
         ...defaultConfig.entry,
         './src/server/index.js'
     ],
-    //target: 'node',
+    // target: 'node',
     externalsPresets: { node: true },
     externals: [nodeExternals({
         allowlist: ['react-toastify/dist/ReactToastify.css']
     })],
     output: {
         ...defaultConfig.output,
-        filename: 'server.js',
+        filename: 'server.js'
     },
     module: {
         ...defaultConfig.module,
