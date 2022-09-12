@@ -73,7 +73,7 @@ docker run --rm --tty --name cypress --volume $PWD/:/home/node/app --workdir /ho
 * CRUD videos
 * Authenticating the user before allowing to CUD (create, update, delete)
 * Split up js and css + hot reloading/watch
-* Markdown linting
+* Markdown linting config
 * Stub the api return calls during `IS_TESTING`, then assert on the items in TeaserList in HomePage
 * Drag and drop
 * TypeScript

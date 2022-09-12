@@ -1,5 +1,4 @@
 {
-    "*.md": "return 0 && npm run lint:md:staged --",
     "*.js": "npm run lint:js:staged --",
     "*.scss": "npm run lint:scss:staged --"
 }
