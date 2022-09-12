@@ -65,7 +65,6 @@ docker run --rm --tty --name cypress --volume $PWD/:/home/node/app --workdir /ho
 * Render to node stream
 * service worker, web worker?
 * manifest
-* Add error boundary/componentDidCatch
 * i18n https://www.i18next.com/ https://locize.com/blog/react-i18next/ https://phrase.com/blog/posts/localizing-react-apps-with-i18next/ https://lokalise.com/blog/react-i18n-intl/
 * swap express for fastify
 * Try using a nodejs worker thread for converting video
