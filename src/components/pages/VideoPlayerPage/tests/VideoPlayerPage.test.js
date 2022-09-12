@@ -1,5 +1,5 @@
 import React from 'react';
-import VideoPage, { DisconnectedVideoPage } from '../../../../src/js/components/pages/videoPage';
+import VideoPlayerPage, { DisconnectedVideoPlayerPage } from '../../../../src/js/components/pages/VideoPlayerPage';
 import videosMock from '../../__mocks__/videosMock';
 import mount from '../../helpers/mount';
 import ActionTypes from "../../../../src/js/constants/loadVideos";
@@ -14,12 +14,12 @@ const props = {
     }
 };
 
-describe(`Making sure the VideoPage renders correctly`, () => {
+describe(`Making sure the VideoPlayerPage renders correctly`, () => {
 
-    it(`Renders the VideoPage component`, () => {
+    it(`Renders the VideoPlayerPage component`, () => {
 
-        const { wrapper, store } = mount(<VideoPage { ...props } />);
-        const component = wrapper.find(DisconnectedVideoPage);
+        const { wrapper, store } = mount(<VideoPlayerPage { ...props } />);
+        const component = wrapper.find(DisconnectedVideoPlayerPage);
 
         expect(component.find('.page-video').length).toEqual(1);
         expect(wrapper.find('h2').length).toEqual(0);

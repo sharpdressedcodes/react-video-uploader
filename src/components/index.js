@@ -6,4 +6,4 @@ export { default as Picture } from './Picture';
 export { default as Teaser } from './Teaser';
 export { default as TeaserList } from './TeaserList';
 export { default as Uploader, DisconnectedUploader } from './Uploader';
-export { default as Video } from './Video';
+export { default as VideoPlayer } from './VideoPlayer';

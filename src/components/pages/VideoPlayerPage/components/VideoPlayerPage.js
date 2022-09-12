@@ -6,18 +6,11 @@ import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ConfigContext } from '../../../../context/Config';
 import { isObjectEmpty } from '../../../../common';
-import { Video } from '../../../index';
-import '../styles/video-page.scss';
+import { VideoPlayer } from '../../../index';
+import '../styles/video-player-page.scss';
 
-// Using a wrapper because react router only exposes useParams now as a way to obtain url params.
-const VideoPageWrapper = () => {
-    const { id } = useParams();
-
-    return <ConnectedVideoPage id={ id } />;
-};
-
-class VideoPage extends Component {
-    static displayName = 'VideoPage';
+class VideoPlayerPage extends Component {
+    static displayName = 'VideoPlayerPage';
 
     static contextType = ConfigContext;
 
@@ -66,12 +59,12 @@ class VideoPage extends Component {
             return <div className="centered">Acquiring...</div>;
         }
 
-        return <Video src={ `/${publicPath}/${video.video}` } poster={ `/${publicPath}/${video.poster}` } autoPlay controls />;
+        return <VideoPlayer src={ `/${publicPath}/${video.video}` } poster={ `/${publicPath}/${video.poster}` } autoPlay controls />;
     }
 
     render() {
         return (
-            <div className="page-video">
+            <div className="page-video-player">
                 {this.renderTitle()}
 
                 <section className="content">
@@ -88,7 +81,14 @@ const mapStateToProps = () => (state, ownProps) => ({
     video: !state.loadVideosReducer.videos ? {} : state.loadVideosReducer.videos[ownProps.id]
 });
 
-export const ConnectedVideoPage = connect(mapStateToProps)(VideoPage);
-export const DisconnectedVideoPage = VideoPage;
+export const ConnectedVideoPlayerPage = connect(mapStateToProps)(VideoPlayerPage);
+export const DisconnectedVideoPlayerPage = VideoPlayerPage;
 
-export default VideoPageWrapper;
+// Using a wrapper because react router only exposes useParams now as a way to obtain url params.
+const VideoPlayerPageWrapper = () => {
+    const { id } = useParams();
+
+    return <ConnectedVideoPlayerPage id={ id } />;
+};
+
+export default VideoPlayerPageWrapper;

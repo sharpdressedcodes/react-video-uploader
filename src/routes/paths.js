@@ -1,7 +1,7 @@
 const paths = {
     homePage: '/',
     uploadPage: '/upload',
-    videoPage: '/video/:id',
+    videoPlayerPage: '/video/:id',
     noMatchPage: '*'
 };
 

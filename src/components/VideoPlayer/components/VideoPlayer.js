@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash.isequal';
 import { connect } from 'react-redux';
@@ -7,8 +7,8 @@ import { videoPlaybackError } from '../../../actions/video';
 // import PauseIcon from '@material-ui/icons/PauseCircleFilled';
 // import IconButton from '@material-ui/core/IconButton';
 
-class Video extends Component {
-    static displayName = 'Video';
+class VideoPlayer extends Component {
+    static displayName = 'VideoPlayer';
 
     static propTypes = {
         src: PropTypes.string.isRequired,
@@ -30,8 +30,8 @@ class Video extends Component {
 
         const [props] = args;
 
-        this.container = React.createRef();
-        this.video = React.createRef();
+        this.container = createRef();
+        this.video = createRef();
         this.state = { playing: props.autoPlay };
     }
 
@@ -104,9 +104,7 @@ class Video extends Component {
     };
 
     render() {
-        const {
-            src, poster, autoPlay, controls
-        } = this.props;
+        const { src, poster, autoPlay, controls } = this.props;
         // const { playing } = this.state;
         const videoAttributes = {
             src,
@@ -144,7 +142,8 @@ const mapDispatchToProps = dispatch => ({
     }
 });
 
-const ConnectedVideo = connect(null, mapDispatchToProps)(Video);
-const DisconnectedVideo = Video;
+const ConnectedVideoPlayer = connect(null, mapDispatchToProps)(VideoPlayer);
 
-export default ConnectedVideo;
+export const DisconnectedVideoPlayer = VideoPlayer;
+
+export default ConnectedVideoPlayer;

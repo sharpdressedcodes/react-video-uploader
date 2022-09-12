@@ -47,7 +47,7 @@ class HomePage extends Component {
 
         return videos.map((item, index) => (
             <li key={ item.video }>
-                <Link to={ routePaths.videoPage.replace(':id', index) }>
+                <Link to={ routePaths.videoPlayerPage.replace(':id', index) }>
                     <Teaser
                         imageSrc={ `${videoPath}/${item.thumb}` }
                         animatedImageSrc={ `${videoPath}/${item.animatedThumb}` }
