@@ -5,7 +5,7 @@ if [[ "$(which docker)" == "" ]]; then
     exit 0
 fi
 
-echo 'Running pre-commit hook...'
+echo "Running ${BASH_SOURCE[0]##*/} hook..."
 
 # Get the script's directory
 DIR="$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )")"
@@ -16,8 +16,8 @@ PROJECT_NAME="$( basename "${ROOT_DIR}" )"
 DOCKER_IMAGE="${PROJECT_NAME}_node"
 #DOCKER_IMAGE="sharpdressedcodes/node:14.17.3-buster-slim"
 hookFile=${ROOT_DIR}/.husky/pre-commit
-# Get the 4th line in the hook file
-hookContents=$(sed -n 4p $hookFile)
+# Get the 5th line in the hook file
+hookContents=$(sed -n 5p $hookFile)
 
 docker run \
     --rm \
