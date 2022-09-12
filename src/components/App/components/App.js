@@ -36,6 +36,8 @@ class App extends Component {
     render() {
         const { data, actions } = this.props;
 
+        console.log('test');
+
         if (data) {
             actions.loadVideosSuccess({ videos: data });
         }
