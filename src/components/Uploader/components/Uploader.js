@@ -10,7 +10,6 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { uploadError, uploadProgress, uploadStart, uploadSuccess, uploadValidationErrors } from '../../../actions/uploader';
 import { loadVideosSuccess } from '../../../actions/loadVideos';
 import { fileValidation, formatFileSize, isArrayEmpty, SimpleWebSocket } from '../../../common';
-import { ConfigContext } from '../../../context/Config';
 
 class Uploader extends Component {
     static displayName = 'Uploader';
@@ -22,30 +21,30 @@ class Uploader extends Component {
         uploadedFiles: []
     };
 
-    static contextType = ConfigContext;
-
     static propTypes = {
         url: PropTypes.string.isRequired,
         multiple: PropTypes.bool,
         progress: PropTypes.bool,
-        actions: PropTypes.object
+        actions: PropTypes.object,
+        maxFiles: PropTypes.number,
+        maxFileSize: PropTypes.number,
+        maxTotalFileSize: PropTypes.number,
+        allowedFileExtensions: PropTypes.arrayOf(PropTypes.string)
     };
 
     static defaultProps = {
         multiple: false,
         progress: false,
-        actions: {}
+        actions: {},
+        maxFiles: 0,
+        maxFileSize: 0,
+        maxTotalFileSize: 0,
+        allowedFileExtensions: []
     };
 
     constructor(...args) {
         super(...args);
 
-        const { config } = this.context;
-
-        this.maxFileSize = config.get('videoUpload.maxFileSize', 0);
-        this.allowedFileTypes = config.get('videoUpload.allowedFileTypes', []);
-        this.maxFiles = config.get('videoUpload.maxFiles', 0);
-        this.maxTotalFileSize = config.get('videoUpload.maxTotalFileSize', 0);
         this.webSocket = null;
         this.state = { ...Uploader.DEFAULT_STATE };
     }
@@ -137,8 +136,7 @@ class Uploader extends Component {
     };
 
     onChange = async event => {
-        const { allowedFileTypes, maxFiles, maxFileSize, maxTotalFileSize } = this;
-        const { actions } = this.props;
+        const { actions, allowedFileExtensions, maxFiles, maxFileSize, maxTotalFileSize } = this.props;
         const state = { ...Uploader.DEFAULT_STATE };
         const files = Array.from(event.target.files);
 
@@ -150,7 +148,7 @@ class Uploader extends Component {
 
         const result = await fileValidation({
             files,
-            allowedFileTypes,
+            allowedFileExtensions,
             maxFiles,
             maxFileSize,
             maxTotalFileSize

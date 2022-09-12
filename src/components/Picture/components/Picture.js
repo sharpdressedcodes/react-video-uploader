@@ -1,5 +1,6 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, createRef, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash.isequal';
 import classNames from 'classnames';
 import '../styles/picture.scss';
 
@@ -28,7 +29,7 @@ class Picture extends Component {
     constructor(...args) {
         super(...args);
 
-        this.container = React.createRef();
+        this.container = createRef();
         this.state = {
             mouseEntered: false
         };
@@ -40,19 +41,7 @@ class Picture extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const {
-            src, animatedSrc, alt, caption, order, className
-        } = this.props;
-        const { mouseEntered } = this.state;
-        const srcChanged = src !== nextProps.src;
-        const altChanged = alt !== nextProps.alt;
-        const captionChanged = caption !== nextProps.caption;
-        const orderChanged = order !== nextProps.order;
-        const classNameChanged = className !== nextProps.className;
-        const animatedSrcChanged = animatedSrc !== nextProps.animatedSrc;
-        const mouseEnteredChanged = mouseEntered !== nextState.mouseEntered;
-
-        return srcChanged || animatedSrcChanged || altChanged || captionChanged || orderChanged || classNameChanged || mouseEnteredChanged;
+        return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState) || !isEqual(this.context, nextContext);
     }
 
     componentWillUnmount() {

@@ -1,29 +1,34 @@
-import path from 'node:path';
 import { Buffer } from 'node:buffer';
 import { close, open, read, stat } from './fileSystem';
+import { getFileExtension, isArrayEmpty } from '../common';
 
 const validate = file => signature => new Promise((resolve, reject) => {
     (async () => {
-        const { check, length, position } = signature;
+        const { check = () => true, length = 0, offset = 0, position = 'start', value = null } = signature;
         let fd = null;
 
         try {
-            const stats = await stat(file.path);
+            const { size: fileSize } = await stat(file.path);
 
-            if (stats.size < length) {
+            if (fileSize < offset + length) {
                 resolve(false);
                 return;
             }
 
             const buffer = Buffer.alloc(length, null, 'utf8');
-            const startPosition = position === 'end' ? stats.size - length : 0;
+            const startPosition = (position === 'end' ? fileSize - length : 0) + offset;
 
             fd = await open(file.path, 'r');
 
             await read(fd, buffer, 0, buffer.length, startPosition);
             await close(fd);
 
-            resolve(check(buffer.toString('utf8')));
+            if (value) {
+                resolve(Buffer.from(value, 'binary').compare(buffer) === 0);
+                return;
+            }
+
+            resolve(check(buffer));
         } catch (err) {
             if (fd) {
                 try {
@@ -38,18 +43,17 @@ const validate = file => signature => new Promise((resolve, reject) => {
     })();
 });
 
-const validateFileSignature = (file, fileSignatures = {}) => new Promise((resolve, reject) => {
+const validateFileSignature = (file, allowedFileTypes = {}) => new Promise((resolve, reject) => {
     (async () => {
-        const fileExtension = path.extname(file.path).replace(/^\./, '');
+        const findSignatures = extension => {
+            const entry = Object.entries(allowedFileTypes).find(([, v]) => v?.extensions?.includes(extension));
 
-        if (!Object.keys(fileSignatures).includes(fileExtension)) {
-            resolve(true);
-            return;
-        }
+            return entry ? entry[1]?.signatures || [] : [];
+        };
+        const fileExtension = getFileExtension(file);
+        const signatures = findSignatures(fileExtension);
 
-        const signatures = fileSignatures[fileExtension];
-
-        if (!signatures) {
+        if (isArrayEmpty(signatures)) {
             resolve(true);
             return;
         }

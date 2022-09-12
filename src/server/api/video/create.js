@@ -61,16 +61,14 @@ export default async function handleVideoCreate(req, res, next) {
         });
 
         emitStep(1, 'Uploading');
-
         await uploadFilesAsync(req, res);
 
         emitStep(2, 'Validating');
-
         const files = Array.from(req.files);
         const validationResult = await enhancedFileValidation({
             files,
-            fileSignatures: config.get('server.fileSignatures', {}),
-            allowedFileTypes: config.get('videoUpload.allowedFileTypes', []),
+            allowedFileTypes: config.get('allowedFileTypes', {}),
+            allowedFileExtensions: config.get('allowedFileExtensions', []),
             maxFiles: config.get('videoUpload.maxFiles', 0),
             maxFileSize: config.get('videoUpload.maxFileSize', 0),
             maxTotalFileSize: config.get('videoUpload.maxTotalFileSize', 0)
@@ -78,7 +76,6 @@ export default async function handleVideoCreate(req, res, next) {
         const { invalidFiles, validFiles } = validationResult;
 
         emitStep(3, 'Parsing');
-
         const promises = validFiles.map((file, index) => new Promise((resolve, reject) => {
             (async () => {
                 try {
@@ -94,7 +91,6 @@ export default async function handleVideoCreate(req, res, next) {
                     }
 
                     emitStepFile(1, 'Converting', defaultStepFileData);
-
                     const converted = await convertVideo(file.path, {
                         progress: progress => {
                             emitStepFileProgress(1, 'Converting', progress.percent, defaultStepFileData);
@@ -134,7 +130,6 @@ export default async function handleVideoCreate(req, res, next) {
                     await writeFile(jsonFile, JSON.stringify(json));
 
                     emitStepFile(6, 'Done', defaultStepFileData);
-
                     resolve(true);
                 } catch (err) {
                     reject(err);

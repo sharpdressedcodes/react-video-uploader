@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash.isequal';
 import { connect } from 'react-redux';
 import { videoPlaybackError } from '../../../actions/video';
 // import PlayIcon from '@material-ui/icons/PlayCircleFilled';
@@ -43,17 +44,7 @@ class Video extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const {
-            src, poster, autoPlay, controls
-        } = this.props;
-        const { playing } = this.state;
-        const srcChanged = src !== nextProps.src;
-        const posterChanged = poster !== nextProps.poster;
-        const autoPlayChanged = autoPlay !== nextProps.autoPlay;
-        const controlsChanged = controls !== nextProps.controls;
-        const playingChanged = playing !== nextState.playing;
-
-        return srcChanged || posterChanged || autoPlayChanged || controlsChanged || playingChanged;
+        return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState) || !isEqual(this.context, nextContext);
     }
 
     componentWillUnmount() {

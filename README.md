@@ -35,7 +35,7 @@ npm run start
 Now open [http://localhost:3000/](http://localhost:3000/) in your browser.
 
 ## Config
-Config file is located in `./src/js/config.main.js`. Change any values in here as you see fit. Don't forget to rebuild the project afterwards.
+Config file is located in `./src/config/index.js`. Change any values in here as you see fit. Don't forget to rebuild the project afterwards.
 
 ## Tests
 #### Unit
@@ -61,7 +61,6 @@ docker run --rm --tty --name cypress --volume $PWD/:/home/node/app --workdir /ho
 ### TODO
 * Get unit tests working
 * Get cypress tests working
-* Refactor code, it's crap atm
 * Redux slices?
 * Render to node stream
 * service worker, web worker?
@@ -71,12 +70,9 @@ docker run --rm --tty --name cypress --volume $PWD/:/home/node/app --workdir /ho
 * swap express for fastify
 * Try using a nodejs worker thread for converting video
 * add websocket ping for server and client
-* Delete a video
-* Video player instead of html player
-
-* Build custom docker image after installing all the conversion software
-* Have a look at encoding the videos after they are uploaded, this way we can accept more formats like flv. Will need to use web sockets for this to show progress to the user.
-* Authenticating the user before allowing to POST
+* Video player instead of html player https://www.google.com/search?q=video+js+react
+* CRUD videos
+* Authenticating the user before allowing to CUD (create, update, delete)
 * Split up js and css + hot reloading/watch
 * Git hooks, lint staged
 * Stub the api return calls during `IS_TESTING`, then assert on the items in TeaserList in HomePage
@@ -87,3 +83,4 @@ docker run --rm --tty --name cypress --volume $PWD/:/home/node/app --workdir /ho
 * a11y
 * BEM
 * Update material ui to https://mui.com/material-ui/getting-started/installation/
+* Turn components into functions

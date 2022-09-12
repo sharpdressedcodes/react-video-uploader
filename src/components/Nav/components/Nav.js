@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash.isequal';
 import { NavLink } from 'react-router-dom';
 import '../styles/nav.scss';
 
@@ -11,9 +12,7 @@ class Nav extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const linksChanged = nextProps.links !== this.props.links;
-
-        return linksChanged;
+        return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState) || !isEqual(this.context, nextContext);
     }
 
     renderLinks() {

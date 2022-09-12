@@ -2,16 +2,18 @@ import FileValidator from './FileValidator';
 import FilesValidator from './FilesValidator';
 import isArrayEmpty from './isArrayEmpty';
 
-const fileValidation = async ({ allowedFileTypes = [], customValidator = null, files = [], maxFiles = 0, maxFileSize = 0, maxTotalFileSize = 0 }) => {
+const fileValidation = async ({
+    allowedFileExtensions = [], customValidator = null, files = [], maxFiles = 0, maxFileSize = 0, maxTotalFileSize = 0
+}) => {
     const filesValidator = new FilesValidator({ files, maxFiles, maxTotalFileSize });
     const fileErrors = {};
     const overallErrors = [];
     const validFiles = [];
     const invalidFiles = [];
-    const fileValidations = files.map(file => new Promise((resolve) => {
+    const fileValidations = files.map(file => new Promise(resolve => {
         (async () => {
             try {
-                const validator = new FileValidator({ file, maxFileSize, allowedFileTypes });
+                const validator = new FileValidator({ file, maxFileSize, allowedFileExtensions });
 
                 if (!await validator.validate(customValidator)) {
                     resolve(validator.validationErrors);
