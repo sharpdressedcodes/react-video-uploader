@@ -136,3 +136,6 @@ RUN \
     rm -rf /var/lib/apt/lists/*
 
 USER node
+
+# Ignore npm update notices
+RUN echo "update-notifier=false" > $HOME/.npmrc
