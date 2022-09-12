@@ -53,7 +53,7 @@ class App extends Component {
                                 <Route
                                     key={ path }
                                     path={ path }
-                                    exact={ Boolean(exact) }
+                                    exact={ exact }
                                     element={ <Page { ...rest } /> }
                                 />
                             ))}
