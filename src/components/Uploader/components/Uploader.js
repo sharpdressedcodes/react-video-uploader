@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
-import xhrAdapter from 'axios/lib/adapters/xhr';
 import { connect } from 'react-redux';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
@@ -10,7 +8,9 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { uploadError, uploadProgress, uploadStart, uploadSuccess, uploadValidationErrors } from '../../../actions/uploader';
 import { loadVideosSuccess } from '../../../actions/loadVideos';
 import { fileValidation, formatFileSize, isArrayEmpty, SimpleWebSocket } from '../../../common';
+import upload from '../api/upload';
 
+// TODO: decouple video stuff from this component
 class Uploader extends Component {
     static displayName = 'Uploader';
 
@@ -135,6 +135,13 @@ class Uploader extends Component {
         // console.log('upload.step.file.progress', params);
     };
 
+    onUploadProgress = ProgressEvent => {
+        const percentage = (ProgressEvent.loaded / ProgressEvent.total) * 100;
+
+        this.props.actions.uploadProgress({ percentage });
+        this.setState({ loaded: percentage });
+    };
+
     onChange = async event => {
         const { actions, allowedFileExtensions, maxFiles, maxFileSize, maxTotalFileSize } = this.props;
         const state = { ...Uploader.DEFAULT_STATE };
@@ -188,16 +195,7 @@ class Uploader extends Component {
             this.setState({ uploading: true, loaded: 0 });
             actions.uploadStart({ url });
 
-            // TODO: move this into api
-            const result = await axios.post(url, data, {
-                onUploadProgress: ProgressEvent => {
-                    const percentage = (ProgressEvent.loaded / ProgressEvent.total) * 100;
-
-                    actions.uploadProgress({ percentage });
-                    this.setState({ loaded: percentage });
-                },
-                adapter: xhrAdapter
-            });
+            const result = await upload({ url, data, onProgress: this.onUploadProgress });
 
             if (result.data.validation) {
                 actions.uploadValidationErrors({ validation: result.data.validation });
