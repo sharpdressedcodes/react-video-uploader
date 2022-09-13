@@ -24,7 +24,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Run linting, unit tests, auditing and build process
+      - name: Run linting, unit tests, build process, e2e tests and audit
         env:
           IS_DOCKER: 1
           TZ: Australia/Sydney
