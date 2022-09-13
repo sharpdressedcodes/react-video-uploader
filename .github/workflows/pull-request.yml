@@ -52,7 +52,7 @@ jobs:
           docker-compose -f docker-compose.ci.yml exec -T --user node node npm run test:ci
           \
           echo "Running build process..."
-          docker-compose -f docker-compose.ci.yml exec -T -e USER_ID=`id -u` -e GROUP_ID=`id -g` --user node node npm run build
+          docker-compose -f docker-compose.ci.yml exec -T -e USER_ID=`id -u` -e GROUP_ID=`id -g` --user node node echo "USER_ID=`id -u` GROUP_ID=`id -g` whoami=`whoami`" && ls -lAF && npm run build
           \
           echo "Running audit..."
           docker-compose -f docker-compose.ci.yml exec -T --user node node npm run audit:ci
