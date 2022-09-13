@@ -118,6 +118,11 @@
 
 FROM sharpdressedcodes/node:16.15.0-bullseye-slim
 
+ARG USER_ID
+ARG GROUP_ID
+ARG TZ=Australia/Sydney
+ENV IS_DOCKER=1
+
 USER root
 
 #RUN { \
