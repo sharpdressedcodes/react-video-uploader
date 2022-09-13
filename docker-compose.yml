@@ -13,6 +13,8 @@ services:
     container_name: node
     volumes:
       - ./:/home/node/app
+      - ./cypress-cache:/home/node/.cache
+      - /tmp/.X11-unix:/tmp/.X11-unix
     networks:
       - custom
     ports:
@@ -24,6 +26,7 @@ services:
     env_file:
       - .env
     environment:
+      DISPLAY: unix:0
       IS_DOCKER: 1
       TZ: ${TZ:-Australia/Sydney}
 

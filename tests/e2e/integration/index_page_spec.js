@@ -1,18 +1,16 @@
 const url = '/';
 
 describe(`The Home Page`, () => {
-
     it(`Should successfully load`, () => {
-
         cy.visit(url);
 
         cy.get('h1')
-            .should((el) => {
+            .should(el => {
                 expect(el).to.have.length(1);
             });
 
         cy.get('.page')
-            .should((el) => {
+            .should(el => {
                 expect(el).to.have.length(1);
             });
 
@@ -24,7 +22,5 @@ describe(`The Home Page`, () => {
 
         cy.get('.navbar ul li:nth-child(2)')
             .should('have.text', 'Upload');
-
     });
-
 });

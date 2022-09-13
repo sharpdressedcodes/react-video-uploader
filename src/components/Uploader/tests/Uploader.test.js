@@ -37,10 +37,10 @@ function createXHRMock(data = mockData) {
 }
 
 describe(`Ensure the Uploader works correctly`, () => {
-    let wrapper = null;
-    let component = null;
-    let store = null;
-    let input = null;
+    const wrapper = null;
+    const component = null;
+    const store = null;
+    const input = null;
     // let mockXHR = null;
 
     // beforeEach(() => {
@@ -95,7 +95,7 @@ describe(`Ensure the Uploader works correctly`, () => {
     //     expect(component.instance().state).toEqual(Uploader.DEFAULT_STATE);
     // });
     //
-    // it(`Should fail validation because the file has the wrong mime type`, () => {
+    // it(`Should fail validation because the file has the wrong file extension`, () => {
     //     expect(input.length).toEqual(1);
     //     expect(component.text()).toContain('No files selected');
     //     expect(component.find('.files').length).toEqual(0);
@@ -103,7 +103,7 @@ describe(`Ensure the Uploader works correctly`, () => {
     //
     //     input.simulate('change', {
     //         target: {
-    //             files: filesMock.fileWrongMimeType
+    //             files: filesMock.fileWrongFileExtension
     //         }
     //     });
     //

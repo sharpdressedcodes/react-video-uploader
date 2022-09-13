@@ -1,7 +1,7 @@
 const filesMock = {
     pass: [new File(['    ftyp'], 'example.mp4', { type: 'video/mp4' })],
     fileTooLarge: [new File(['    ftyp        '], 'too-large.mp4', { type: 'video/mp4' })],
-    fileWrongMimeType: [new File(['    ftyp'], 'wrong-mime-type.flv', { type: 'video/flv' })],
+    fileWrongFileExtension: [new File(['    ftyp'], 'wrong-mime-type.exe', { type: 'application/x-msdownload' })],
     fileBadHeader: [new File(['    evil'], 'bad-header.mp4', { type: 'video/mp4' })],
     filesTooLarge: [
         new File(['    ftyp  '], 'files-too-large-1.mp4', { type: 'video/mp4' }),

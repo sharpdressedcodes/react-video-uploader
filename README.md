@@ -8,13 +8,13 @@ You can get away without having ffmpeg and either flvtool2 or flvmeta, as long a
 
 ## With docker
 
-```shell script
+```shell
 docker-compose up -d --build
 ```
 
 then exec into the container:
 
-```shell script
+```shell
 docker exec -it node bash
 ```
 
@@ -24,7 +24,7 @@ Then continue on as normal
 
 Install modules:
 
-```shell script
+```shell
 npm i
 ```
 
@@ -32,19 +32,19 @@ Until we update material-ui, there may be an error when running `npm i`:
 
 In this case, try running:
 
-```shell script
+```shell
 npm i --legacy-peer-deps
 ```
 
 Build everything:
 
-```shell script
+```shell
 npm run build
 ```
 
 Serve files from the `./build/` directory:
 
-```shell script
+```shell
 npm run start
 ```
 
@@ -58,26 +58,23 @@ Config file is located in `./src/config/index.js`. Change any values in here as 
 
 ### Unit
 
-```shell script
+```shell
 npm test
 ```
 
-### Functional
+### E2E
 
 Cypress will set a cookie `IS_TESTING = 1` before each test. The config will then be loaded based on this value, either normal or test config.
+You will need to start the server first:
 
-2 choices here. Either install Cypress locally (this will happen if you have node/npm locally), or run the docker image, which is just over 1GB.
-
-Locally:
-
-```shell script
-npm run test:functional
+```shell
+npm run build && npm run start
 ```
 
-With docker:
+Then run the tests:
 
-```shell script
-docker run --rm --tty --name cypress --volume $PWD/:/home/node/app --workdir /home/node/app --network host -e DISPLAY= -e CYPRESS_BASE_URL='http://172.17.0.1:3000/' sharpdressedcodes/node:10.16.3-stretch-slim-cypress-3.4.1 npm run test:functional
+```shell
+npm run test:e2e
 ```
 
 #### TODO
