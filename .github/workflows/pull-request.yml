@@ -41,7 +41,7 @@ jobs:
           \
           echo "Installing dependencies..."
           echo "$(grep -v '"cypress":' package.json)" >package.json
-          docker-compose -f docker-compose.ci.yml exec -T --user node node npm i --legacy-peer-deps
+          docker-compose -f docker-compose.ci.yml exec -T --user `whoami` node npm i --legacy-peer-deps
           \
           echo "Running linting..."
           docker-compose -f docker-compose.ci.yml exec -T --user node node npm run lint
