@@ -40,7 +40,7 @@ jobs:
           \
           echo "Installing dependencies..."
           echo "$(grep -v '"cypress":' package.json)" >package.json
-          docker-compose -f docker-compose.ci.yml exec -T --user root node npm i
+          docker-compose -f docker-compose.ci.yml exec -T -e USER_ID=`id -u` -e GROUP_ID=`id -g` --user node node npm i
           \
           echo "Running linting..."
           docker-compose -f docker-compose.ci.yml exec -T --user node node npm run lint
@@ -49,7 +49,7 @@ jobs:
           docker-compose -f docker-compose.ci.yml exec -T --user node node npm run test:ci
           \
           echo "Running build process..."
-          docker-compose -f docker-compose.ci.yml exec -T --user root node npm run build
+          docker-compose -f docker-compose.ci.yml exec -T -e USER_ID=`id -u` -e GROUP_ID=`id -g` --user node node npm run build
           \
           echo "Running audit..."
           docker-compose -f docker-compose.ci.yml exec -T --user node node npm run audit:ci
