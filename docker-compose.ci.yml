@@ -10,20 +10,25 @@ services:
     build:
       context: ./docker/node
       dockerfile: Dockerfile
+      args:
+        - TZ=${TZ}
+        - USER_ID=${USER_ID}
+        - GROUP_ID=${GROUP_ID}
     container_name: node
     volumes:
       - ./:/home/node/app
     networks:
       - custom
     ports:
-      - '3000:3000'
-      - '8080:8080'
+      - '80:3000'
     restart: unless-stopped
     tty: true
     working_dir: /home/node/app
     environment:
       IS_DOCKER: 1
       TZ: ${TZ:-Australia/Sydney}
+      USER_ID: ${USER_ID}
+      GROUP_ID: ${GROUP_ID}
 
 #  cypress:
 #    image: 'sharpdressedcodes/node:10.16.3-stretch-slim-cypress-3.4.1'
