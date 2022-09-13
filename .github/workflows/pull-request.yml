@@ -30,6 +30,7 @@ jobs:
           TZ: Australia/Sydney
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        # Remove cypress since we will run that in its own container anyway
         run: |
           export USER_ID=`id -u`
           export GROUP_ID=`id -g`
@@ -38,12 +39,9 @@ jobs:
           docker-compose -f docker-compose.ci.yml up -d --build
           docker ps -a
           \
-          echo "USER_ID=$USER_ID GROUP_ID=$GROUP_ID whoami=`whoami`"
-          ls -lAF
-          \
           echo "Installing dependencies..."
           echo "$(grep -v '"cypress":' package.json)" >package.json
-          docker-compose -f docker-compose.ci.yml exec -T -e USER_ID=`id -u` -e GROUP_ID=`id -g` --user node node echo "USER_ID=`id -u` GROUP_ID=`id -g` whoami=`whoami`" && ls -lAF && npm i --legacy-peer-deps
+          docker-compose -f docker-compose.ci.yml exec -T --user node node npm i --legacy-peer-deps
           \
           echo "Running linting..."
           docker-compose -f docker-compose.ci.yml exec -T --user node node npm run lint
@@ -52,7 +50,7 @@ jobs:
           docker-compose -f docker-compose.ci.yml exec -T --user node node npm run test:ci
           \
           echo "Running build process..."
-          docker-compose -f docker-compose.ci.yml exec -T -e USER_ID=`id -u` -e GROUP_ID=`id -g` --user node node echo "USER_ID=`id -u` GROUP_ID=`id -g` whoami=`whoami`" && ls -lAF && npm run build
+          docker-compose -f docker-compose.ci.yml exec -T --user node node npm run build
           \
           echo "Running audit..."
           docker-compose -f docker-compose.ci.yml exec -T --user node node npm run audit:ci
