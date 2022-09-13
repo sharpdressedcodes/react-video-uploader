@@ -38,9 +38,12 @@ jobs:
           docker-compose -f docker-compose.ci.yml up -d --build
           docker ps -a
           \
+          echo "USER_ID=$USER_ID GROUP_ID=$GROUP_ID whoami=`whoami`"
+          ls -lAF
+          \
           echo "Installing dependencies..."
           echo "$(grep -v '"cypress":' package.json)" >package.json
-          docker-compose -f docker-compose.ci.yml exec -T -e USER_ID=`id -u` -e GROUP_ID=`id -g` --user node node npm i
+          docker-compose -f docker-compose.ci.yml exec -T -e USER_ID=`id -u` -e GROUP_ID=`id -g` --user node node echo "USER_ID=`id -u` GROUP_ID=`id -g` whoami=`whoami`" && ls -lAF && npm i
           \
           echo "Running linting..."
           docker-compose -f docker-compose.ci.yml exec -T --user node node npm run lint
