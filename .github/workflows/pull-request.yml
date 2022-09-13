@@ -42,7 +42,7 @@ jobs:
           echo "USER_ID=${USER_ID} GROUP_ID=${GROUP_ID}"
           \
           echo "Installing dependencies..."
-          USER_ID=`id -u` GROUP_ID=`id -g` && docker-compose -f docker-compose.ci.yml exec -T --user root node npm i
+          CYPRESS_CACHE_FOLDER=/home/node/app/.cypress-cache USER_ID=`id -u` GROUP_ID=`id -g` && docker-compose -f docker-compose.ci.yml exec -T --user root node npm i
           \
           echo "Running linting..."
           USER_ID=`id -u` GROUP_ID=`id -g` && docker-compose -f docker-compose.ci.yml exec -T --user node node npm run lint
