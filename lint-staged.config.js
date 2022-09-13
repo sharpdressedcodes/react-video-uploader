@@ -7,20 +7,20 @@ module.exports = allStagedFiles => {
     const styleFiles = micromatch(allStagedFiles, ['**/*.scss', '**/*.css']);
     const linters = [];
 
-    if (markdownFiles?.length) {
-        console.log('Found markdownFiles for linting', markdownFiles);
-        linters.push(`npm run lint:md:staged -- ${markdownFiles.join(' ')}`);
-    }
-
-    if (codeFiles?.length) {
-        console.log('Found codeFiles for linting', codeFiles);
-        linters.push(`npm run lint:js:staged -- ${codeFiles.join(' ')}`);
-    }
-
-    if (styleFiles?.length) {
-        console.log('Found styleFiles for linting', styleFiles);
-        linters.push(`npm run lint:scss:staged -- ${styleFiles.join(' ')}`);
-    }
+    // if (markdownFiles?.length) {
+    //     console.log('Found markdownFiles for linting', markdownFiles);
+    //     linters.push(`npm run lint:md:staged -- ${markdownFiles.join(' ')}`);
+    // }
+    //
+    // if (codeFiles?.length) {
+    //     console.log('Found codeFiles for linting', codeFiles);
+    //     linters.push(`npm run lint:js:staged -- ${codeFiles.join(' ')}`);
+    // }
+    //
+    // if (styleFiles?.length) {
+    //     console.log('Found styleFiles for linting', styleFiles);
+    //     linters.push(`npm run lint:scss:staged -- ${styleFiles.join(' ')}`);
+    // }
 
     return linters;
     // return [
