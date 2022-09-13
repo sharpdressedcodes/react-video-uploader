@@ -54,7 +54,7 @@
         "lint:scss:fix": "npm run lint:scss -- --fix",
         "lint": "concurrently --names \"yamllint,markdownlint,stylelint,eslint\" -c \"bgMagenta.bold,bgGreen.bold,bgBlue.bold,bgCyan.bold\" \"npm run lint:yml\" \"npm run lint:md\" \"npm run lint:scss\" \"npm run lint:js\"",
         "lint:fix": "concurrently --names \"yamllint,markdownlint,stylelint,eslint\" -c \"bgMagenta.bold,bgGreen.bold,bgBlue.bold,bgCyan.bold\" \"npm run lint:yml\" \"npm run lint:md:fix\" \"npm run lint:scss:fix\" \"npm run lint:js:fix\"",
-        "test": "cross-env NODE_ENV=test jest --colors --passWithNoTests",
+        "test": "cross-env NODE_ENV=test jest --colors --passWithNoTests --testPathPattern=\"./src/.*.test.js\"",
         "test:coverage": "npm run test -- --coverage",
         "test:ci": "cross-env CI=true npm run test",
         "test:ci:coverage": "cross-env CI=true npm run test:coverage",
