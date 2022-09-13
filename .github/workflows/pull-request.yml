@@ -30,7 +30,8 @@ jobs:
           TZ: Australia/Sydney
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-        # Remove cypress since we will run that in its own container anyway
+        # Remove cypress since we will run that in its own container anyway.
+        # NOTE: using `echo "" &&` below otherwise the commands fail. Need to work out why this happens.
         run: |
           export USER_ID=`id -u`
           export GROUP_ID=`id -g`
@@ -41,18 +42,18 @@ jobs:
           \
           echo "Installing dependencies..."
           echo "$(grep -v '"cypress":' package.json)" >package.json
-          docker-compose -f docker-compose.ci.yml exec -T node npm i --legacy-peer-deps
+          docker-compose -f docker-compose.ci.yml exec -T node echo "" && npm i --legacy-peer-deps
           \
           echo "Running linting..."
-          docker-compose -f docker-compose.ci.yml exec -T --user node node npm run lint
+          docker-compose -f docker-compose.ci.yml exec -T node npm run lint
           \
           echo "Running unit tests..."
-          docker-compose -f docker-compose.ci.yml exec -T --user node node npm run test:ci
+          docker-compose -f docker-compose.ci.yml exec -T node npm run test:ci
           \
           echo "Running build process..."
-          docker-compose -f docker-compose.ci.yml exec -T --user node node echo "" && npm run build
+          docker-compose -f docker-compose.ci.yml exec -T node echo "" && npm run build
           \
           echo "Running audit..."
-          docker-compose -f docker-compose.ci.yml exec -T --user node node npm run audit:ci
+          docker-compose -f docker-compose.ci.yml exec -T node npm run audit:ci
           \
           echo "🚀 Passed all checks successfully 💪"
