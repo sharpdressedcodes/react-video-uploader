@@ -33,6 +33,7 @@ jobs:
         run: |
           export USER_ID=`id -u`
           export GROUP_ID=`id -g`
+          export CYPRESS_CACHE_FOLDER=/home/node/app/.cypress-cache
           docker login -u $DOCKER_USERNAME -p $DOCKER_ACCESS_TOKEN
           USER_ID=`id -u` GROUP_ID=`id -g` && docker-compose -f docker-compose.ci.yml down
           USER_ID=`id -u` GROUP_ID=`id -g` && docker-compose -f docker-compose.ci.yml up -d --build
