@@ -27,6 +27,14 @@ Install modules:
 npm i
 ```
 
+Until we update material-ui, there may be an error when running `npm i`:
+
+In this case, try running:
+
+```shell script
+npm i --legacy-peer-deps
+```
+
 Build everything:
 
 ```shell script
