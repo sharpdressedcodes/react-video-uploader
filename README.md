@@ -3,9 +3,8 @@
 This project uses [fluent-ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg) to generate preview thumbnails, gifs, posters and media info.
 
 To get going, you can either use with or without docker.
-If you use without docker, you'll need node, npm, cypress, ffmpeg, ffprobe and either flvtool2 or flvmeta installed.
-You can get away without having ffmpeg, ffprobe and either flvtool2 or flvmeta, as long as you don't upload any files.
-You can also get away without having Cypress, as long as you dont run any functional tests.
+If you use without docker, you'll need node, npm, ffmpeg and either flvtool2 or flvmeta installed.
+You can get away without having ffmpeg and either flvtool2 or flvmeta, as long as you don't upload any files.
 
 ## With docker
 
@@ -20,6 +19,8 @@ docker exec -it node bash
 ```
 
 Then continue on as normal
+
+## With/Without docker
 
 Install modules:
 
@@ -104,4 +105,3 @@ docker run --rm --tty --name cypress --volume $PWD/:/home/node/app --workdir /ho
 * BEM
 * Update material ui to https://mui.com/material-ui/getting-started/installation/
 * Turn components into functions
-* GitHub actions
