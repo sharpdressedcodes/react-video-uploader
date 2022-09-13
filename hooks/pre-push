@@ -15,7 +15,7 @@ CONTAINER_DIR=/home/node/app
 PROJECT_NAME="$( basename "${ROOT_DIR}" )"
 DOCKER_IMAGE="${PROJECT_NAME}_node"
 #DOCKER_IMAGE="sharpdressedcodes/node:14.17.3-buster-slim"
-hookFile=${ROOT_DIR}/.husky/pre-commit
+hookFile=${ROOT_DIR}/.husky/pre-push
 # Get the 5th line in the hook file
 hookContents=$(sed -n 5p $hookFile)
 
