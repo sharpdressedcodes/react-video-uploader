@@ -78,7 +78,7 @@ server.on('error', err => {
 
 const listener = server.listen(
     process.env.PORT || config.get('server.port', DEFAULT_PORT),
-    process.env.CI ? 'localhost' : config.get('server.hostName', DEFAULT_HOSTNAME),
+    config.get('server.hostName', DEFAULT_HOSTNAME),
     err => {
         if (err) {
             server.close();
