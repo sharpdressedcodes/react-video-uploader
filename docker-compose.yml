@@ -13,6 +13,8 @@ services:
     container_name: node
     volumes:
       - ./:/home/node/app
+      - ./cypress-cache:/home/node/.cache
+      - /tmp/.X11-unix:/tmp/.X11-unix
     networks:
       - custom
     ports:
@@ -21,6 +23,26 @@ services:
     restart: unless-stopped
     tty: true
     working_dir: /home/node/app
+    env_file:
+      - .env
     environment:
+      DISPLAY: unix:0
       IS_DOCKER: 1
       TZ: ${TZ:-Australia/Sydney}
+
+  git_hook_installer:
+    image: sharpdressedcodes/git-hooks-installer:1.0.0-stretch-slim
+    #    build:
+    #      context: docker/git_hooks_installer
+    #      dockerfile: Dockerfile
+    #      args:
+    #        - USER_ID=${USER_ID:-0}
+    #        - USER_NAME=${USER_NAME:-node}
+    #        - GROUP_ID=${GROUP_ID:-0}
+    #        - GROUP_NAME=${GROUP_NAME:-node}
+    container_name: git_hook_installer
+    volumes:
+      - ./.git:/tmp/.git
+      - ./hooks:/tmp/hooks
+    networks:
+      - custom

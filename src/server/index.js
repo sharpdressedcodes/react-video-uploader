@@ -76,18 +76,22 @@ server.on('error', err => {
     throw err;
 });
 
-const listener = server.listen(process.env.PORT || config.get('server.port', DEFAULT_PORT), config.get('server.hostName', DEFAULT_HOSTNAME), err => {
-    if (err) {
-        server.close();
-        throw err;
+const listener = server.listen(
+    process.env.PORT || config.get('server.port', DEFAULT_PORT),
+    config.get('server.hostName', DEFAULT_HOSTNAME),
+    err => {
+        if (err) {
+            server.close();
+            throw err;
+        }
+
+        const { address, port } = listener.address();
+        const hostName = address === DEFAULT_HOSTNAME ? 'localhost' : address;
+
+        // eslint-disable-next-line no-console
+        console.log([
+            `${chalk.green('Server ready!')} You can view the app at ${chalk.blue(`http://${hostName}:${port}${routePaths.homePage || '/'}`)}`,
+            chalk.yellow(`press [${isMac ? 'COMMAND + .' : 'CTRL + C'}] to cancel`)
+        ].join('\n'));
     }
-
-    const { address, port } = listener.address();
-    const hostName = address === DEFAULT_HOSTNAME ? 'localhost' : address;
-
-    // eslint-disable-next-line no-console
-    console.log([
-        `${chalk.green('Server ready!')} You can view the app at ${chalk.blue(`http://${hostName}:${port}${routePaths.homePage || '/'}`)}`,
-        chalk.yellow(`press [${isMac ? 'COMMAND + .' : 'CTRL + C'}] to cancel`)
-    ].join('\n'));
-});
+);

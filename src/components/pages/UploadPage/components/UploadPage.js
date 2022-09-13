@@ -56,23 +56,12 @@ class UploadPage extends Component {
         const maxFiles = config.get('videoUpload.maxFiles', 0);
         const maxFileSize = config.get('videoUpload.maxFileSize', 0);
         const maxTotalFileSize = config.get('videoUpload.maxTotalFileSize', 0);
-        const allowedFileTypes = config.get('videoUpload.allowedFileTypes', []);
+        const allowedFileExtensions = config.get('allowedFileExtensions', []);
         const formattedMaxFileSize = formatFileSize(maxFileSize);
         const formattedMaxTotalFileSize = formatFileSize(maxTotalFileSize);
 
         return [
-            {
-                title: 'Allowed file types:',
-                text: allowedFileTypes.map(mimeType => {
-                    const pos = mimeType.lastIndexOf('/');
-
-                    if (pos > -1) {
-                        return mimeType.substring(pos + 1);
-                    }
-
-                    return mimeType;
-                }).join(', ')
-            },
+            { title: 'Allowed file types:', text: allowedFileExtensions.join(', ') },
             { title: 'Maximum file size:', text: formattedMaxFileSize },
             { title: 'Maximum files:', text: maxFiles },
             { title: 'Maximum files size:', text: formattedMaxTotalFileSize }
@@ -80,6 +69,12 @@ class UploadPage extends Component {
     }
 
     render() {
+        const { config } = this.context;
+        const maxFiles = config.get('videoUpload.maxFiles', 0);
+        const maxFileSize = config.get('videoUpload.maxFileSize', 0);
+        const maxTotalFileSize = config.get('videoUpload.maxTotalFileSize', 0);
+        const allowedFileExtensions = config.get('allowedFileExtensions', []);
+
         return (
             <div className="page-upload">
                 <h2>Upload</h2>
@@ -89,6 +84,10 @@ class UploadPage extends Component {
                         url={ this.context.config.get('endpoints.api.video.upload') }
                         multiple
                         progress
+                        maxFiles={ maxFiles }
+                        maxFileSize={ maxFileSize }
+                        maxTotalFileSize={ maxTotalFileSize }
+                        allowedFileExtensions={ allowedFileExtensions }
                     />
                 </section>
             </div>

@@ -1,38 +1,22 @@
 import get from 'lodash.get';
+import { fileTypes as allowedFileTypes, fileExtensions as allowedFileExtensions } from './fileTypes';
 
 const publicPath = 'data/uploads';
 const path = `build/${publicPath}`;
 const maxFileSize = 1024 * 1024 * 150; // MB
 const maxFiles = 10;
-
 const config = {
+    allowedFileTypes,
+    allowedFileExtensions,
     server: {
         hostName: '0.0.0.0',
-        port: 3000,
-        fileSignatures: {
-            mp4: [{
-                // Ignore first 4 bytes, only check the next 4
-                position: 'start',
-                length: 8,
-                check: str => str.endsWith('ftyp')
-            }]
-        }
+        port: 3000
     },
     videoUpload: {
         thumbnailDimensions: '320x180', // 16:9
         maxFiles,
         maxFileSize,
         maxTotalFileSize: maxFileSize * maxFiles,
-        allowedFileTypes: [
-            // 'video/x-flv',
-            'video/mp4'
-            // 'application/x-mpegURL',
-            // 'video/MP2T',
-            // 'video/3gpp',
-            // 'video/quicktime',
-            // 'video/x-msvideo',
-            // 'video/x-ms-wmv'
-        ],
         path,
         publicPath
     },
@@ -52,7 +36,6 @@ export const testConfig = {
     ...config,
     videoUpload: {
         ...config.videoUpload,
-        allowedFileTypes: ['video/mp4'],
         maxFiles: 5,
         maxFileSize: 10,
         maxTotalFileSize: 40

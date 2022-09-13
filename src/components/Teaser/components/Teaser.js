@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash.isequal';
 import classNames from 'classnames';
 import { Picture } from '../../index';
 
@@ -29,19 +30,7 @@ class Teaser extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        const {
-            title, imageSrc, animatedImageSrc, imageAlt, text, order, className
-        } = this.props;
-        const titleChanged = title !== nextProps.title;
-        const imageSrcChanged = imageSrc !== nextProps.imageSrc;
-        const animatedImageSrcChanged = animatedImageSrc !== nextProps.animatedImageSrc;
-        const imageAltChanged = imageAlt !== nextProps.imageAlt;
-        const textChanged = text !== nextProps.text;
-        const orderChanged = order !== nextProps.order;
-        const classNameChanged = className !== nextProps.className;
-
-        return titleChanged || imageSrcChanged || animatedImageSrcChanged
-            || imageAltChanged || textChanged || orderChanged || classNameChanged;
+        return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState) || !isEqual(this.context, nextContext);
     }
 
     render() {
@@ -54,26 +43,26 @@ class Teaser extends Component {
             const key = `teaser-${index}-${item}`;
 
             switch (item) {
-            case 'title':
-                if (title) {
-                    elements.push(<div key={ key } className="teaser-title">{title}</div>);
-                }
-                break;
-            case 'image':
-                if (imageSrc) {
-                    elements.push(
-                        <div key={ key } className="teaser-image">
-                            <Picture src={ imageSrc } animatedSrc={ animatedImageSrc } alt={ imageAlt } />
-                        </div>
-                    );
-                }
-                break;
-            case 'text':
-                if (text) {
-                    elements.push(<div key={ key } className="teaser-text">{text}</div>);
-                }
-                break;
-            default:
+                case 'title':
+                    if (title) {
+                        elements.push(<div key={ key } className="teaser-title">{title}</div>);
+                    }
+                    break;
+                case 'image':
+                    if (imageSrc) {
+                        elements.push(
+                            <div key={ key } className="teaser-image">
+                                <Picture src={ imageSrc } animatedSrc={ animatedImageSrc } alt={ imageAlt } />
+                            </div>
+                        );
+                    }
+                    break;
+                case 'text':
+                    if (text) {
+                        elements.push(<div key={ key } className="teaser-text">{text}</div>);
+                    }
+                    break;
+                default:
             }
         });
 

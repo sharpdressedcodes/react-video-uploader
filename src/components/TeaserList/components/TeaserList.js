@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash.isequal';
 import classNames from 'classnames';
 
 class TeaserList extends Component {
@@ -16,8 +17,7 @@ class TeaserList extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        // return this.props.children !== nextProps.children;
-        return false;
+        return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState) || !isEqual(this.context, nextContext);
     }
 
     render() {

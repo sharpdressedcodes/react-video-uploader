@@ -3,5 +3,7 @@ build
 node_modules
 tests/unit/coverage
 tests/unit/**/__snapshots__
-tests/functional/cypress/screenshots
-tests/functional/cypress/videos
+tests/e2e/downloads
+tests/e2e/screenshots
+tests/e2e/videos
+.env

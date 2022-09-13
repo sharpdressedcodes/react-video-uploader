@@ -1,0 +1,5 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Docker reads line 5 and runs that as the hook, so keep everything on line 5.
+npm run build && npm run test

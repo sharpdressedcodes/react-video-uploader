@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Account for when running npm release (docker not installed inside docker container)
+if [[ "$(which docker)" == "" ]]; then
+    exit 0
+fi
+
+echo "Running ${BASH_SOURCE[0]##*/} hook..."
+
+# Get the script's directory
+DIR="$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )")"
+ROOT_DIR="$( dirname "${DIR}" )"
+CONTAINER_DIR=/home/node/app
+# Get the project directory name
+PROJECT_NAME="$( basename "${ROOT_DIR}" )"
+DOCKER_IMAGE="${PROJECT_NAME}_node"
+#DOCKER_IMAGE="sharpdressedcodes/node:14.17.3-buster-slim"
+hookFile=${ROOT_DIR}/.husky/pre-commit
+# Get the 5th line in the hook file
+hookContents=$(sed -n 5p $hookFile)
+
+docker run \
+    --rm \
+    --tty \
+    --volume "${ROOT_DIR}":${CONTAINER_DIR} \
+    --workdir ${CONTAINER_DIR} \
+    --network "host" \
+    "${DOCKER_IMAGE}" \
+    bash -c "$hookContents"

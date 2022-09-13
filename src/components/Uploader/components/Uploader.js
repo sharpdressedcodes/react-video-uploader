@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
-import xhrAdapter from 'axios/lib/adapters/xhr';
 import { connect } from 'react-redux';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
@@ -10,8 +8,9 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { uploadError, uploadProgress, uploadStart, uploadSuccess, uploadValidationErrors } from '../../../actions/uploader';
 import { loadVideosSuccess } from '../../../actions/loadVideos';
 import { fileValidation, formatFileSize, isArrayEmpty, SimpleWebSocket } from '../../../common';
-import { ConfigContext } from '../../../context/Config';
+import upload from '../api/upload';
 
+// TODO: decouple video stuff from this component
 class Uploader extends Component {
     static displayName = 'Uploader';
 
@@ -22,30 +21,30 @@ class Uploader extends Component {
         uploadedFiles: []
     };
 
-    static contextType = ConfigContext;
-
     static propTypes = {
         url: PropTypes.string.isRequired,
         multiple: PropTypes.bool,
         progress: PropTypes.bool,
-        actions: PropTypes.object
+        actions: PropTypes.object,
+        maxFiles: PropTypes.number,
+        maxFileSize: PropTypes.number,
+        maxTotalFileSize: PropTypes.number,
+        allowedFileExtensions: PropTypes.arrayOf(PropTypes.string)
     };
 
     static defaultProps = {
         multiple: false,
         progress: false,
-        actions: {}
+        actions: {},
+        maxFiles: 0,
+        maxFileSize: 0,
+        maxTotalFileSize: 0,
+        allowedFileExtensions: []
     };
 
     constructor(...args) {
         super(...args);
 
-        const { config } = this.context;
-
-        this.maxFileSize = config.get('videoUpload.maxFileSize', 0);
-        this.allowedFileTypes = config.get('videoUpload.allowedFileTypes', []);
-        this.maxFiles = config.get('videoUpload.maxFiles', 0);
-        this.maxTotalFileSize = config.get('videoUpload.maxTotalFileSize', 0);
         this.webSocket = null;
         this.state = { ...Uploader.DEFAULT_STATE };
     }
@@ -136,9 +135,15 @@ class Uploader extends Component {
         // console.log('upload.step.file.progress', params);
     };
 
+    onUploadProgress = ProgressEvent => {
+        const percentage = (ProgressEvent.loaded / ProgressEvent.total) * 100;
+
+        this.props.actions.uploadProgress({ percentage });
+        this.setState({ loaded: percentage });
+    };
+
     onChange = async event => {
-        const { allowedFileTypes, maxFiles, maxFileSize, maxTotalFileSize } = this;
-        const { actions } = this.props;
+        const { actions, allowedFileExtensions, maxFiles, maxFileSize, maxTotalFileSize } = this.props;
         const state = { ...Uploader.DEFAULT_STATE };
         const files = Array.from(event.target.files);
 
@@ -150,7 +155,7 @@ class Uploader extends Component {
 
         const result = await fileValidation({
             files,
-            allowedFileTypes,
+            allowedFileExtensions,
             maxFiles,
             maxFileSize,
             maxTotalFileSize
@@ -190,16 +195,7 @@ class Uploader extends Component {
             this.setState({ uploading: true, loaded: 0 });
             actions.uploadStart({ url });
 
-            // TODO: move this into api
-            const result = await axios.post(url, data, {
-                onUploadProgress: ProgressEvent => {
-                    const percentage = (ProgressEvent.loaded / ProgressEvent.total) * 100;
-
-                    actions.uploadProgress({ percentage });
-                    this.setState({ loaded: percentage });
-                },
-                adapter: xhrAdapter
-            });
+            const result = await upload({ url, data, onProgress: this.onUploadProgress });
 
             if (result.data.validation) {
                 actions.uploadValidationErrors({ validation: result.data.validation });

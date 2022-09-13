@@ -6,13 +6,19 @@ networks:
 
 services:
   node:
-    #image: 'node:10.16.3-alpine'
+    #image: sharpdressedcodes/node:16.15.0-bullseye-slim
     build:
       context: ./docker/node
       dockerfile: Dockerfile
+      args:
+        - TZ=${TZ}
+        - USER_ID=${USER_ID}
+        - GROUP_ID=${GROUP_ID}
     container_name: node
     volumes:
       - ./:/home/node/app
+      - ./cypress-cache:/home/node/.cache
+      - /tmp/.X11-unix:/tmp/.X11-unix
     networks:
       - custom
     ports:
@@ -20,20 +26,9 @@ services:
     restart: unless-stopped
     tty: true
     working_dir: /home/node/app
-
-  cypress:
-    image: 'sharpdressedcodes/node:10.16.3-stretch-slim-cypress-3.4.1'
-    #build:
-    #  context: ./docker/cypress
-    #  dockerfile: Dockerfile
-    #  network: host
-    network_mode: 'host'
-    container_name: cypress
-    volumes:
-      - ./:/home/node/app
-    restart: unless-stopped
-    tty: true
-    working_dir: /home/node/app
     environment:
-      - DISPLAY=
-      - CYPRESS_BASE_URL=http://172.17.0.1:3000/
+      DISPLAY: unix:0
+      IS_DOCKER: 1
+      TZ: ${TZ:-Australia/Sydney}
+      USER_ID: ${USER_ID}
+      GROUP_ID: ${GROUP_ID}

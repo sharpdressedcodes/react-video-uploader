@@ -1,12 +1,13 @@
 import formatFileSize from './formatFileSize';
+import getFileExtension from './getFileExtension';
 import getFileName from './getFileName';
+import validateFileExtension from './validateFileExtension';
 import validateFileSize from './validateFileSize';
-import validateMimeType from './validateMimeType';
 import isArrayEmpty from './isArrayEmpty';
 import isObjectEmpty from './isObjectEmpty';
 
 export default class FileValidator {
-    #allowedFileTypes = [];
+    #allowedFileExtensions = [];
 
     #errors = [];
 
@@ -14,10 +15,10 @@ export default class FileValidator {
 
     #maxFileSize = 0;
 
-    constructor({ file, maxFileSize = 0, allowedFileTypes = [] }) {
+    constructor({ file, maxFileSize = 0, allowedFileExtensions = [] }) {
         this.#file = file;
         this.#maxFileSize = maxFileSize;
-        this.#allowedFileTypes = allowedFileTypes;
+        this.#allowedFileExtensions = allowedFileExtensions;
     }
 
     get validationErrors() {
@@ -25,13 +26,14 @@ export default class FileValidator {
     }
 
     async validate(customValidator = null) {
-        const { #file: file, #maxFileSize: maxFileSize, #allowedFileTypes: allowedFileTypes } = this;
+        const { #file: file, #maxFileSize: maxFileSize, #allowedFileExtensions: allowedFileExtensions } = this;
         const fileName = getFileName(file);
+        const fileExtension = getFileExtension(file);
 
         this.#errors = [];
 
-        if (!validateMimeType(file, allowedFileTypes)) {
-            this.#errors.push(`Error: ${fileName} is in an unsupported format (${file.type})`);
+        if (!validateFileExtension(file, allowedFileExtensions)) {
+            this.#errors.push(`Error: ${fileName} has an unsupported file extension (${fileExtension})`);
         }
 
         if (!validateFileSize(file, maxFileSize)) {
