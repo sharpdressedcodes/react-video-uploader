@@ -65,22 +65,24 @@ npm test
 ### E2E
 
 Cypress will set a cookie `IS_TESTING = 1` before each test. The config will then be loaded based on this value, either normal or test config.
-You will need to start the server first:
-
-```shell
-npm run build && npm run start
-```
-
-Then run the tests:
 
 ```shell
 npm run test:e2e
+```
+
+If Cypress complains about not being installed properly, run this (the foreground-scripts arg will show hidden Cypress output):
+
+```shell
+rm -rf node_modules package-lock.json cypress-cache/Cypress
+npm cache clean -f
+npm i --legacy-peer-deps --foreground-scripts
 ```
 
 #### TODO
 
 * Get unit tests working
 * Get cypress tests working
+* Get cypress tests working in pipeline (was getting address in use error)
 * Redux slices?
 * Render to node stream
 * service worker, web worker?
