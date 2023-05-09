@@ -21,12 +21,12 @@ CustomProvider.displayName = 'CustomProvider';
 
 CustomProvider.propTypes = {
     children: PropTypes.node,
-    customStore: PropTypes.shape({})
+    customStore: PropTypes.shape({}),
 };
 
 CustomProvider.defaultProps = {
     children: null,
-    customStore: null
+    customStore: null,
 };
 
 // /**

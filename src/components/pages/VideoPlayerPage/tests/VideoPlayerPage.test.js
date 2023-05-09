@@ -9,9 +9,9 @@ const props = {
     location: {},
     match: {
         params: {
-            id: 0
-        }
-    }
+            id: 0,
+        },
+    },
 };
 
 describe(`Making sure the VideoPlayerPage renders correctly`, () => {

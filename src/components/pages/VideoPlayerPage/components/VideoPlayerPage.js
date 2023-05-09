@@ -21,12 +21,12 @@ class VideoPlayerPage extends Component {
         // eslint-disable-next-line react/no-unused-prop-types
         id: PropTypes.string.isRequired,
         videoPlaybackError: PropTypes.string,
-        video: PropTypes.object
+        video: PropTypes.object,
     };
 
     static defaultProps = {
         videoPlaybackError: null,
-        video: {}
+        video: {},
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -78,7 +78,7 @@ class VideoPlayerPage extends Component {
 const mapStateToProps = () => (state, ownProps) => ({
     videoPlaybackError: state.videoReducer.videoPlaybackError,
     // video: !state.loadVideosReducer.videos ? {} : state.loadVideosReducer.videos[ownProps.match.params.id]
-    video: !state.loadVideosReducer.videos ? {} : state.loadVideosReducer.videos[ownProps.id]
+    video: !state.loadVideosReducer.videos ? {} : state.loadVideosReducer.videos[ownProps.id],
 });
 
 export const ConnectedVideoPlayerPage = connect(mapStateToProps)(VideoPlayerPage);

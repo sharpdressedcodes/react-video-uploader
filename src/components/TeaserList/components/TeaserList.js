@@ -8,12 +8,12 @@ class TeaserList extends Component {
 
     static propTypes = {
         className: PropTypes.string,
-        children: PropTypes.array
+        children: PropTypes.array,
     };
 
     static defaultProps = {
         className: '',
-        children: []
+        children: [],
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {

@@ -19,7 +19,7 @@ function createXHRMock(data = mockData) {
     const upload = {
         addEventListener: (eventName, cb, useCapture) => {
             componentCallback = cb;
-        }
+        },
     };
     const xhrMockClass = function xhrMock() {
         return {
@@ -29,7 +29,7 @@ function createXHRMock(data = mockData) {
             setRequestHeader,
             responseText,
             readyState,
-            upload
+            upload,
         };
     };
 

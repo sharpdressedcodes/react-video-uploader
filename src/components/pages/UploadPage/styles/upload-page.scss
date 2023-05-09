@@ -24,7 +24,7 @@
             align-items: initial;
             white-space: initial;
 
-            & > span[class*=file-] {
+            & > span[class*='file-'] {
                 display: block;
 
                 &:not(:last-child) {
@@ -45,7 +45,7 @@
                     width: 100%;
                 }
 
-                & > span[class*=file-] {
+                & > span[class*='file-'] {
                     display: initial;
 
                     &:not(:last-child) {

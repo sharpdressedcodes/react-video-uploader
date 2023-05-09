@@ -6,4 +6,3 @@ build
 cypress-cache
 docker
 hooks
-node_modules

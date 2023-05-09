@@ -1,11 +1,12 @@
-@mixin breakpoint($breakpoint) {
+@use 'sass:list';
 
+@mixin breakpoint($breakpoint) {
     $bp: $breakpoint;
     $modifier: '';
 
     @if length($breakpoint) > 1 {
-        $bp: nth($breakpoint, 1);
-        $modifier: nth($breakpoint, 2);
+        $bp: list.nth($breakpoint, 1);
+        $modifier: list.nth($breakpoint, 2);
     }
 
     @if $bp == 'small' and $modifier == 'only' {

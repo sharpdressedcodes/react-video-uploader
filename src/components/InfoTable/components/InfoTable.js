@@ -9,8 +9,8 @@ class InfoTable extends Component {
     static propTypes = {
         items: PropTypes.arrayOf(PropTypes.shape({
             title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-            text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
-        })).isRequired
+            text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        })).isRequired,
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {

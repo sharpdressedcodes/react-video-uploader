@@ -17,12 +17,12 @@ class HomePage extends Component {
 
     static propTypes = {
         videos: PropTypes.arrayOf(PropTypes.object),
-        videosDownloadError: PropTypes.string
+        videosDownloadError: PropTypes.string,
     };
 
     static defaultProps = {
         videos: null,
-        videosDownloadError: null
+        videosDownloadError: null,
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -101,7 +101,7 @@ const mapStateToProps = state => {
 
     return {
         videos,
-        videosDownloadError
+        videosDownloadError,
     };
 };
 

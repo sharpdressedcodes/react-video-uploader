@@ -16,7 +16,7 @@ class Teaser extends Component {
         imageAlt: PropTypes.string,
         text: PropTypes.string,
         order: PropTypes.arrayOf(PropTypes.string),
-        className: PropTypes.string
+        className: PropTypes.string,
     };
 
     static defaultProps = {
@@ -26,7 +26,7 @@ class Teaser extends Component {
         imageAlt: '',
         text: null,
         order: Teaser.DEFAULT_ORDER,
-        className: ''
+        className: '',
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -35,7 +35,7 @@ class Teaser extends Component {
 
     render() {
         const {
-            title, imageSrc, animatedImageSrc, imageAlt, text, order, className
+            title, imageSrc, animatedImageSrc, imageAlt, text, order, className,
         } = this.props;
         const elements = [];
 
@@ -53,7 +53,7 @@ class Teaser extends Component {
                         elements.push(
                             <div key={ key } className="teaser-image">
                                 <Picture src={ imageSrc } animatedSrc={ animatedImageSrc } alt={ imageAlt } />
-                            </div>
+                            </div>,
                         );
                     }
                     break;

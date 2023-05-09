@@ -8,7 +8,7 @@ const filesMock = {
         new File(['    ftyp  '], 'files-too-large-2.mp4', { type: 'video/mp4' }),
         new File(['    ftyp  '], 'files-too-large-3.mp4', { type: 'video/mp4' }),
         new File(['    ftyp  '], 'files-too-large-4.mp4', { type: 'video/mp4' }),
-        new File(['    ftyp  '], 'files-too-large-5.mp4', { type: 'video/mp4' })
+        new File(['    ftyp  '], 'files-too-large-5.mp4', { type: 'video/mp4' }),
     ],
     tooManyFiles: [
         new File(['    ftyp'], 'too-many-files-1.mp4', { type: 'video/mp4' }),
@@ -16,8 +16,8 @@ const filesMock = {
         new File(['    ftyp'], 'too-many-files-3.mp4', { type: 'video/mp4' }),
         new File(['    ftyp'], 'too-many-files-4.mp4', { type: 'video/mp4' }),
         new File(['    ftyp'], 'too-many-files-4.mp4', { type: 'video/mp4' }),
-        new File(['    ftyp'], 'too-many-files-4.mp4', { type: 'video/mp4' })
-    ]
+        new File(['    ftyp'], 'too-many-files-4.mp4', { type: 'video/mp4' }),
+    ],
 };
 
 module.exports = filesMock;

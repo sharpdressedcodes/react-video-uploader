@@ -18,7 +18,7 @@ class Uploader extends Component {
         selectedFiles: null,
         loaded: 0,
         uploading: false,
-        uploadedFiles: []
+        uploadedFiles: [],
     };
 
     static propTypes = {
@@ -29,7 +29,7 @@ class Uploader extends Component {
         maxFiles: PropTypes.number,
         maxFileSize: PropTypes.number,
         maxTotalFileSize: PropTypes.number,
-        allowedFileExtensions: PropTypes.arrayOf(PropTypes.string)
+        allowedFileExtensions: PropTypes.arrayOf(PropTypes.string),
     };
 
     static defaultProps = {
@@ -39,7 +39,7 @@ class Uploader extends Component {
         maxFiles: 0,
         maxFileSize: 0,
         maxTotalFileSize: 0,
-        allowedFileExtensions: []
+        allowedFileExtensions: [],
     };
 
     constructor(...args) {
@@ -56,7 +56,7 @@ class Uploader extends Component {
             onOpen: this.onWebSocketOpen,
             onMessage: this.onWebSocketMessage,
             onError: this.onWebSocketError,
-            onClose: this.onWebSocketClose
+            onClose: this.onWebSocketClose,
         });
     }
 
@@ -65,7 +65,7 @@ class Uploader extends Component {
             onOpen: this.onWebSocketOpen,
             onMessage: this.onWebSocketMessage,
             onError: this.onWebSocketError,
-            onClose: this.onWebSocketClose
+            onClose: this.onWebSocketClose,
         });
 
         this.webSocket = null;
@@ -158,7 +158,7 @@ class Uploader extends Component {
             allowedFileExtensions,
             maxFiles,
             maxFileSize,
-            maxTotalFileSize
+            maxTotalFileSize,
         });
 
         if (!result.success) {
@@ -218,18 +218,18 @@ class Uploader extends Component {
         const selectButtonAttributes = {
             variant: 'contained',
             component: 'label',
-            color: 'primary'
+            color: 'primary',
         };
         const submitButtonAttributes = {
             variant: 'contained',
             component: 'button',
-            type: 'submit'
+            type: 'submit',
         };
         const inputAttributes = {
             style: { display: 'none' },
             type: 'file',
             name: 'file',
-            onChange: this.onChange
+            onChange: this.onChange,
         };
 
         const files = !selectedFiles
@@ -322,8 +322,8 @@ const mapDispatchToProps = dispatch => ({
         uploadSuccess: payload => dispatch(uploadSuccess(payload.result)),
         // uploadValidationErrors: payload => dispatch(uploadValidationErrors(payload.errors)),
         uploadValidationErrors: payload => dispatch(uploadValidationErrors(payload.validation)),
-        loadVideosSuccess: payload => dispatch(loadVideosSuccess(payload.items))
-    }
+        loadVideosSuccess: payload => dispatch(loadVideosSuccess(payload.items)),
+    },
 });
 
 const ConnectedUploader = connect(null, mapDispatchToProps)(Uploader);

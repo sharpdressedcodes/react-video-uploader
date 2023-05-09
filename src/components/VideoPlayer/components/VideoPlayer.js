@@ -15,14 +15,14 @@ class VideoPlayer extends Component {
         poster: PropTypes.string,
         autoPlay: PropTypes.bool,
         controls: PropTypes.bool,
-        actions: PropTypes.object
+        actions: PropTypes.object,
     };
 
     static defaultProps = {
         poster: '',
         autoPlay: false,
         controls: false,
-        actions: {}
+        actions: {},
     };
 
     constructor(...args) {
@@ -89,6 +89,7 @@ class VideoPlayer extends Component {
     //     }
     // };
 
+    // eslint-disable-next-line react/no-unused-class-component-methods
     play = async () => {
         try {
             await this.video.current.play();
@@ -112,7 +113,7 @@ class VideoPlayer extends Component {
             ref: this.video,
             preload: 'none',
             controls,
-            autoPlay
+            autoPlay,
         };
         const el = null;
 
@@ -138,8 +139,8 @@ class VideoPlayer extends Component {
 
 const mapDispatchToProps = dispatch => ({
     actions: {
-        videoPlaybackError: payload => dispatch(videoPlaybackError(payload.error))
-    }
+        videoPlaybackError: payload => dispatch(videoPlaybackError(payload.error)),
+    },
 });
 
 const ConnectedVideoPlayer = connect(null, mapDispatchToProps)(VideoPlayer);

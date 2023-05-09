@@ -15,7 +15,7 @@ class Picture extends Component {
         alt: PropTypes.string,
         caption: PropTypes.string,
         order: PropTypes.arrayOf(PropTypes.string),
-        className: PropTypes.string
+        className: PropTypes.string,
     };
 
     static defaultProps = {
@@ -23,7 +23,7 @@ class Picture extends Component {
         caption: null,
         alt: '',
         order: Picture.DEFAULT_ORDER,
-        className: ''
+        className: '',
     };
 
     constructor(...args) {
@@ -31,7 +31,7 @@ class Picture extends Component {
 
         this.container = createRef();
         this.state = {
-            mouseEntered: false
+            mouseEntered: false,
         };
     }
 

@@ -8,12 +8,12 @@ class ErrorBoundary extends Component {
     static propTypes = {
         children: PropTypes.node.isRequired,
         onComponentDidCatch: PropTypes.func,
-        errorMessage: PropTypes.node
+        errorMessage: PropTypes.node,
     };
 
     static defaultProps = {
         onComponentDidCatch: Function.prototype,
-        errorMessage: <h1>An unexpected error has occurred</h1>
+        errorMessage: <h1>An unexpected error has occurred</h1>,
     };
 
     static getDerivedStateFromError(error) {

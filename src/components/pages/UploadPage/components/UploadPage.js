@@ -17,14 +17,14 @@ class UploadPage extends Component {
         uploadValidationErrors: PropTypes.arrayOf(PropTypes.string),
         uploadError: PropTypes.string,
         uploadResult: PropTypes.object,
-        uploadValidation: PropTypes.object
+        uploadValidation: PropTypes.object,
     };
 
     static defaultProps = {
         uploadValidationErrors: [],
         uploadError: null,
         uploadResult: null,
-        uploadValidation: null
+        uploadValidation: null,
     };
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -64,7 +64,7 @@ class UploadPage extends Component {
             { title: 'Allowed file types:', text: allowedFileExtensions.join(', ') },
             { title: 'Maximum file size:', text: formattedMaxFileSize },
             { title: 'Maximum files:', text: maxFiles },
-            { title: 'Maximum files size:', text: formattedMaxTotalFileSize }
+            { title: 'Maximum files size:', text: formattedMaxTotalFileSize },
         ];
     }
 
@@ -103,7 +103,7 @@ const mapStateToProps = state => {
         uploadValidationErrors,
         uploadError,
         uploadResult,
-        uploadValidation
+        uploadValidation,
     };
 };
 

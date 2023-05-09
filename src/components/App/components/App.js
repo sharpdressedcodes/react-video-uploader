@@ -18,11 +18,11 @@ class App extends Component {
 
     static propTypes = {
         actions: PropTypes.object,
-        data: PropTypes.array.isRequired
+        data: PropTypes.array.isRequired,
     };
 
     static defaultProps = {
-        actions: {}
+        actions: {},
     };
 
     componentDidMount() {
@@ -67,9 +67,9 @@ class App extends Component {
 
 const mapDispatchToProps = dispatch => ({
     actions: {
-        loadVideosSuccess: payload => dispatch(loadVideosSuccess(payload.videos))
+        loadVideosSuccess: payload => dispatch(loadVideosSuccess(payload.videos)),
         // loadVideosError
-    }
+    },
 });
 
 const ConnectedApp = connect(null, mapDispatchToProps)(App);
