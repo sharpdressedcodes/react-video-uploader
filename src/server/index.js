@@ -16,6 +16,7 @@ const {
     loadWebSocket,
     logErrors,
     render,
+    securityHeaders,
     trapErrors,
 } = require('./middleware');
 const {
@@ -37,6 +38,7 @@ const parseForm = bodyParser.urlencoded({ extended: true });
 let serverStartupMessage = null;
 
 app.use(cors());
+app.use(securityHeaders);
 app.use(cookieParser());
 app.use(loadConfig);
 app.use(loadWebSocket(server));

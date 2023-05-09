@@ -5,8 +5,9 @@ const loadConfig = require('./loadConfig');
 const loadVideos = require('./loadVideos');
 const loadWebSocket = require('./loadWebSocket');
 const logErrors = require('./logErrors');
-const trapErrors = require('./trapErrors');
 const render = require('./render');
+const securityHeaders = require('./securityHeaders');
+const trapErrors = require('./trapErrors');
 
 module.exports = {
     checkVideoId,
@@ -16,6 +17,7 @@ module.exports = {
     loadVideos,
     loadWebSocket,
     logErrors,
-    trapErrors,
     render,
+    securityHeaders,
+    trapErrors,
 };
