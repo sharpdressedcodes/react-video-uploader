@@ -1,8 +1,8 @@
 const fs = require('node:fs');
 const { promisify } = require('node:util');
-const mkdirp = require('mkdirp');
 
 const stat = promisify(fs.stat);
+const mkdir = promisify(fs.mkdir);
 const fileExists = async file => {
     try {
         const stats = await stat(file);
@@ -21,15 +21,7 @@ const directoryExists = async directory => {
         return false;
     }
 };
-const createDirectory = directory => new Promise((resolve, reject) => {
-    try {
-        mkdirp(directory, {}, () => {
-            resolve(directory);
-        });
-    } catch (err) {
-        reject(err);
-    }
-});
+const createDirectory = async directory => mkdir(directory, { recursive: true });
 const unlink = async file => {
     try {
         await promisify(fs.unlink)(file);

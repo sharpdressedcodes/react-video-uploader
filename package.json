@@ -34,7 +34,7 @@
     },
     "scripts": {
         "prepare": "node --stack-trace-limit=9999 --trace-warnings ./scripts/install-husky.js",
-        "clean": "rimraf ./build/*.js* ./build/*.css ./src/common/index.cjs ./src/config/index.cjs ./src/routes/index.cjs && mkdirp ./build/data/uploads",
+        "clean": "rimraf ./build/*.js* ./build/*.css ./src/common/index.cjs ./src/config/index.cjs ./src/routes/index.cjs && node -e \"fs.mkdirSync('./build/data/uploads', { recursive: true });\"",
         "build:common": "webpack --config webpack-common.config.js --performance-hints warning --color --stats errors-only",
         "build:browser": "cross-env APP_ENV=browser webpack --color --stats errors-warnings --config webpack.config.js",
         "build:server": "cross-env APP_ENV=server webpack --color --stats errors-warnings --config webpack.config.js",
@@ -86,7 +86,6 @@
         "keymirror": "0.1.1",
         "lodash.get": "4.4.2",
         "lodash.isequal": "4.5.0",
-        "mkdirp": "1.0.4",
         "multer": "1.4.5-lts.1",
         "prop-types": "15.8.1",
         "react": "18.2.0",
