@@ -22,9 +22,9 @@ module.exports = defineConfig({
                     // eslint-disable-next-line no-console
                     console.log(message);
                     return null;
-                }
+                },
             });
-        }
+        },
     },
     e2e: {
         baseUrl: `http://localhost:${process.env.PORT || 3000}`,
@@ -40,8 +40,8 @@ module.exports = defineConfig({
                     // eslint-disable-next-line no-console
                     console.log(message);
                     return null;
-                }
+                },
             });
-        }
-    }
+        },
+    },
 });

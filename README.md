@@ -1,10 +1,26 @@
 # React Video Uploader
 
-This project uses [fluent-ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg) to generate preview thumbnails, gifs, posters and media info.
+Upload videos in React with server-side rendering and NodeJS streaming.
+
+This project uses [fluent-ffmpeg](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg)
+to generate preview thumbnails, gifs, posters and media info.
 
 To get going, you can either use with or without docker.
-If you use without docker, you'll need node, npm, ffmpeg and either flvtool2 or flvmeta installed.
-You can get away without having ffmpeg and either flvtool2 or flvmeta, as long as you don't upload any files.
+If you use without docker, you'll need node, npm,
+ffmpeg and either flvtool2 or flvmeta installed.
+You can get away without having ffmpeg and either flvtool2 or flvmeta,
+as long as you don't upload any files.
+
+## Features
+
+* Form validation on both client and server. Server also validates file headers.
+* Server-side rendering.
+* NodeJS streaming.
+* Hot reloading.
+* Docker.
+* Linting for JS, styles, MarkDown and Yaml.
+* Material-UI.
+* SASS.
 
 ## With docker
 
@@ -50,9 +66,31 @@ npm run start
 
 Now open [http://localhost:3000/](http://localhost:3000/) in your browser.
 
+## Development
+
+### Watch mode (requires Node >=18)
+
+```shell
+npm run dev
+```
+
+### Non watch mode
+
+```shell
+npm run dev:no-watch
+```
+
 ## Config
 
-Config file is located in `./src/config/index.js`. Change any values in here as you see fit. Don't forget to rebuild the project afterwards.
+Config file is located in `./src/config/index.js`.
+This file gets converted to `commonjs-static` which means it can then be called from
+both commonjs and ESM.
+
+## Common
+
+Files inside `./src/common/index.js` get converted to `commonjs-static` as `./src/common/index.cjs`
+which means they can be called from both commonjs and ESM.
+This also happens with `./src/routes/index.js`
 
 ## Tests
 
@@ -64,30 +102,35 @@ npm test
 
 ### E2E
 
-Cypress will set a cookie `IS_TESTING = 1` before each test. The config will then be loaded based on this value, either normal or test config.
+Cypress will set a cookie `IS_TESTING = 1` before each test.
+The config will then be loaded based on this value, either normal or test config.
 
 ```shell
 npm run test:e2e
 ```
 
-If Cypress complains about not being installed properly, run this (the foreground-scripts arg will show hidden Cypress output):
+If Cypress complains about not being installed properly,
+run this (the foreground-scripts arg will show hidden Cypress output):
 
 ```shell
-rm -rf node_modules package-lock.json cypress-cache/Cypress
+rm -rf node_modules package-lock.json ./cypress-cache/Cypress ./cypress-cache/mesa_shader_cache
 npm cache clean -f
 npm i --legacy-peer-deps --foreground-scripts
 ```
 
 #### TODO
 
-* Get unit tests working
 * Get cypress tests working
 * Get cypress tests working in pipeline (was getting address in use error)
 * Redux slices?
-* Render to node stream
 * service worker, web worker?
 * manifest
-* i18n https://www.i18next.com/ https://locize.com/blog/react-i18next/ https://phrase.com/blog/posts/localizing-react-apps-with-i18next/ https://lokalise.com/blog/react-i18n-intl/
+* i18n
+  * https://www.i18next.com/
+  * https://locize.com/blog/react-i18next/
+  * https://phrase.com/blog/posts/localizing-react-apps-with-i18next/
+  * https://lokalise.com/blog/react-i18n-intl/
+  * https://github.com/privatenumber/webpack-localize-assets-plugin
 * swap express for fastify
 * Try using a nodejs worker thread for converting video
 * add websocket ping for server and client
@@ -104,3 +147,6 @@ npm i --legacy-peer-deps --foreground-scripts
 * BEM
 * Update material ui to https://mui.com/material-ui/getting-started/installation/
 * Turn components into functions
+* change url-loader, file-loader amd raw-loader to https://webpack.js.org/guides/asset-modules/
+* Turn video id into a hash, so it can't be guessed and navigated to.
+* https://www.npmjs.com/package/eslint-webpack-plugin

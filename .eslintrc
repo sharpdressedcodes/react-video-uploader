@@ -37,7 +37,6 @@
         "@babel/object-curly-spacing": 0,
         "@babel/semi": "error",
         "arrow-parens": ["error", "as-needed"],
-        "comma-dangle": ["error", "never"],
         "indent": ["error", 4, { "ignoredNodes": ["ConditionalExpression"], "SwitchCase": 1 }],
         "import/first": 0,
         "import/newline-after-import": ["error", { "count": 1 }],

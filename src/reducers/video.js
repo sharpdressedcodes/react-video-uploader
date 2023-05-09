@@ -2,7 +2,7 @@ import VideoActionTypes from '../constants/video';
 
 export const initialState = {
     videoPlaybackError: null,
-    video: null
+    video: null,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -10,7 +10,7 @@ export default function reducer(state = initialState, action = {}) {
         case VideoActionTypes.VIDEO_PLAYBACK_ERROR:
             return {
                 ...state,
-                videoPlaybackError: action.payload
+                videoPlaybackError: action.payload,
             };
 
         default:

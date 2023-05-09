@@ -1,6 +1,6 @@
-import { Buffer } from 'node:buffer';
-import { close, open, read, stat } from './fileSystem';
-import { getFileExtension, isArrayEmpty } from '../common';
+const { Buffer } = require('node:buffer');
+const { close, open, read, stat } = require('./fileSystem');
+const { getFileExtension, isArrayEmpty } = require('../common/index.cjs');
 
 const validate = file => signature => new Promise((resolve, reject) => {
     (async () => {
@@ -70,4 +70,4 @@ const validateFileSignature = (file, allowedFileTypes = {}) => new Promise((reso
     })();
 });
 
-export default validateFileSignature;
+module.exports = validateFileSignature;

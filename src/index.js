@@ -1,26 +1,54 @@
 import React, { StrictMode } from 'react';
-import { hydrateRoot } from 'react-dom/client';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import configureStore from './stores/app';
 import { App } from './components';
 
-/* eslint-disable no-underscore-dangle */
-const root = document.getElementById('app');
-const { __PRELOADED_STATE__: state, __INITIAL_DATA__: data } = window;
-const store = configureStore(state);
+(() => {
+    window.boot = () => {
+        (async () => {
+            const isProduction = process.env.NODE_ENV === 'production';
 
-delete window.__PRELOADED_STATE__;
-delete window.__INITIAL_DATA__;
-/* eslint-enable no-underscore-dangle */
+            try {
+                const { reactPreloadedState: state, reactInitialData: data } = window;
+                const store = configureStore(state);
+                const jsx = (
+                    <StrictMode>
+                        <Provider store={ store }>
+                            <BrowserRouter>
+                                <App data={ data } />
+                            </BrowserRouter>
+                        </Provider>
+                    </StrictMode>
+                );
 
-hydrateRoot(
-    root,
-    <StrictMode>
-        <Provider store={ store }>
-            <BrowserRouter>
-                <App data={ data } />
-            </BrowserRouter>
-        </Provider>
-    </StrictMode>
-);
+                delete window.reactPreloadedState;
+                delete window.reactInitialData;
+
+                if (!window.reactRoot) {
+                    const root = document.getElementById('app');
+
+                    // We use createRoot instead of hydrateRoot during HMR, otherwise we get mismatch warnings
+                    if (import.meta.webpackHot) {
+                        window.reactRoot = createRoot(root);
+                        window.reactRoot.render(jsx);
+                    } else {
+                        window.reactRoot = hydrateRoot(root, jsx);
+                    }
+                } else {
+                    window.reactRoot.render(jsx);
+                }
+            } catch (err) {
+                if (!isProduction) {
+                    // eslint-disable-next-line no-console
+                    console.log(`Client bootstrap error: ${err.message}`);
+                }
+            }
+        })();
+    };
+
+    if (window.loaded) {
+        window.boot();
+    }
+})();

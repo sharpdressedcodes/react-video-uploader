@@ -3,7 +3,7 @@ import FilesValidator from './FilesValidator';
 import isArrayEmpty from './isArrayEmpty';
 
 const fileValidation = async ({
-    allowedFileExtensions = [], customValidator = null, files = [], maxFiles = 0, maxFileSize = 0, maxTotalFileSize = 0
+    allowedFileExtensions = [], customValidator = null, files = [], maxFiles = 0, maxFileSize = 0, maxTotalFileSize = 0,
 }) => {
     const filesValidator = new FilesValidator({ files, maxFiles, maxTotalFileSize });
     const fileErrors = {};
@@ -41,12 +41,12 @@ const fileValidation = async ({
                     ...acc,
                     errors: {
                         ...acc.errors,
-                        [index]: curr
+                        [index]: curr,
                     },
                     invalid: [
                         ...acc.invalid,
-                        files[index]
-                    ]
+                        files[index],
+                    ],
                 };
             }
 

@@ -6,7 +6,7 @@ networks:
 
 services:
   node:
-    #image: sharpdressedcodes/node:16.15.0-bullseye-slim
+    #image: sharpdressedcodes/node:18.16.0-bullseye-slim
     build:
       context: ./docker/node
       dockerfile: Dockerfile

@@ -9,8 +9,8 @@ export default function configureAppStore(preloadedState/* = null */) {
         reducer: {
             uploaderReducer,
             videoReducer,
-            loadVideosReducer
-        }
+            loadVideosReducer,
+        },
     });
 
     // if (process.env.NODE_ENV !== 'production' && module.hot) {

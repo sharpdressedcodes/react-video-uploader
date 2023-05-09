@@ -7,7 +7,7 @@ export const initialState = {
     uploadProgress: null,
     uploadResult: null,
     //
-    uploadValidation: null
+    uploadValidation: null,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -15,7 +15,7 @@ export default function reducer(state = initialState, action = {}) {
         case UploaderActionTypes.UPLOAD_START:
             return {
                 ...initialState,
-                uploadUrl: action.payload
+                uploadUrl: action.payload,
             };
 
         case UploaderActionTypes.UPLOAD_SUCCESS:
@@ -23,26 +23,26 @@ export default function reducer(state = initialState, action = {}) {
                 ...state,
                 uploadValidationErrors: [],
                 uploadError: null,
-                uploadResult: action.payload
+                uploadResult: action.payload,
             };
 
         case UploaderActionTypes.UPLOAD_ERROR:
             return {
                 ...initialState,
-                uploadError: action.payload
+                uploadError: action.payload,
             };
 
         case UploaderActionTypes.UPLOAD_VALIDATION_ERRORS:
             return {
                 ...initialState,
                 // uploadValidationErrors: action.payload, // TODO: remove this
-                uploadValidation: action.payload
+                uploadValidation: action.payload,
             };
 
         case UploaderActionTypes.UPLOAD_PROGRESS:
             return {
                 ...state,
-                uploadProgress: action.payload
+                uploadProgress: action.payload,
             };
 
         default:

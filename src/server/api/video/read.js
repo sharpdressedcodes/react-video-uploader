@@ -1,29 +1,25 @@
-import { readDirectory, readFile } from '../../fileSystem';
+const { readDirectory, readFile } = require('../../fileSystem');
 
 const read = path => readFile(path, 'utf8');
 
-export function loadVideos(id, uploadPath) {
-    return new Promise((resolve, reject) => {
-        (async () => {
-            try {
-                const items = (await readDirectory(uploadPath)).filter(item => item.endsWith('.json'));
+const loadVideos = async (id, uploadPath) => {
+    // try {
+    const items = (await readDirectory(uploadPath)).filter(item => item.endsWith('.json'));
 
-                if (id === null) {
-                    const promises = items.map(item => read(`${uploadPath}/${item}`));
+    if (id === null) {
+        const promises = items.map(item => read(`${uploadPath}/${item}`));
 
-                    resolve((await Promise.all(promises)).map(result => JSON.parse(result)));
-                    return;
-                }
+        return (await Promise.all(promises)).map(result => JSON.parse(result));
+        // return;
+    }
 
-                resolve(JSON.parse(await read(`${uploadPath}/${items[id]}`)));
-            } catch (err) {
-                reject(err);
-            }
-        })();
-    });
-}
+    return JSON.parse(await read(`${uploadPath}/${items[id]}`));
+    // } catch (err) {
+    //     reject(err);
+    // }
+};
 
-export default async function handleGetVideos(req, res, next) {
+const handleGetVideos = async (req, res) => {
     try {
         const id = req.params.id || null;
         const uploadPath = req.app.locals.config.get('videoUpload.path', 'build/data/uploads');
@@ -35,4 +31,9 @@ export default async function handleGetVideos(req, res, next) {
         // console.error(err);
         res.json({ items: [], error: err.message });
     }
-}
+};
+
+module.exports = {
+    'default': handleGetVideos,
+    loadVideos,
+};

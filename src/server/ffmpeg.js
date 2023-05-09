@@ -1,7 +1,7 @@
-import path from 'node:path';
-import ffmpeg from 'fluent-ffmpeg';
+const path = require('node:path');
+const ffmpeg = require('fluent-ffmpeg');
 
-export const getVideoInfo = fileName => new Promise((resolve, reject) => {
+const getVideoInfo = fileName => new Promise((resolve, reject) => {
     ffmpeg.ffprobe(fileName, (err, data) => {
         if (err) {
             reject(err);
@@ -12,7 +12,7 @@ export const getVideoInfo = fileName => new Promise((resolve, reject) => {
     });
 });
 
-export const generatePoster = (fileName, options = {}) => new Promise((resolve, reject) => {
+const generatePoster = (fileName, options = {}) => new Promise((resolve, reject) => {
     let result = null;
     const onComplete = () => {
         resolve(result[0]);
@@ -25,12 +25,12 @@ export const generatePoster = (fileName, options = {}) => new Promise((resolve, 
         filename: '%b-%r-poster.png',
         count: 1,
         timemark: '1%',
-        logger: console
+        logger: console,
         // size: ''
     };
     const merged = {
         ...defaults,
-        ...options
+        ...options,
     };
 
     ffmpeg({ source: fileName, logger: merged.logger })
@@ -41,7 +41,7 @@ export const generatePoster = (fileName, options = {}) => new Promise((resolve, 
     ;
 });
 
-export const generateThumbnail = (fileName, options = {}) => new Promise((resolve, reject) => {
+const generateThumbnail = (fileName, options = {}) => new Promise((resolve, reject) => {
     let result = null;
     const onComplete = () => {
         resolve(result[0]);
@@ -55,11 +55,11 @@ export const generateThumbnail = (fileName, options = {}) => new Promise((resolv
         count: 1,
         timemark: '1%',
         logger: console,
-        size: '320x180' // 16:9
+        size: '320x180', // 16:9
     };
     const merged = {
         ...defaults,
-        ...options
+        ...options,
     };
 
     ffmpeg({ source: fileName, logger: merged.logger })
@@ -70,7 +70,7 @@ export const generateThumbnail = (fileName, options = {}) => new Promise((resolv
     ;
 });
 
-export const generateGif = (fileName, options = {}, info = {}) => new Promise((resolve, reject) => {
+const generateGif = (fileName, options = {}, info = {}) => new Promise((resolve, reject) => {
     // Examples (using command line):
     // ffmpeg -ss 61.0 -t 2.5 -i test.mp4 -filter_complex "[0:v] fps=12,scale=320:-1,split [a][b];[a] palettegen [p];[b][p] paletteuse" test.gif
     // ffmpeg -ss 1.0 -t 2.5 -i test.mp4 -filter_complex "[0:v] fps=12,scale=320:180,split [a][b];[a] palettegen [p];[b][p] paletteuse" test.gif
@@ -101,17 +101,17 @@ export const generateGif = (fileName, options = {}, info = {}) => new Promise((r
         duration, // : 2.5,
         timemark, // : 5.0,
         logger: console,
-        size: '320x180' // 16:9
+        size: '320x180', // 16:9
     };
     const merged = {
         ...defaults,
-        ...options
+        ...options,
     };
     const multiplier = merged.multiplier === 1 ? '' : `,setpts=(1/${merged.multiplier})*PTS`;
     const scale = merged.size.replace('x', ':');
     const inputOptions = [
         `-ss ${merged.timemark}`,
-        `-t ${merged.duration}`
+        `-t ${merged.duration}`,
     ];
 
     outputFileName = merged.filename
@@ -130,7 +130,7 @@ export const generateGif = (fileName, options = {}, info = {}) => new Promise((r
     ;
 });
 
-export const convertVideo = (fileName, options = {}) => new Promise((resolve, reject) => {
+const convertVideo = (fileName, options = {}) => new Promise((resolve, reject) => {
     let outputFileName = null;
     const ext = path.extname(fileName);
     const onComplete = () => {
@@ -147,12 +147,12 @@ export const convertVideo = (fileName, options = {}) => new Promise((resolve, re
         // audioCodec: 'libfaac',
         audioCodec: 'libmp3lame',
         videoCodec: 'libx264',
-        format: 'mp4'
+        format: 'mp4',
         // size: '320x180' // 16:9
     };
     const merged = {
         ...defaults,
-        ...options
+        ...options,
     };
 
     outputFileName = merged.filename
@@ -172,3 +172,11 @@ export const convertVideo = (fileName, options = {}) => new Promise((resolve, re
         .save(outputFileName)
     ;
 });
+
+module.exports = {
+    getVideoInfo,
+    generatePoster,
+    generateThumbnail,
+    generateGif,
+    convertVideo,
+};

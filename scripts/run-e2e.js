@@ -33,7 +33,7 @@ const APP_URL = `http://localhost:${process.env.PORT || 3000}/`;
             // Run app, then run tests.
             // The tests will exit with code 0. That will trigger concurrently to stop the app.
             const { result } = concurrently([
-                `concurrently --success first --kill-others --names "app,e2e" -c "bgBlue.bold,bgCyan.bold" "npm run build && npm run start" "wait-on ${APP_URL} && ${command}"`
+                `concurrently --success first --kill-others --names "app,e2e" -c "bgBlue.bold,bgCyan.bold" "npm run build && npm run start" "wait-on ${APP_URL} && ${command}"`,
             ]);
 
             await result;

@@ -1,4 +1,4 @@
-import { readDirectory } from '../fileSystem';
+const { readDirectory } = require('../fileSystem');
 
 const checkVideoId = async (req, res, next) => {
     const uploadPath = req.app.locals.config.get('videoUpload.path', 'build/data/uploads');
@@ -21,4 +21,4 @@ const checkVideoId = async (req, res, next) => {
     }
 };
 
-export default checkVideoId;
+module.exports = checkVideoId;

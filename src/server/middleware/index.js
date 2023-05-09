@@ -1,9 +1,21 @@
-export { default as checkVideoId } from './checkVideoId';
-export { default as fakeFavIcon } from './fakeFavIcon';
-export { default as injectCsrf } from './injectCsrf';
-export { default as loadConfig } from './loadConfig';
-export { default as loadVideos } from './loadVideos';
-export { default as loadWebSocket } from './loadWebSocket';
-export { default as logErrors } from './logErrors';
-export { default as trapErrors } from './trapErrors';
-export { default as render } from './render';
+const checkVideoId = require('./checkVideoId');
+const fakeFavIcon = require('./fakeFavIcon');
+const injectCsrf = require('./injectCsrf');
+const loadConfig = require('./loadConfig');
+const loadVideos = require('./loadVideos');
+const loadWebSocket = require('./loadWebSocket');
+const logErrors = require('./logErrors');
+const trapErrors = require('./trapErrors');
+const render = require('./render');
+
+module.exports = {
+    checkVideoId,
+    fakeFavIcon,
+    injectCsrf,
+    loadConfig,
+    loadVideos,
+    loadWebSocket,
+    logErrors,
+    trapErrors,
+    render,
+};

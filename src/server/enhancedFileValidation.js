@@ -1,8 +1,8 @@
-import { fileValidation, getFileName } from '../common';
-import validateFileSignature from './validateFileSignature';
+const { fileValidation, getFileName } = require('../common/index.cjs');
+const validateFileSignature = require('./validateFileSignature');
 
 const enhancedFileValidation = async ({
-    files = [], allowedFileTypes = {}, allowedFileExtensions = [], maxFiles = 0, maxFileSize = 0, maxTotalFileSize = 0
+    files = [], allowedFileTypes = {}, allowedFileExtensions = [], maxFiles = 0, maxFileSize = 0, maxTotalFileSize = 0,
 }) => {
     const customValidator = file => new Promise((resolve, reject) => {
         (async () => {
@@ -13,7 +13,7 @@ const enhancedFileValidation = async ({
                     if (!curr) {
                         return {
                             ...acc,
-                            [index]: [`Error: ${getFileName(filesToCheck[index])} is an invalid file`]
+                            [index]: [`Error: ${getFileName(filesToCheck[index])} is an invalid file`],
                         };
                     }
 
@@ -30,4 +30,4 @@ const enhancedFileValidation = async ({
     return fileValidation({ files, customValidator, allowedFileExtensions, maxFiles, maxFileSize, maxTotalFileSize });
 };
 
-export default enhancedFileValidation;
+module.exports = enhancedFileValidation;

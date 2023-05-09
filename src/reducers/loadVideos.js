@@ -2,7 +2,7 @@ import LoadVideosActionTypes from '../constants/loadVideos';
 
 export const initialState = {
     videos: null,
-    videosDownloadError: null
+    videosDownloadError: null,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -11,13 +11,13 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 videosDownloadError: null,
-                videos: action.payload
+                videos: action.payload,
             };
 
         case LoadVideosActionTypes.LOAD_VIDEOS_ERROR:
             return {
                 ...state,
-                videosDownloadError: action.payload
+                videosDownloadError: action.payload,
             };
 
         default:
