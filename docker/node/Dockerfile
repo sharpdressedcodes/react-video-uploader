@@ -1,4 +1,3 @@
-#FROM sharpdressedcodes/node:16.15.0-bullseye-slim
 FROM sharpdressedcodes/node:18.16.0-bullseye-slim
 
 ARG USER_ID
@@ -7,11 +6,6 @@ ARG TZ=Australia/Sydney
 ENV IS_DOCKER=1
 
 USER root
-
-#RUN { \
-#    echo "deb [trusted=yes] http://ppa.launchpad.net/jonathonf/ffmpeg-4/ubuntu eoan main"; \
-#    echo "deb-src [trusted=yes] http://ppa.launchpad.net/jonathonf/ffmpeg-4/ubuntu eoan main"; \
-#} >> /etc/apt/source.list
 
 RUN \
     # Add ffmpeg key
