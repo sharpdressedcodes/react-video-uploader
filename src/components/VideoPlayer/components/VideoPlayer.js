@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import isEqual from 'lodash.isequal';
 import { connect } from 'react-redux';
 import { videoPlaybackError } from '../../../actions/video';
-// import PlayIcon from '@material-ui/icons/PlayCircleFilled';
-// import PauseIcon from '@material-ui/icons/PauseCircleFilled';
-// import IconButton from '@material-ui/core/IconButton';
+// import PlayIcon from '@mui/icons-material/PlayCircleFilled';
+// import PauseIcon from '@mui/icons-material/PauseCircleFilled';
+// import IconButton from '@mui/icons-material/IconButton';
 
 class VideoPlayer extends Component {
     static displayName = 'VideoPlayer';

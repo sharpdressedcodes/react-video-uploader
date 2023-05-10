@@ -1,11 +1,16 @@
 // Ubuntu Mono
-@import 'https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700&display=swap'; // sass-lint:disable-line no-url-protocols
+@import '~@fontsource/ubuntu-mono/400.css';
+@import '~@fontsource/ubuntu-mono/700.css';
 
 $font-family-ubuntu-mono: 'Ubuntu Mono', monospace;
 $font-style-ubuntu-mono-regular: 400;
 $font-style-ubuntu-mono-bold: 700;
 // Roboto
-@import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap'; // sass-lint:disable-line no-url-protocols
+@import '~@fontsource/roboto/300.css';
+@import '~@fontsource/roboto/400.css';
+@import '~@fontsource/roboto/500.css';
+@import '~@fontsource/roboto/700.css';
+@import '~@fontsource/roboto/900.css';
 
 $font-family-roboto: 'Roboto', monospace;
 $font-style-roboto-light: 300;

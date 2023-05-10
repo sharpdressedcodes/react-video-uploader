@@ -7,10 +7,12 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { ThemeProvider } from '@mui/material/styles';
 import { ErrorBoundary, Nav } from '../../index';
 import { routes, navLinks } from '../../../routes';
 import { loadVideosError, loadVideosSuccess } from '../../../actions/loadVideos';
 import { ConfigProvider } from '../../../context/Config';
+import theme from '../../../theme';
 import '../styles/app.scss';
 
 class App extends Component {
@@ -41,26 +43,28 @@ class App extends Component {
         }
 
         return (
-            <ConfigProvider>
-                <ErrorBoundary>
-                    <ToastContainer />
-                    <h1>Video Uploader</h1>
-                    <Nav links={ navLinks } />
+            <ThemeProvider theme={ theme }>
+                <ConfigProvider>
+                    <ErrorBoundary>
+                        <ToastContainer />
+                        <h1>Video Uploader</h1>
+                        <Nav links={ navLinks } />
 
-                    <section className="page">
-                        <Routes>
-                            {routes.map(({ path, exact, element: Page, ...rest }) => (
-                                <Route
-                                    key={ path }
-                                    path={ path }
-                                    exact={ exact }
-                                    element={ <Page { ...rest } /> }
-                                />
-                            ))}
-                        </Routes>
-                    </section>
-                </ErrorBoundary>
-            </ConfigProvider>
+                        <section className="page">
+                            <Routes>
+                                {routes.map(({ path, exact, element: Page, ...rest }) => (
+                                    <Route
+                                        key={ path }
+                                        path={ path }
+                                        exact={ exact }
+                                        element={ <Page { ...rest } /> }
+                                    />
+                                ))}
+                            </Routes>
+                        </section>
+                    </ErrorBoundary>
+                </ConfigProvider>
+            </ThemeProvider>
         );
     }
 }

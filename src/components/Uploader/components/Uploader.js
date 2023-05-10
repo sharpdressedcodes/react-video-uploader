@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import LinearProgress from '@mui/material/LinearProgress';
+import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { uploadError, uploadProgress, uploadStart, uploadSuccess, uploadValidationErrors } from '../../../actions/uploader';
 import { loadVideosSuccess } from '../../../actions/loadVideos';
 import { fileValidation, formatFileSize, isArrayEmpty, SimpleWebSocket } from '../../../common';
@@ -214,11 +214,11 @@ class Uploader extends Component {
 
     render() {
         const { loaded, selectedFiles, uploading, uploadedFiles } = this.state;
-        const { url, multiple, progress } = this.props;
+        const { allowedFileExtensions, multiple, progress, url } = this.props;
         const selectButtonAttributes = {
             variant: 'contained',
             component: 'label',
-            color: 'primary',
+            color: 'secondary',
         };
         const submitButtonAttributes = {
             variant: 'contained',
@@ -231,6 +231,10 @@ class Uploader extends Component {
             name: 'file',
             onChange: this.onChange,
         };
+
+        if (!isArrayEmpty(allowedFileExtensions)) {
+            inputAttributes.accept = allowedFileExtensions.map(f => `.${f}`).join(',');
+        }
 
         const files = !selectedFiles
             ? <span>No files selected</span>

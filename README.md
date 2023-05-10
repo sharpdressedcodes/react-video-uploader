@@ -14,6 +14,7 @@ as long as you don't upload any files.
 ## Features
 
 * Form validation on both client and server. Server also validates file headers.
+* WebSockets.
 * Server-side rendering.
 * NodeJS streaming.
 * Hot reloading.
@@ -42,14 +43,6 @@ Install modules:
 
 ```shell
 npm i
-```
-
-Until we update material-ui, there may be an error when running `npm i`:
-
-In this case, try running:
-
-```shell
-npm i --legacy-peer-deps
 ```
 
 Build everything:

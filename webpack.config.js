@@ -36,10 +36,21 @@ const baseConfig = {
                 loader: 'url-loader',
             },
             {
-                test: /\.(png|jpg|gif|eot|ttf|woff|woff2)$/,
-                loader: 'url-loader',
-                options: {
-                    limit: 10000,
+                test: /\.(png|jpg|jpeg|gif|ico)$/,
+                type: 'asset/resource',
+                generator: {
+                    filename: 'images/[name][ext]',
+                },
+                // loader: 'url-loader',
+                // options: {
+                //     limit: 10000,
+                // },
+            },
+            {
+                test: /\.(ttf|eot|woff|woff2)$/,
+                type: 'asset/resource',
+                generator: {
+                    filename: 'fonts/[name][ext]',
                 },
             },
         ],

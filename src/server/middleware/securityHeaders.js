@@ -9,7 +9,7 @@ const secureHeaders = {
     // // 'Access-Control-Allow-Methods': 'DELETE,HEAD,GET,OPTIONS,PATCH,POST,PUT',
     // 'Access-Control-Allow-Methods': 'HEAD,GET,OPTIONS,POST',
     // 'Access-Control-Allow-Origin': '*',
-    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline' *.googleapis.com *.gstatic.com; img-src 'self' * data:; font-src 'self' *.googleapis.com *.gstatic.com data: ; connect-src 'self'; media-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self';",
+    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' * data:; font-src 'self' data: ; connect-src 'self'; media-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self';",
     // Deprecated
     // 'Expect-CT': 'enforce, max-age=30',
     'Permissions-Policy': 'autoplay=(self), camera=(), encrypted-media=(self), fullscreen=(), geolocation=(self), gyroscope=(self), magnetometer=(), microphone=(), midi=(), payment=(), sync-xhr=(self), usb=()',
