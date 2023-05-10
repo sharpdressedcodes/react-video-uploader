@@ -28,6 +28,12 @@ const config = {
             },
         },
     },
+    webVitals: {
+        // eslint-disable-next-line no-console
+        callback: console.log,
+        // enabled: process.env.NODE_ENV === 'development',
+        enabled: false,
+    },
 };
 
 config.get = (value, defaultValue = null) => get(config, value, defaultValue);

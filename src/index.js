@@ -3,6 +3,8 @@ import { createRoot, hydrateRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import configureStore from './stores/app';
+import reportWebVitals from './reporting/WebVitals';
+import config from './config';
 import { App } from './components';
 
 (() => {
@@ -50,5 +52,9 @@ import { App } from './components';
 
     if (window.loaded) {
         window.boot();
+
+        if (config.get('webVitals.enabled')) {
+            reportWebVitals(config.get('webVitals.callback', () => {}));
+        }
     }
 })();
