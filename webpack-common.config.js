@@ -131,10 +131,11 @@ const configOptions = {
     externals: [nodeExternals({})],
 };
 const routeOptions = {
-    ...commonOptions,
-    entry: './src/routes/index.js',
+    ...configOptions,
+    entry: './src/routes/paths.js',
     output: {
-        ...commonOptions.output,
+        ...configOptions.output,
+        filename: 'paths.cjs',
         path: path.join(process.cwd(), './src/routes'),
     },
 };

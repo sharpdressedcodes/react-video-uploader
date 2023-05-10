@@ -34,7 +34,7 @@
     },
     "scripts": {
         "prepare": "node --stack-trace-limit=9999 --trace-warnings ./scripts/install-husky.js",
-        "clean": "rimraf ./build/*.js* ./build/*.css ./src/common/index.cjs ./src/config/index.cjs ./src/routes/index.cjs && node -e \"fs.mkdirSync('./build/data/uploads', { recursive: true });\"",
+        "clean": "rimraf ./build/*.js* ./build/*.css ./src/common/index.cjs ./src/config/index.cjs ./src/routes/paths.cjs && node -e \"fs.mkdirSync('./build/data/uploads', { recursive: true });\"",
         "build:common": "webpack --config webpack-common.config.js --performance-hints warning --color --stats errors-only",
         "build:browser": "cross-env APP_ENV=browser webpack --color --stats errors-warnings --config webpack.config.js",
         "build:server": "cross-env APP_ENV=server webpack --color --stats errors-warnings --config webpack.config.js",
@@ -150,7 +150,7 @@
         "wait-on": "7.0.1",
         "webpack": "5.82.0",
         "webpack-cli": "5.1.1",
-        "webpack-dev-middleware": "5.3.3",
+        "webpack-dev-middleware": "6.1.0",
         "webpack-hot-middleware": "2.25.3",
         "webpack-node-externals": "3.0.0",
         "yaml-lint": "1.7.0"

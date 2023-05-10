@@ -90,7 +90,7 @@ both commonjs and ESM.
 
 Files inside `./src/common/index.js` get converted to `commonjs-static` as `./src/common/index.cjs`
 which means they can be called from both commonjs and ESM.
-This also happens with `./src/routes/index.js`
+This also happens with `./src/routes/paths.js`
 
 ## Tests
 

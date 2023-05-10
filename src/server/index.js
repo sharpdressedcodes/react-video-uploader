@@ -24,7 +24,7 @@ const {
     handleVideoCreate,
 } = require('./api/video');
 const config = require('../config/index.cjs').default;
-const { routePaths } = require('../routes/index.cjs');
+const routePaths = require('../routes/paths.cjs');
 
 const DEFAULT_PORT = 3000;
 const DEFAULT_HOSTNAME = '0.0.0.0';

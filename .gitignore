@@ -14,4 +14,4 @@ tests/e2e/videos
 *.map
 src/common/index.cjs
 src/config/index.cjs
-src/routes/index.cjs
+src/routes/paths.cjs
