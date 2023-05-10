@@ -113,7 +113,6 @@ npm i --legacy-peer-deps --foreground-scripts
 
 #### TODO
 
-* Get cypress tests working
 * Get cypress tests working in pipeline (was getting address in use error)
 * Redux slices?
 * service worker, web worker?
@@ -130,7 +129,7 @@ npm i --legacy-peer-deps --foreground-scripts
 * Video player instead of html player https://www.google.com/search?q=video+js+react
 * CRUD videos
 * Authenticating the user before allowing to CUD (create, update, delete)
-* Split up js and css + hot reloading/watch
+* Split up js and css
 * Stub the api return calls during `IS_TESTING`, then assert on the items in TeaserList in HomePage
 * Drag and drop
 * TypeScript
@@ -138,8 +137,7 @@ npm i --legacy-peer-deps --foreground-scripts
 * Lazy load images on home page
 * a11y
 * BEM
-* Update material ui to https://mui.com/material-ui/getting-started/installation/
 * Turn components into functions
 * change url-loader, file-loader amd raw-loader to https://webpack.js.org/guides/asset-modules/
-* Turn video id into a hash, so it can't be guessed and navigated to.
+* Turn video id into a uuid, so it can't be guessed and navigated to.
 * https://www.npmjs.com/package/eslint-webpack-plugin
