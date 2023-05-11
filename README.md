@@ -111,7 +111,16 @@ npm cache clean -f
 npm i --legacy-peer-deps --foreground-scripts
 ```
 
-#### TODO
+## Measuring Performance
+
+To measure any of the supported metrics,
+you need to pass a function into the `webVitals.callback` in `./src/config/index.js`
+and set `webVitals.callback` to `true`.
+
+More info [here](https://www.npmjs.com/package/web-vitals)
+and [here](https://create-react-app.dev/docs/measuring-performance/).
+
+## TODO
 
 * Get cypress tests working in pipeline (was getting address in use error)
 * Redux slices?

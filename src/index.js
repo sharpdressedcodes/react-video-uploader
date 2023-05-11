@@ -54,7 +54,7 @@ import { App } from './components';
         window.boot();
 
         if (config.get('webVitals.enabled')) {
-            reportWebVitals(config.get('webVitals.callback', () => {}));
+            reportWebVitals(config.get('webVitals.callback', null));
         }
     }
 })();
