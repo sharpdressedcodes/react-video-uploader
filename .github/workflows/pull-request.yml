@@ -35,7 +35,7 @@ jobs:
           export GROUP_ID=`id -g`
           \
           sed -i \
-            -e 's/USER node/COPY ci-update-user.sh /home/node/ci-update-user.sh\nRUN /home/node/ci-update-user.sh\nUSER node/' \
+            -e 's~USER node~COPY ci-update-user.sh /home/node/ci-update-user.sh\nRUN /home/node/ci-update-user.sh\nUSER node~' \
             -e "s/ARG USER_ID/ARG USER_ID=$USER_ID/" \
             -e "s/ARG GROUP_ID/ARG GROUP_ID=$GROUP_ID/" \
             docker/node/Dockerfile
