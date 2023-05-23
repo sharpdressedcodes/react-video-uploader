@@ -1,149 +1,89 @@
-import React, { Component, createRef } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import isEqual from 'lodash.isequal';
-import { connect } from 'react-redux';
-import { videoPlaybackError } from '../../../actions/video';
-// import PlayIcon from '@material-ui/icons/PlayCircleFilled';
-// import PauseIcon from '@material-ui/icons/PauseCircleFilled';
-// import IconButton from '@material-ui/core/IconButton';
+import classNames from 'classnames';
+import { useDispatch } from 'react-redux';
+import { videoPlaybackError } from '../../../state/reducers/video';
+// import PlayIcon from '@mui/icons-material/PlayCircleFilled';
+// import PauseIcon from '@mui/icons-material/PauseCircleFilled';
+// import IconButton from '@mui/icons-material/IconButton';
 
-class VideoPlayer extends Component {
-    static displayName = 'VideoPlayer';
+const VideoPlayer = ({ autoPlay, className, controls, poster, src }) => {
+    const [playing, setPlaying] = useState(autoPlay);
+    const ref = useRef(null);
+    const dispatch = useDispatch();
 
-    static propTypes = {
-        src: PropTypes.string.isRequired,
-        poster: PropTypes.string,
-        autoPlay: PropTypes.bool,
-        controls: PropTypes.bool,
-        actions: PropTypes.object
+    const onPause = event => {
+        setPlaying(false);
     };
-
-    static defaultProps = {
-        poster: '',
-        autoPlay: false,
-        controls: false,
-        actions: {}
+    const onPlay = event => {
+        setPlaying(true);
     };
-
-    constructor(...args) {
-        super(...args);
-
-        const [props] = args;
-
-        this.container = createRef();
-        this.video = createRef();
-        this.state = { playing: props.autoPlay };
-    }
-
-    componentDidMount() {
-        this.video.current.addEventListener('ended', this.onStop, false);
-        this.video.current.addEventListener('error', this.onError, false);
-        this.video.current.addEventListener('play', this.onPlay, false);
-        this.video.current.addEventListener('pause', this.onPause, false);
-        // this.container.current.addEventListener('click', this.onClick, false);
-    }
-
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState) || !isEqual(this.context, nextContext);
-    }
-
-    componentWillUnmount() {
-        this.video.current.removeEventListener('ended', this.onStop);
-        this.video.current.removeEventListener('error', this.onError);
-        this.video.current.removeEventListener('play', this.onPlay);
-        this.video.current.removeEventListener('pause', this.onPause);
-        // this.container.current.removeEventListener('click', this.onClick);
-
-        this.pause();
-    }
-
-    onPause = event => {
-        this.setState({ playing: false });
+    const onStop = event => {
+        setPlaying(false);
     };
+    const onError = event => {
+        const { message } = event.target.error;
 
-    onPlay = event => {
-        this.setState({ playing: true });
-    };
-
-    onStop = event => {
-        this.setState({ playing: false });
-    };
-
-    onError = event => {
-        const { actions, src } = this.props;
-        const message = event.target.error.message;
-
-        if (this.state.playing) {
-            this.setState({ playing: false });
-            actions.videoPlaybackError({ error: message });
+        if (playing) {
+            setPlaying(false);
+            dispatch(videoPlaybackError(message));
         } else {
-            actions.videoPlaybackError({ error: `Error loading ${src}\n${message}` });
+            dispatch(videoPlaybackError(`Error loading ${src}\n${message}`));
         }
     };
-
-    // onClick = async event => {
-    //     if (this.state.playing) {
-    //         this.pause();
-    //     } else {
-    //         await this.play();
-    //     }
-    // };
-
-    play = async () => {
+    const play = async () => {
         try {
-            await this.video.current.play();
-            this.setState({ playing: true });
+            await ref.current.play();
+            setPlaying(true);
         } catch (err) {
-            this.props.actions.videoPlaybackError({ error: err.message });
+            dispatch(videoPlaybackError(err.message));
         }
     };
-
-    pause = () => {
-        this.setState({ playing: false });
-        this.video.current.pause();
+    const pause = () => {
+        setPlaying(false);
+        ref.current.pause();
     };
 
-    render() {
-        const { src, poster, autoPlay, controls } = this.props;
-        // const { playing } = this.state;
-        const videoAttributes = {
-            src,
-            poster,
-            ref: this.video,
-            preload: 'none',
-            controls,
-            autoPlay
-        };
-        const el = null;
+    useEffect(() => () => {
+        if (ref.current) {
+            pause();
+        }
+    }, [autoPlay, className, controls, poster, src]);
 
-        // if (!playing) {
-        //     el = (
-        //         <IconButton aria-label="play">
-        //             <PlayIcon />
-        //         </IconButton>
-        //     );
-        // }
+    return (
+        <div className={ classNames('video-container', className) }>
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+            <video
+                autoPlay={ autoPlay }
+                controls={ controls }
+                onEnded={ onStop }
+                onError={ onError }
+                onPlay={ onPlay }
+                onPause={ onPause }
+                poster={ poster }
+                preload="none"
+                ref={ ref }
+                src={ src }
+            />
+        </div>
+    );
+};
 
-        // eslint-disable-next-line jsx-a11y/media-has-caption
-        const video = <video { ...videoAttributes } />;
+VideoPlayer.displayName = 'VideoPlayer';
 
-        return (
-            <div ref={ this.container } className="video-container">
-                {el}
-                {video}
-            </div>
-        );
-    }
-}
+VideoPlayer.propTypes = {
+    src: PropTypes.string.isRequired,
+    autoPlay: PropTypes.bool,
+    className: PropTypes.string,
+    controls: PropTypes.bool,
+    poster: PropTypes.string,
+};
 
-const mapDispatchToProps = dispatch => ({
-    actions: {
-        videoPlaybackError: payload => dispatch(videoPlaybackError(payload.error))
-    }
-});
+VideoPlayer.defaultProps = {
+    autoPlay: false,
+    className: null,
+    controls: false,
+    poster: '',
+};
 
-const ConnectedVideoPlayer = connect(null, mapDispatchToProps)(VideoPlayer);
-
-export const DisconnectedVideoPlayer = VideoPlayer;
-
-export default ConnectedVideoPlayer;
+export default memo(VideoPlayer);

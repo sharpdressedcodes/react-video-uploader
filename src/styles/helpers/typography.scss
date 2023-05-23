@@ -1,16 +1,39 @@
+@use 'sass:string';
+@use '@fontsource/ubuntu-mono/scss/mixins' as UbuntuMonoMixin;
+@use '@fontsource/ubuntu-mono/scss/metadata' as UbuntuMonoMetadata;
+@use '@fontsource/roboto/scss/mixins' as RobotoMixin;
+@use '@fontsource/roboto/scss/metadata' as RobotoMetadata;
+//
 // Ubuntu Mono
-@import url('https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700&display=swap'); // sass-lint:disable-line no-url-protocols
-
-$font-family-ubuntu-mono: 'Ubuntu Mono', monospace;
+$font-family-ubuntu-mono: string.quote(UbuntuMonoMetadata.$family), monospace;
 $font-style-ubuntu-mono-regular: 400;
 $font-style-ubuntu-mono-bold: 700;
 
+@include UbuntuMonoMixin.faces(
+    $subsets: latin,
+    $weights: (
+        $font-style-ubuntu-mono-regular,
+        $font-style-ubuntu-mono-bold
+    ),
+    $styles: all,
+);
+//
 // Roboto
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap'); // sass-lint:disable-line no-url-protocols
-
-$font-family-roboto: 'Roboto', monospace;
+$font-family-roboto: string.quote(RobotoMetadata.$family), monospace;
 $font-style-roboto-light: 300;
 $font-style-roboto-regular: 400;
 $font-style-roboto-medium: 500;
 $font-style-roboto-bold: 700;
 $font-style-roboto-black: 900;
+
+@include RobotoMixin.faces(
+    $subsets: latin,
+    $weights: (
+        $font-style-roboto-light,
+        $font-style-roboto-regular,
+        $font-style-roboto-medium,
+        $font-style-roboto-bold,
+        $font-style-roboto-black
+    ),
+    $styles: all,
+);

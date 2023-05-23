@@ -1,11 +1,11 @@
 const matroskaFileSignature = {
     length: 4,
-    value: '\x1a\x45\xdf\xa3' // .Eß£
+    value: '\x1a\x45\xdf\xa3', // .Eß£
 };
 const threeGPFileSignature = {
     offset: 4,
     length: 6,
-    value: 'ftyp3g'
+    value: 'ftyp3g',
 };
 
 export const fileTypes = {
@@ -24,8 +24,8 @@ export const fileTypes = {
                 const validSubTypes = ['avc1', 'iso2', 'isom', 'mmp4', 'mp41', 'mp42', 'mp71', 'msnv', 'ndas', 'ndsc', 'ndsh', 'ndsm', 'ndsp', 'ndss', 'ndxc', 'ndxh', 'ndxm', 'ndxp', 'ndxs'];
 
                 return type === 'ftyp' && validSubTypes.includes(subType);
-            }
-        }]
+            },
+        }],
     },
     'video/ogg': { extensions: ['ogv'], signatures: [{ length: 4, value: 'OggS' }] },
     'video/quicktime': { extensions: ['mov'], signatures: [{ length: 8, offset: 4, value: 'ftypeqt  ' }] },
@@ -43,15 +43,15 @@ export const fileTypes = {
                 const validFlags = [
                     '\x01', // video
                     '\x04', // audio
-                    '\x05' // audio + video
+                    '\x05', // audio + video
                 ];
 
                 return signature === 'FLV' && version === '\x01' && validFlags.includes[flags];
-            }
-        }]
+            },
+        }],
     },
     'video/x-matroska': { extensions: ['mkv'], signatures: [matroskaFileSignature] },
-    'video/x-msvideo': { extensions: ['avi'], signatures: [{ length: 4, value: 'RIFF' }] }
+    'video/x-msvideo': { extensions: ['avi'], signatures: [{ length: 4, value: 'RIFF' }] },
 };
 
 export const fileExtensions = Object

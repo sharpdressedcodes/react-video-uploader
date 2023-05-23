@@ -15,6 +15,6 @@ module.exports = allStagedFiles => {
         isValid(markdownFiles) && `npm run lint:md:staged -- ${markdownFiles.join(' ')}`,
         isValid(codeFiles) && `npm run lint:js:staged -- ${codeFiles.join(' ')}`,
         isValid(styleFiles) && `npm run lint:scss:staged -- ${styleFiles.join(' ')}`,
-        isValid(yamlFiles) && `npm run lint:yml:staged -- ${yamlFiles.join(' ')}`
+        isValid(yamlFiles) && `npm run lint:yml:staged -- ${yamlFiles.join(' ')}`,
     ].filter(Boolean);
 };

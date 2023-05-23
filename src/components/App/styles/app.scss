@@ -1,14 +1,13 @@
-@import '../../../styles/main';
+@use '../../../styles/helpers/variables';
+@use '../../../styles/mixins/breakpoint' as *;
 
 #app {
-    //opacity: 0;
     margin: 0 auto 50px;
-    width: $container-width-mobile;
-    transition: opacity $default-page-transition-speed ease-in-out;
+    width: variables.$container-width-mobile;
 
     @include breakpoint(medium up) {
-        width: $container-width;
-        //max-width: $container-max-width;
+        width: variables.$container-width;
+        // max-width: variables.$container-max-width;
     }
 
     h1 {

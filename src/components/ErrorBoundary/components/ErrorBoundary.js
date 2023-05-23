@@ -2,18 +2,23 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash.isequal';
 
+/**
+ * Class components are now deprecated,
+ * but using a class component is the only way to define
+ * an ErrorBoundary as of 17 May 2023.
+ */
 class ErrorBoundary extends Component {
     static displayName = 'ErrorBoundary';
 
     static propTypes = {
         children: PropTypes.node.isRequired,
         onComponentDidCatch: PropTypes.func,
-        errorMessage: PropTypes.node
+        errorMessage: PropTypes.node,
     };
 
     static defaultProps = {
         onComponentDidCatch: Function.prototype,
-        errorMessage: <h1>An unexpected error has occurred</h1>
+        errorMessage: <h1>An unexpected error has occurred</h1>,
     };
 
     static getDerivedStateFromError(error) {

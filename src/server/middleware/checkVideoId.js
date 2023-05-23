@@ -1,4 +1,5 @@
-import { readDirectory } from '../fileSystem';
+const { readDirectory } = require('../fileSystem');
+const { findItemByUuid } = require('../../common/index.cjs');
 
 const checkVideoId = async (req, res, next) => {
     const uploadPath = req.app.locals.config.get('videoUpload.path', 'build/data/uploads');
@@ -8,7 +9,7 @@ const checkVideoId = async (req, res, next) => {
         try {
             const files = await readDirectory(uploadPath);
 
-            if (id < 0 || id > files.length - 1) {
+            if (!findItemByUuid(id, files)) {
                 res.status(404).send('Not found');
             } else {
                 next();
@@ -21,4 +22,4 @@ const checkVideoId = async (req, res, next) => {
     }
 };
 
-export default checkVideoId;
+module.exports = checkVideoId;

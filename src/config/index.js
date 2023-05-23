@@ -5,12 +5,15 @@ const publicPath = 'data/uploads';
 const path = `build/${publicPath}`;
 const maxFileSize = 1024 * 1024 * 150; // MB
 const maxFiles = 10;
+const appName = 'Video Uploader';
 const config = {
+    disableNodeStreaming: false,
     allowedFileTypes,
     allowedFileExtensions,
+    appName,
     server: {
         hostName: '0.0.0.0',
-        port: 3000
+        port: 3000,
     },
     videoUpload: {
         thumbnailDimensions: '320x180', // 16:9
@@ -18,16 +21,29 @@ const config = {
         maxFileSize,
         maxTotalFileSize: maxFileSize * maxFiles,
         path,
-        publicPath
+        publicPath,
     },
     endpoints: {
         api: {
             video: {
                 upload: '/api/video/upload',
-                get: '/api/video/get'
-            }
-        }
-    }
+                get: '/api/video/get',
+            },
+        },
+    },
+    manifest: {
+        fileName: '/manifest.json',
+    },
+    serviceWorker: {
+        // enabled: process.env.NODE_ENV === 'production',
+        enabled: true,
+    },
+    webVitals: {
+        // eslint-disable-next-line no-console
+        callback: console.log,
+        // enabled: process.env.NODE_ENV === 'development',
+        enabled: false,
+    },
 };
 
 config.get = (value, defaultValue = null) => get(config, value, defaultValue);
@@ -38,8 +54,8 @@ export const testConfig = {
         ...config.videoUpload,
         maxFiles: 5,
         maxFileSize: 10,
-        maxTotalFileSize: 40
-    }
+        maxTotalFileSize: 40,
+    },
 };
 
 testConfig.get = (value, defaultValue = null) => get(testConfig, value, defaultValue);

@@ -11,7 +11,7 @@ export default class SimpleWebSocket {
         CONNECTING: 0,
         OPEN: 1,
         CLOSING: 2,
-        CLOSED: 3
+        CLOSED: 3,
     };
 
     constructor(url = null, protocols = null) {

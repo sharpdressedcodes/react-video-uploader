@@ -13,7 +13,7 @@ ROOT_DIR="$( dirname "${DIR}" )"
 CONTAINER_DIR=/home/node/app
 # Get the project directory name
 PROJECT_NAME="$( basename "${ROOT_DIR}" )"
-DOCKER_IMAGE="${PROJECT_NAME}_node"
+DOCKER_IMAGE="${PROJECT_NAME}-node"
 #DOCKER_IMAGE="sharpdressedcodes/node:14.17.3-buster-slim"
 hookFile=${ROOT_DIR}/.husky/pre-commit
 # Get the 5th line in the hook file

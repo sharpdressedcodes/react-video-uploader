@@ -5,7 +5,7 @@ const validateFileExtension = (file, allowedFileExtensions = []) => {
     const fileExtension = getFileExtension(file);
 
     if (!isArrayEmpty(allowedFileExtensions) && fileExtension) {
-        return allowedFileExtensions.includes(fileExtension);
+        return Boolean(allowedFileExtensions.find(ext => ext.toLowerCase() === fileExtension.toLowerCase()));
     }
 
     // No extensions means allow everything

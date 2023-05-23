@@ -1,111 +1,44 @@
-import React, { Component } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { uploadError, uploadProgress, uploadStart, uploadSuccess, uploadValidationErrors } from '../../../actions/uploader';
-import { loadVideosSuccess } from '../../../actions/loadVideos';
+import classNames from 'classnames';
+import { useDispatch } from 'react-redux';
+import Button from '@mui/material/Button';
+import LinearProgress from '@mui/material/LinearProgress';
+import AddIcon from '@mui/icons-material/Add';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import {
+    uploadError,
+    uploadProgress,
+    uploadStart,
+    uploadSuccess,
+    uploadValidationErrors,
+    uploadReset,
+} from '../../../state/reducers/uploader';
 import { fileValidation, formatFileSize, isArrayEmpty, SimpleWebSocket } from '../../../common';
-import upload from '../api/upload';
+import { upload } from '../api';
 
-// TODO: decouple video stuff from this component
-class Uploader extends Component {
-    static displayName = 'Uploader';
+const Uploader = ({ allowedFileExtensions, className, maxFiles, maxFileSize, maxTotalFileSize, multiple, progress, url }) => {
+    const [loaded, setLoaded] = useState(Uploader.DEFAULT_STATE.loaded);
+    const [selectedFiles, setSelectedFiles] = useState(Uploader.DEFAULT_STATE.selectedFiles);
+    const [uploading, setUploading] = useState(Uploader.DEFAULT_STATE.uploading);
+    const [uploadedFiles, setUploadedFiles] = useState(Uploader.DEFAULT_STATE.uploadedFiles);
+    const webSocket = useRef(null);
+    const dispatch = useDispatch();
 
-    static DEFAULT_STATE = {
-        selectedFiles: null,
-        loaded: 0,
-        uploading: false,
-        uploadedFiles: []
-    };
-
-    static propTypes = {
-        url: PropTypes.string.isRequired,
-        multiple: PropTypes.bool,
-        progress: PropTypes.bool,
-        actions: PropTypes.object,
-        maxFiles: PropTypes.number,
-        maxFileSize: PropTypes.number,
-        maxTotalFileSize: PropTypes.number,
-        allowedFileExtensions: PropTypes.arrayOf(PropTypes.string)
-    };
-
-    static defaultProps = {
-        multiple: false,
-        progress: false,
-        actions: {},
-        maxFiles: 0,
-        maxFileSize: 0,
-        maxTotalFileSize: 0,
-        allowedFileExtensions: []
-    };
-
-    constructor(...args) {
-        super(...args);
-
-        this.webSocket = null;
-        this.state = { ...Uploader.DEFAULT_STATE };
-    }
-
-    componentDidMount() {
-        this.webSocket = new SimpleWebSocket();
-
-        this.webSocket.addEventListeners({
-            onOpen: this.onWebSocketOpen,
-            onMessage: this.onWebSocketMessage,
-            onError: this.onWebSocketError,
-            onClose: this.onWebSocketClose
-        });
-    }
-
-    componentWillUnmount() {
-        this.webSocket.removeEventListeners({
-            onOpen: this.onWebSocketOpen,
-            onMessage: this.onWebSocketMessage,
-            onError: this.onWebSocketError,
-            onClose: this.onWebSocketClose
-        });
-
-        this.webSocket = null;
-    }
-
-    // eslint-disable-next-line class-methods-use-this
-    onWebSocketOpen = event => {
+    const dispatchAndWait = action => new Promise(resolve => {
+        dispatch(action);
+        setTimeout(resolve);
+    });
+    const onWebSocketOpen = event => {
         // console.log('websocket open', event);
     };
-
-    onWebSocketMessage = event => {
-        // console.log('websocket message', event);
-        const message = JSON.parse(event.data);
-
-        switch (message.event) {
-            case 'upload.step':
-                this.onUploadStep(message.data);
-                break;
-            case 'upload.step.file':
-                this.onUploadStepFile(message.data);
-                break;
-            case 'upload.step.file.progress':
-                this.onUploadStepFileProgress(message.data);
-                break;
-            default:
-        }
-    };
-
-    // eslint-disable-next-line class-methods-use-this
-    onWebSocketError = err => {
+    const onWebSocketError = err => {
         // console.log('websocket error', err);
     };
-
-    // eslint-disable-next-line class-methods-use-this
-    onWebSocketClose = event => {
+    const onWebSocketClose = event => {
         // console.log('websocket close', event);
     };
-
-    // eslint-disable-next-line class-methods-use-this
-    onUploadStep = params => {
+    const onUploadStep = params => {
         const { step, total, status } = params;
         /* step: 3,
         total: 3,
@@ -116,218 +49,271 @@ class Uploader extends Component {
         //     this.setState({ uploadedFiles: [] });
         // }
     };
-
-    onUploadStepFile = params => {
+    const onUploadStepFile = params => {
         const { index } = params;
-        const { uploadedFiles } = this.state;
 
         uploadedFiles[index] = params;
-        this.setState({ uploadedFiles });
+        setUploadedFiles([...uploadedFiles]);
     };
-
-    onUploadStepFileProgress = params => {
+    const onUploadStepFileProgress = params => {
         const { index } = params;
-        const { uploadedFiles } = this.state;
 
         uploadedFiles[index] = params;
-        this.setState({ uploadedFiles });
-
+        setUploadedFiles([...uploadedFiles]);
         // console.log('upload.step.file.progress', params);
     };
-
-    onUploadProgress = ProgressEvent => {
+    const onUploadProgress = ProgressEvent => {
         const percentage = (ProgressEvent.loaded / ProgressEvent.total) * 100;
 
-        this.props.actions.uploadProgress({ percentage });
-        this.setState({ loaded: percentage });
+        dispatch(uploadProgress(percentage));
+        setLoaded(percentage);
     };
-
-    onChange = async event => {
-        const { actions, allowedFileExtensions, maxFiles, maxFileSize, maxTotalFileSize } = this.props;
-        const state = { ...Uploader.DEFAULT_STATE };
+    const onChange = async event => {
         const files = Array.from(event.target.files);
 
         if (isArrayEmpty(files)) {
             // User opened dialog, then clicked cancel
-            this.setState(state);
+            setLoaded(Uploader.DEFAULT_STATE.loaded);
+            setSelectedFiles(Uploader.DEFAULT_STATE.selectedFiles);
+            setUploading(Uploader.DEFAULT_STATE.uploading);
+            setUploadedFiles(Uploader.DEFAULT_STATE.uploadedFiles);
             return;
         }
+
+        await dispatchAndWait(uploadReset());
 
         const result = await fileValidation({
             files,
             allowedFileExtensions,
             maxFiles,
             maxFileSize,
-            maxTotalFileSize
+            maxTotalFileSize,
         });
 
         if (!result.success) {
             // eslint-disable-next-line no-param-reassign
             event.target.value = null;
-            actions.uploadValidationErrors({ validation: result });
+            dispatch(uploadValidationErrors(result));
         } else {
-            state.selectedFiles = files;
-            state.uploadedFiles = [];
+            setSelectedFiles(files);
+            setUploadedFiles([]);
         }
 
-        this.setState(state);
+        setLoaded(Uploader.DEFAULT_STATE.loaded);
+        setUploading(Uploader.DEFAULT_STATE.uploading);
     };
-
-    onSubmit = async event => {
-        const { selectedFiles } = this.state;
-        const { url, actions } = this.props;
+    const onSubmit = async event => {
         const data = new FormData();
 
         event.preventDefault();
+        await dispatchAndWait(uploadReset());
 
         if (!selectedFiles) {
-            actions.uploadValidationErrors({ errors: ['Error: No files selected'] });
+            dispatch(uploadError('Error: No files selected'));
             return;
         }
 
-        const len = selectedFiles.length;
-
-        for (let i = 0; i < len; i++) {
-            data.append('file', selectedFiles[i]);
-        }
+        selectedFiles.forEach(file => {
+            data.append('file', file);
+        });
 
         try {
-            this.setState({ uploading: true, loaded: 0 });
-            actions.uploadStart({ url });
+            setLoaded(Uploader.DEFAULT_STATE.loaded);
+            setUploading(true);
+            dispatch(uploadStart(url));
 
-            const result = await upload({ url, data, onProgress: this.onUploadProgress });
+            const result = await upload({ url, data, onProgress: onUploadProgress });
 
             if (result.data.validation) {
-                actions.uploadValidationErrors({ validation: result.data.validation });
+                dispatch(uploadValidationErrors(result.data.validation));
             } else {
-                actions.uploadSuccess({ result: result.data });
-                actions.loadVideosSuccess({ items: result.data.items });
+                dispatch(uploadSuccess(result.data));
             }
         } catch (err) {
-            actions.uploadError({ error: err.message });
+            dispatch(uploadError(err.message));
         } finally {
-            this.setState({ uploading: false, loaded: 0, uploadedFiles: [] });
+            setLoaded(Uploader.DEFAULT_STATE.loaded);
+            setUploadedFiles(Uploader.DEFAULT_STATE.uploadedFiles);
+            setUploading(Uploader.DEFAULT_STATE.uploading);
             // Uncomment below to auto reset after upload
-            // this.setState({ ...Uploader.DEFAULT_STATE });
+            // setSelectedFiles(Uploader.DEFAULT_STATE.selectedFiles);
         }
     };
+    const onWebSocketMessage = event => {
+        // console.log('websocket message', event);
+        const message = JSON.parse(event.data);
 
-    render() {
-        const { loaded, selectedFiles, uploading, uploadedFiles } = this.state;
-        const { url, multiple, progress } = this.props;
-        const selectButtonAttributes = {
-            variant: 'contained',
-            component: 'label',
-            color: 'primary'
-        };
-        const submitButtonAttributes = {
-            variant: 'contained',
-            component: 'button',
-            type: 'submit'
-        };
-        const inputAttributes = {
-            style: { display: 'none' },
-            type: 'file',
-            name: 'file',
-            onChange: this.onChange
-        };
-
-        const files = !selectedFiles
-            ? <span>No files selected</span>
-            : (
-                <ul className="files">
-                    {selectedFiles.map((item, index) => {
-                        const uploadItem = uploadedFiles[index];
-                        let s = 'Ready to upload';
-                        let progress2 = 0;
-
-                        if (uploadItem && uploadItem.status) {
-                            const { step, total, status } = uploadItem;
-
-                            s = `Step ${step} of ${total} - ${status}`;
-                        }
-
-                        if (uploadItem && uploadItem.percent) {
-                            progress2 = uploadItem.percent;
-                        }
-
-                        return (
-                            <li key={ item.name } className="file">
-                                <span className="file-index">{index + 1}.</span>
-                                <span className="file-name">{item.name}</span>
-                                <span className="file-size">{formatFileSize(item.size)}</span>
-                                <span className="file-status">{s}</span>
-                                <span className="file-progress">
-                                    <LinearProgress className="status-progress" variant="determinate" value={ progress2 } />
-                                </span>
-                            </li>
-                        );
-                    })}
-                </ul>
-            );
-
-        if (!selectedFiles || uploading) {
-            submitButtonAttributes.disabled = true;
+        switch (message.event) {
+            case 'upload.step':
+                onUploadStep(message.data);
+                break;
+            case 'upload.step.file':
+                onUploadStepFile(message.data);
+                break;
+            case 'upload.step.file.progress':
+                onUploadStepFileProgress(message.data);
+                break;
+            default:
         }
-
-        if (uploading) {
-            selectButtonAttributes.disabled = true;
+    };
+    const renderFiles = () => {
+        if (!selectedFiles) {
+            return <span>No files selected</span>;
         }
-
-        if (multiple) {
-            inputAttributes.multiple = true;
-        }
-
-        const progressElement = progress && selectedFiles ? <LinearProgress className="status-progress" variant="determinate" value={ loaded } /> : null;
 
         return (
-            <section className="uploader">
+            <ul className="files">
+                {selectedFiles.map((item, index) => {
+                    const uploadItem = uploadedFiles[index];
+                    const s = uploadItem?.status
+                        ? `Step ${uploadItem.step} of ${uploadItem.total} - ${uploadItem.status}`
+                        : 'Ready to upload';
 
-                <form className="form form-upload" action={ url } method="post" onSubmit={ this.onSubmit }>
+                    return (
+                        <li key={ item.name } className="file">
+                            <span className="file-index">{index + 1}.</span>
+                            <span className="file-name">{item.name}</span>
+                            <span className="file-size">{formatFileSize(item.size)}</span>
+                            <span className="file-status">{s}</span>
+                            <span className="file-progress">
+                                <LinearProgress
+                                    className="status-progress"
+                                    variant="determinate"
+                                    value={ uploadItem?.percent ?? 0 }
+                                />
+                            </span>
+                        </li>
+                    );
+                })}
+            </ul>
+        );
+    };
+    const renderProgress = () => {
+        if (progress && selectedFiles) {
+            return <LinearProgress className="status-progress" variant="determinate" value={ loaded } />;
+        }
 
-                    <div className="form-fields">
-                        <div className="form-field">
-                            <Button { ...selectButtonAttributes }>
-                                Select Files
-                                <AddIcon className="button-icon-right" />
-                                <input { ...inputAttributes } />
-                            </Button>
-                        </div>
-                    </div>
+        return null;
+    };
 
-                    <div className="form-controls">
-                        <Button { ...submitButtonAttributes }>
-                            Upload
-                            <CloudUploadIcon className="button-icon-right" />
+    useEffect(() => {
+        if (!webSocket.current) {
+            webSocket.current = new SimpleWebSocket();
+
+            webSocket.current.addEventListeners({
+                onOpen: onWebSocketOpen,
+                onMessage: onWebSocketMessage,
+                onError: onWebSocketError,
+                onClose: onWebSocketClose,
+            });
+        }
+
+        return () => {
+            if (webSocket.current) {
+                webSocket.current.removeEventListeners({
+                    onOpen: onWebSocketOpen,
+                    onMessage: onWebSocketMessage,
+                    onError: onWebSocketError,
+                    onClose: onWebSocketClose,
+                });
+
+                webSocket.current = null;
+            }
+        };
+    }, [allowedFileExtensions, className, maxFiles, maxFileSize, maxTotalFileSize, multiple, progress, url]);
+
+    const selectButtonAttributes = {
+        variant: 'contained',
+        component: 'label',
+        color: 'secondary',
+    };
+    const submitButtonAttributes = {
+        variant: 'contained',
+        component: 'button',
+        type: 'submit',
+    };
+    const inputAttributes = {
+        style: { display: 'none' },
+        type: 'file',
+        name: 'file',
+        onChange,
+    };
+    const files = renderFiles();
+    const progressElement = renderProgress();
+
+    if (!isArrayEmpty(allowedFileExtensions)) {
+        inputAttributes.accept = allowedFileExtensions.map(f => `.${f}`).join(',');
+    }
+
+    if (!selectedFiles || uploading) {
+        submitButtonAttributes.disabled = true;
+    }
+
+    if (uploading) {
+        selectButtonAttributes.disabled = true;
+    }
+
+    if (multiple) {
+        inputAttributes.multiple = true;
+    }
+
+    return (
+        <section className={ classNames('uploader', className) }>
+            <form className="form form-upload" action={ url } method="post" onSubmit={ onSubmit }>
+                <div className="form-fields">
+                    <div className="form-field">
+                        <Button { ...selectButtonAttributes }>
+                            Select Files
+                            <AddIcon className="button-icon-right" />
+                            <input { ...inputAttributes } />
                         </Button>
                     </div>
-
-                </form>
-
-                <div className="status">
-                    <div className="status-files">{files}</div>
-                    {progressElement}
                 </div>
 
-            </section>
-        );
-    }
-}
+                <div className="form-controls">
+                    <Button { ...submitButtonAttributes }>
+                        Upload
+                        <CloudUploadIcon className="button-icon-right" />
+                    </Button>
+                </div>
+            </form>
 
-const mapDispatchToProps = dispatch => ({
-    actions: {
-        uploadError: payload => dispatch(uploadError(payload.error)),
-        uploadProgress: payload => dispatch(uploadProgress(payload.progress)),
-        uploadStart: payload => dispatch(uploadStart(payload.url)),
-        uploadSuccess: payload => dispatch(uploadSuccess(payload.result)),
-        // uploadValidationErrors: payload => dispatch(uploadValidationErrors(payload.errors)),
-        uploadValidationErrors: payload => dispatch(uploadValidationErrors(payload.validation)),
-        loadVideosSuccess: payload => dispatch(loadVideosSuccess(payload.items))
-    }
-});
+            <div className="status">
+                <div className="status-files">{files}</div>
+                {progressElement}
+            </div>
+        </section>
+    );
+};
 
-const ConnectedUploader = connect(null, mapDispatchToProps)(Uploader);
+Uploader.displayName = 'Uploader';
 
-export const DisconnectedUploader = Uploader;
+Uploader.DEFAULT_STATE = {
+    selectedFiles: null,
+    loaded: 0,
+    uploading: false,
+    uploadedFiles: [],
+};
 
-export default ConnectedUploader;
+Uploader.propTypes = {
+    url: PropTypes.string.isRequired,
+    allowedFileExtensions: PropTypes.arrayOf(PropTypes.string),
+    className: PropTypes.string,
+    maxFiles: PropTypes.number,
+    maxFileSize: PropTypes.number,
+    maxTotalFileSize: PropTypes.number,
+    multiple: PropTypes.bool,
+    progress: PropTypes.bool,
+};
+
+Uploader.defaultProps = {
+    allowedFileExtensions: [],
+    className: null,
+    maxFiles: 0,
+    maxFileSize: 0,
+    maxTotalFileSize: 0,
+    multiple: false,
+    progress: false,
+};
+
+export default memo(Uploader);

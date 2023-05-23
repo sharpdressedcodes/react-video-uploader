@@ -1,6 +1,6 @@
 import React from 'react';
-import mount from '../../../../../tests/unit/helpers/mount';
-import UploadPage, { DisconnectedUploadPage } from '../components/UploadPage';
+// import mount from '../../../../../tests/unit/helpers/mount';
+import UploadPage from '../components/UploadPage';
 
 describe(`Making sure the UploadPage renders correctly`, () => {
     it(`Renders the UploadPage component`, () => {

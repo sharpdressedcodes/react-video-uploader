@@ -15,7 +15,7 @@ export default function formatFileSize(bytes, precision = 2) {
         'PB', // petabyte
         'EB', // exabyte
         'ZB', // zettabyte
-        'YB' // yottabyte
+        'YB', // yottabyte
     ];
 
     let b = Math.max(bytes, 0);

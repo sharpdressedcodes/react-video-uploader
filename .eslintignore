@@ -1,4 +1,9 @@
-.idea
-build
-cypress-cache
-node_modules
+/.idea/
+/.vscode/
+/.github/
+/.husky/
+/build/
+/cypress-cache/
+/docker/
+/hooks/
+/server/

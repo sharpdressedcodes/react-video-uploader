@@ -2,7 +2,7 @@ const paths = {
     homePage: '/',
     uploadPage: '/upload',
     videoPlayerPage: '/video/:id',
-    noMatchPage: '*'
+    noMatchPage: '*',
 };
 
 export default paths;

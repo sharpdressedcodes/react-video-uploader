@@ -37,10 +37,10 @@
         "@babel/object-curly-spacing": 0,
         "@babel/semi": "error",
         "arrow-parens": ["error", "as-needed"],
-        "comma-dangle": ["error", "never"],
         "indent": ["error", 4, { "ignoredNodes": ["ConditionalExpression"], "SwitchCase": 1 }],
         "import/first": 0,
         "import/newline-after-import": ["error", { "count": 1 }],
+        "import/no-cycle": 0,
         "import/prefer-default-export": 0,
         "jsx-a11y/click-events-have-key-events": 0,
         "max-len": [

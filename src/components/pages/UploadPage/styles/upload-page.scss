@@ -1,7 +1,8 @@
-@import '../../../../styles/main';
+@use '../../../../styles/helpers/variables';
+@use '../../../../styles/mixins/breakpoint' as *;
 
 .page-upload {
-    max-width: $container-max-width;
+    max-width: variables.$container-max-width;
     margin: 0 auto;
 
     .info-table {
@@ -24,7 +25,7 @@
             align-items: initial;
             white-space: initial;
 
-            & > span[class*=file-] {
+            & > span[class*='file-'] {
                 display: block;
 
                 &:not(:last-child) {
@@ -45,7 +46,7 @@
                     width: 100%;
                 }
 
-                & > span[class*=file-] {
+                & > span[class*='file-'] {
                     display: initial;
 
                     &:not(:last-child) {

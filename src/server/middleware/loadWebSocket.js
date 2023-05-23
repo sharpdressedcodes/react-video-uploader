@@ -1,4 +1,4 @@
-import { WebSocketServer } from 'ws';
+const { WebSocketServer } = require('ws');
 
 let webSocketServer = null;
 let webSocket = null;
@@ -23,4 +23,4 @@ const loadWebSocket = (server, options = {}) => (req, res, next) => {
     }
 };
 
-export default loadWebSocket;
+module.exports = loadWebSocket;

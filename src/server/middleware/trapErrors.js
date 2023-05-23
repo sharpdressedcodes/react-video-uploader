@@ -1,4 +1,4 @@
-export default function trapErrors(err, req, res, next) {
+const trapErrors = (err, req, res, next) => {
     let status = null;
     let message = null;
 
@@ -23,4 +23,6 @@ export default function trapErrors(err, req, res, next) {
     } else {
         res.status(status).send(error);
     }
-}
+};
+
+module.exports = trapErrors;

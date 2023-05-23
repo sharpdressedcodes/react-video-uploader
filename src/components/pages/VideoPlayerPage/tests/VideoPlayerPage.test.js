@@ -1,17 +1,17 @@
 import React from 'react';
-import VideoPlayerPage, { DisconnectedVideoPlayerPage } from '../components/VideoPlayerPage';
+import VideoPlayerPage from '../components/VideoPlayerPage';
 import videosMock from '../../../../../tests/unit/__mocks__/videosMock';
 // import mount from '../../helpers/mount';
-import ActionTypes from '../../../../constants/loadVideos';
+// import ActionTypes from '../../../../constants/loadVideos';
 
 const props = {
     history: {},
     location: {},
     match: {
         params: {
-            id: 0
-        }
-    }
+            id: 0,
+        },
+    },
 };
 
 describe(`Making sure the VideoPlayerPage renders correctly`, () => {

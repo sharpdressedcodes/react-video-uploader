@@ -1,8 +1,8 @@
 import React from 'react';
-import mount from '../../../../tests/unit/helpers/mount';
+// import mount from '../../../../tests/unit/helpers/mount';
 // import config from 'react-global-configuration';
 import filesMock from '../../../../tests/fixtures/filesMock';
-import Uploader, { DisconnectedUploader } from '../components/Uploader';
+import Uploader from '../components/Uploader';
 import { testConfig } from '../../../config';
 // Used to capture the callback for the progress event
 let componentCallback = null;
@@ -19,7 +19,7 @@ function createXHRMock(data = mockData) {
     const upload = {
         addEventListener: (eventName, cb, useCapture) => {
             componentCallback = cb;
-        }
+        },
     };
     const xhrMockClass = function xhrMock() {
         return {
@@ -29,7 +29,7 @@ function createXHRMock(data = mockData) {
             setRequestHeader,
             responseText,
             readyState,
-            upload
+            upload,
         };
     };
 

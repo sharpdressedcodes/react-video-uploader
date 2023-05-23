@@ -1,34 +1,22 @@
-import React, { Component } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import isEqual from 'lodash.isequal';
 import classNames from 'classnames';
 
-class TeaserList extends Component {
-    static displayName = 'TeaserList';
+const TeaserList = ({ className, children }) => (
+    <ul className={ classNames('teaserlist', className) }>
+        {children}
+    </ul>
+);
 
-    static propTypes = {
-        className: PropTypes.string,
-        children: PropTypes.array
-    };
+TeaserList.displayName = 'TeaserList';
 
-    static defaultProps = {
-        className: '',
-        children: []
-    };
+TeaserList.propTypes = {
+    children: PropTypes.node.isRequired,
+    className: PropTypes.string,
+};
 
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState) || !isEqual(this.context, nextContext);
-    }
+TeaserList.defaultProps = {
+    className: '',
+};
 
-    render() {
-        const { className } = this.props;
-
-        return (
-            <ul className={ classNames('teaserlist', className) }>
-                {this.props.children}
-            </ul>
-        );
-    }
-}
-
-export default TeaserList;
+export default memo(TeaserList);
