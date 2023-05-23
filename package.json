@@ -35,11 +35,11 @@
     "scripts": {
         "prepare": "node --stack-trace-limit=9999 --trace-warnings ./scripts/install-husky.js",
         "clean": "rimraf ./server ./build/fonts ./build/images ./build/*.js* ./build/*.css ./src/common/index.cjs* ./src/config/index.cjs* ./src/routes/paths.cjs* && node -e \"fs.mkdirSync('./build/data/uploads', { recursive: true });\"",
-        "build:common": "webpack --config webpack-common.config.js --performance-hints warning --color --stats errors-only",
+        "build:common": "webpack --config webpack-common.config.js --performance-hints warning --color",
         "build:browser": "cross-env APP_ENV=browser webpack --color --stats errors-warnings --config webpack.config.js",
         "build:server": "cross-env APP_ENV=server webpack --color --stats errors-warnings --config webpack.config.js",
         "build": "npm run clean && cross-env NODE_ENV=production npm run build:common -- --bail --progress --stats errors-warnings && cross-env NODE_ENV=production npm run build:browser -- --bail --progress && cross-env NODE_ENV=production npm run build:server -- --bail --progress",
-        "build:ci": "npm run clean && cross-env NODE_ENV=production npm run build:common -- --bail --stats errors-only && cross-env NODE_ENV=production npm run build:browser -- --bail && cross-env NODE_ENV=production npm run build:server -- --bail",
+        "build:ci": "npm run clean && cross-env NODE_ENV=production npm run build:common -- --bail --stats errors-warnings && cross-env NODE_ENV=production npm run build:browser -- --bail && cross-env NODE_ENV=production npm run build:server -- --bail",
         "dev": "npm run clean && concurrently --kill-others-on-fail --names \"common,build,server\" -c \"bgMagenta.bold,bgBlue.bold,bgCyan.bold\" \"cross-env NODE_ENV=development FAST_REFRESH=true npm run build:common -- -w --stats errors-warnings\" \"wait-on ./src/config/index.cjs && cross-env NODE_ENV=development FAST_REFRESH=true npm run build:server -- -w\" \"wait-on ./server/server-entry.js && cross-env NODE_ENV=development FAST_REFRESH=true npm run start -- --watch --trace-warnings --stack-trace-limit=9999\"",
         "dev:no-watch": "npm run clean && cross-env NODE_ENV=development npm run build:common -- --progress --bail --stats errors-warnings && cross-env NODE_ENV=development npm run build:browser -- --progress --bail && cross-env NODE_ENV=development npm run build:server -- --progress --bail && cross-env NODE_ENV=development npm run start -- --trace-warnings --stack-trace-limit=9999",
         "start": "node ./src/server/index.js",
