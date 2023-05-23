@@ -1,7 +1,7 @@
 import React from 'react';
 // import mount from '../../helpers/mount';
 import videosMock from '../../../../../tests/unit/__mocks__/videosMock';
-import ActionTypes from '../../../../constants/loadVideos';
+// import ActionTypes from '../../../../constants/loadVideos';
 import HomePage from '../components/HomePage';
 
 describe(`Making sure the HomePage renders correctly`, () => {

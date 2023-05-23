@@ -2,7 +2,7 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
-import { videoPlaybackError } from '../../../actions/video';
+import { videoPlaybackError } from '../../../state/reducers/video';
 // import PlayIcon from '@mui/icons-material/PlayCircleFilled';
 // import PauseIcon from '@mui/icons-material/PauseCircleFilled';
 // import IconButton from '@mui/icons-material/IconButton';

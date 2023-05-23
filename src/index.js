@@ -4,7 +4,7 @@ import { createRoot, hydrateRoot } from 'react-dom/client';
 import BrowserRouter from './components/BrowserRouter';
 import Providers from './components/Providers';
 import App from './components/App';
-import configureStore from './stores/app';
+import configureStore from './state/stores/app';
 import reportWebVitals from './reporting/WebVitals';
 import config from './config';
 

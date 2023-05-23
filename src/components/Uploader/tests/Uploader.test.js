@@ -1,5 +1,5 @@
 import React from 'react';
-import mount from '../../../../tests/unit/helpers/mount';
+// import mount from '../../../../tests/unit/helpers/mount';
 // import config from 'react-global-configuration';
 import filesMock from '../../../../tests/fixtures/filesMock';
 import Uploader from '../components/Uploader';

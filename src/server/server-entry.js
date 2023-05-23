@@ -6,7 +6,7 @@ import { StaticRouter } from 'react-router-dom/server';
 import { matchPath } from 'react-router-dom';
 import serialize from 'serialize-javascript';
 import { routes } from '../routes';
-import configureStore from '../stores/app';
+import configureStore from '../state/stores/app';
 import Providers from '../components/Providers';
 import Html from '../components/Html';
 import App from '../components/App';

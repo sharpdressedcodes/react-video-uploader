@@ -1,5 +1,5 @@
 import React from 'react';
-import mount from '../../../../../tests/unit/helpers/mount';
+// import mount from '../../../../../tests/unit/helpers/mount';
 import UploadPage from '../components/UploadPage';
 
 describe(`Making sure the UploadPage renders correctly`, () => {

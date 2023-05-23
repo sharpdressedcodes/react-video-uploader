@@ -5,7 +5,7 @@ import { formatFileSize, isArrayEmpty, isObjectEmpty } from '../../../../common'
 import InfoTable from '../../../InfoTable';
 import Uploader from '../../../Uploader';
 import { useDidUpdate } from '../../../../hooks';
-import { loadVideosSuccess } from '../../../../actions/loadVideos';
+import { loadVideosSuccess } from '../../../../state/reducers/loadVideos';
 import '../styles/upload-page.scss';
 
 const UploadPage = () => {

@@ -3,7 +3,7 @@ import uploaderReducer from '../reducers/uploader';
 import videoReducer from '../reducers/video';
 import loadVideosReducer from '../reducers/loadVideos';
 
-export default function configureAppStore(preloadedState/* = null */) {
+const configureAppStore = preloadedState => {
     const store = configureStore({
         preloadedState,
         reducer: {
@@ -18,4 +18,6 @@ export default function configureAppStore(preloadedState/* = null */) {
     // }
 
     return store;
-}
+};
+
+export default configureAppStore;

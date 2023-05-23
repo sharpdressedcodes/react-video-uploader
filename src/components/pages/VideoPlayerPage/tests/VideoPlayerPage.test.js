@@ -2,7 +2,7 @@ import React from 'react';
 import VideoPlayerPage from '../components/VideoPlayerPage';
 import videosMock from '../../../../../tests/unit/__mocks__/videosMock';
 // import mount from '../../helpers/mount';
-import ActionTypes from '../../../../constants/loadVideos';
+// import ActionTypes from '../../../../constants/loadVideos';
 
 const props = {
     history: {},

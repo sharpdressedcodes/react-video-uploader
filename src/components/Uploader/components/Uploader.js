@@ -13,7 +13,7 @@ import {
     uploadSuccess,
     uploadValidationErrors,
     uploadReset,
-} from '../../../actions/uploader';
+} from '../../../state/reducers/uploader';
 import { fileValidation, formatFileSize, isArrayEmpty, SimpleWebSocket } from '../../../common';
 import { upload } from '../api';
 

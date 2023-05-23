@@ -8,7 +8,7 @@ import ErrorBoundary from '../../ErrorBoundary';
 import GlobalSpinner from '../../GlobalSpinner';
 import Nav from '../../Nav';
 import { routes, navLinks } from '../../../routes';
-import { loadVideosError, loadVideosSuccess } from '../../../actions/loadVideos';
+import { loadVideosSuccess } from '../../../state/reducers/loadVideos';
 import '../styles/app.scss';
 
 const App = ({ data }) => {
@@ -32,7 +32,12 @@ const App = ({ data }) => {
             <section className="page">
                 <Suspense fallback={ <GlobalSpinner /> }>
                     <Routes>
-                        {routes.map(({ path, exact, element: Page, ...rest }) => (
+                        {routes.map(({
+                            path,
+                            exact,
+                            element: Page,
+                            ...rest
+                        }) => (
                             <Route
                                 key={ path }
                                 path={ path }
