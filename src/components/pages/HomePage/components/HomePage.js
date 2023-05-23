@@ -6,7 +6,7 @@ import Teaser from '../../../Teaser';
 import TeaserList from '../../../TeaserList';
 import { routePaths } from '../../../../routes';
 import { isArrayEmpty } from '../../../../common';
-import { useDidUpdate } from '../../../../hooks';
+import useDidUpdate from '../../../../hooks/useDidUpdate';
 import '../styles/home-page.scss';
 
 const HomePage = () => {

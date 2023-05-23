@@ -4,7 +4,7 @@ import { ConfigContext, ToastContext } from '../../../../context';
 import { formatFileSize, isArrayEmpty, isObjectEmpty } from '../../../../common';
 import InfoTable from '../../../InfoTable';
 import Uploader from '../../../Uploader';
-import { useDidUpdate } from '../../../../hooks';
+import useDidUpdate from '../../../../hooks/useDidUpdate';
 import { loadVideosSuccess } from '../../../../state/reducers/loadVideos';
 import '../styles/upload-page.scss';
 

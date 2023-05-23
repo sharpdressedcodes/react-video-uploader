@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { ConfigContext, ToastContext } from '../../../../context';
 import { findItemByUuid, isObjectEmpty } from '../../../../common';
 import VideoPlayer from '../../../VideoPlayer';
-import { useDidUpdate } from '../../../../hooks';
+import useDidUpdate from '../../../../hooks/useDidUpdate';
 import '../styles/video-player-page.scss';
 
 const VideoPlayerPage = () => {

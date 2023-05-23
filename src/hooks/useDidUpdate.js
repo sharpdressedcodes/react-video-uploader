@@ -21,6 +21,4 @@ const useDidUpdate = (effect, dependencies) => {
     );
 };
 
-useDidUpdate.displayName = 'useDidUpdate';
-
 export default useDidUpdate;

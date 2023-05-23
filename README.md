@@ -126,7 +126,6 @@ and [here](https://create-react-app.dev/docs/measuring-performance/).
 ## TODO
 
 * Get cypress tests working in pipeline (was getting address in use error)
-* Redux slices?
 * web worker?
 * i18n
   * https://www.i18next.com/
@@ -134,7 +133,6 @@ and [here](https://create-react-app.dev/docs/measuring-performance/).
   * https://phrase.com/blog/posts/localizing-react-apps-with-i18next/
   * https://lokalise.com/blog/react-i18n-intl/
   * https://github.com/privatenumber/webpack-localize-assets-plugin
-* swap express for fastify?
 * Try using a nodejs worker thread for converting video
 * add websocket ping for server and client
 * Video player instead of html player https://www.google.com/search?q=video+js+react
@@ -143,7 +141,6 @@ and [here](https://create-react-app.dev/docs/measuring-performance/).
 * Stub the api return calls during `IS_TESTING`, then assert on the items in TeaserList in HomePage
 * Drag and drop
 * TypeScript
-* Lazy load images on home page
 * a11y
 * BEM
 * https://www.npmjs.com/package/eslint-webpack-plugin

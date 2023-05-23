@@ -21,8 +21,26 @@ const Picture = ({ alt, animatedSrc, caption, className, order, src }) => {
             case 'image':
                 return (
                     <Fragment key={ item }>
-                        <img key={ src } className="picture-image" src={ src } alt={ alt } style={ { display: mouseEntered && animatedSrc ? 'none' : 'initial' } } />
-                        <img key={ animatedSrc } className="picture-image" src={ animatedSrc } alt={ alt } style={ { display: mouseEntered && animatedSrc ? 'initial' : 'none' } } />
+                        <img
+                            alt={ alt }
+                            className="picture-image"
+                            height="100%"
+                            key={ src }
+                            loading="lazy"
+                            src={ src }
+                            style={ { display: mouseEntered && animatedSrc ? 'none' : 'initial' } }
+                            width="auto"
+                        />
+                        <img
+                            alt={ alt }
+                            className="picture-image"
+                            height="100%"
+                            key={ animatedSrc }
+                            loading="lazy"
+                            src={ animatedSrc }
+                            style={ { display: mouseEntered && animatedSrc ? 'initial' : 'none' } }
+                            width="auto"
+                        />
                     </Fragment>
                 );
 

@@ -1,3 +1,4 @@
+export { default as canUseDOM } from './canUseDOM';
 export { createFileName, findItemByUuid, parseFileName } from './fileName';
 export { default as FileValidator } from './FileValidator';
 export { default as fileValidation } from './fileValidation';
@@ -7,6 +8,7 @@ export { default as getFileExtension } from './getFileExtension';
 export { default as getFileName } from './getFileName';
 export { default as getMimeType } from './getMimeType';
 export { default as isArrayEmpty } from './isArrayEmpty';
+export { default as isInViewport } from './isInViewport';
 export { default as isObject } from './isObject';
 export { default as isObjectEmpty } from './isObjectEmpty';
 export { default as roundTo } from './roundTo';
