@@ -30,16 +30,26 @@ jobs:
           TZ: Australia/Sydney
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-        # Remove cypress since we will run that in its own container anyway.
         run: |
           export USER_ID=`id -u`
           export GROUP_ID=`id -g`
+          \
+          sed -i \
+            -e 's/USER node/COPY ci-update-user.sh /home/node/ci-update-user.sh\nRUN /home/node/ci-update-user.sh\nUSER node/' \
+            -e "s/ARG USER_ID/ARG USER_ID=$USER_ID/" \
+            -e "s/ARG GROUP_ID/ARG GROUP_ID=$GROUP_ID/" \
+            docker/node/Dockerfile
+          cat docker/node/Dockerfile
+          \
           docker login -u $DOCKER_USERNAME -p $DOCKER_ACCESS_TOKEN
+          \
           docker-compose -f docker-compose.ci.yml down
           docker-compose -f docker-compose.ci.yml up -d --build
           docker ps -a
           echo "USER_ID=$USER_ID USER_NAME=`id -un`"
           echo "GROUP_ID=$GROUP_ID GROUP_NAME=`id -gn`"
+          ls -lAF
+          pwd
           \
           echo "Installing dependencies..."
           echo "$(grep -v '"cypress":' package.json)" > package.json
