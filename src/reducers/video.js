@@ -1,4 +1,6 @@
-import VideoActionTypes from '../constants/video';
+import ActionTypes from '../constants/video';
+
+const { VIDEO_PLAYBACK_ERROR } = ActionTypes;
 
 export const initialState = {
     videoPlaybackError: null,
@@ -7,7 +9,7 @@ export const initialState = {
 
 export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
-        case VideoActionTypes.VIDEO_PLAYBACK_ERROR:
+        case VIDEO_PLAYBACK_ERROR:
             return {
                 ...state,
                 videoPlaybackError: action.payload,

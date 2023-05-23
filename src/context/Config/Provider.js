@@ -1,10 +1,10 @@
 import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import Context from './Config';
-import mainConfig, { testConfig } from '../../config/index.cjs';
+import Context from './Context';
+import mainConfig, { testConfig } from '../../config';
 
 const Provider = ({ children }) => (
-    <Context.Provider value={ useMemo(process.env.NODE_ENV === 'test' ? () => ({ config: testConfig }) : () => ({ config: mainConfig }), []) }>
+    <Context.Provider value={ useMemo(() => (process.env.NODE_ENV === 'test' ? testConfig : mainConfig), []) }>
         {children}
     </Context.Provider>
 );

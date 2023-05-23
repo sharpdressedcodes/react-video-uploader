@@ -1,3 +1,8 @@
+@use '../../../styles/helpers/colours';
+@use '../../../styles/helpers/typography';
+@use '../../../styles/helpers/variables';
+@use '../../../styles/mixins/prefers-dark-mode' as *;
+
 *,
 *::before,
 *::after {
@@ -5,21 +10,22 @@
 }
 
 body {
-    font: 400 1em/1.5em $font-family-roboto;
-    color: $colour-primary;
-    // opacity: 0;
-    transition: opacity $default-page-transition-speed ease-in-out;
+    transition: opacity variables.$default-page-transition-speed ease-in-out;
+    // MUI sets below properties
+    // font: typography.$font-style-roboto-regular 1em/1.5em typography.$font-family-roboto;
+    // background-color: colours.$colour-bg;
+    // color: colours.$colour-primary;
 }
 
 a {
-    color: $colour-primary;
+    color: colours.$colour-hyperlink;
 }
 
 img,
 a,
 .hover {
     opacity: 1;
-    transition: opacity $default-hover-speed ease-in-out;
+    transition: opacity variables.$default-hover-speed ease-in-out;
 }
 
 a,
@@ -27,6 +33,7 @@ a:hover,
 a:visited,
 a:focus {
     text-decoration: none;
+    color: colours.$colour-hyperlink-visited;
 }
 
 img {
@@ -46,8 +53,8 @@ input[type='reset']:hover,
 input[type='reset']:focus,
 .hover:hover,
 .hover:focus {
-    opacity: $default-hover-opacity;
-    transition: opacity $default-hover-speed ease-in-out;
+    opacity: variables.$default-hover-opacity;
+    transition: opacity variables.$default-hover-speed ease-in-out;
 }
 
 input[type='color'],
@@ -83,12 +90,12 @@ h4,
 h5,
 h6 {
     font-style: normal;
-    font-weight: $font-style-roboto-bold;
+    font-weight: typography.$font-style-roboto-bold;
     letter-spacing: 0.015em;
 }
 
 .button {
-    font-weight: $font-style-roboto-bold;
+    font-weight: typography.$font-style-roboto-bold;
     letter-spacing: 0.1em;
     margin-bottom: 0;
     padding: 5px 15px;
@@ -140,5 +147,27 @@ figure {
                 margin-bottom: 15px;
             }
         }
+    }
+}
+
+@include prefers-dark-mode {
+    // html and body already taken care of by Mui CssBaseline
+    // html {
+    //    color-scheme: dark;
+    // }
+    //
+    // body {
+    //    color: $colour-primary-dark;
+    //    background-color: $colour-bg-dark;
+    // }
+
+    a {
+        color: colours.$colour-hyperlink-dark;
+    }
+
+    a:hover,
+    a:visited,
+    a:focus {
+        color: colours.$colour-hyperlink-visited-dark;
     }
 }

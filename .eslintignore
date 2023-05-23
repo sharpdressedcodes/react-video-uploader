@@ -1,8 +1,9 @@
-.idea
-.vscode
-.github
-.husky
-build
-cypress-cache
-docker
-hooks
+/.idea/
+/.vscode/
+/.github/
+/.husky/
+/build/
+/cypress-cache/
+/docker/
+/hooks/
+/server/

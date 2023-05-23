@@ -1,1 +1,1 @@
-export { default, DisconnectedUploadPage } from './components/UploadPage';
+export default from './components/UploadPage';

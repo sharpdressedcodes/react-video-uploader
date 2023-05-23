@@ -1,4 +1,6 @@
-import LoadVideosActionTypes from '../constants/loadVideos';
+import ActionTypes from '../constants/loadVideos';
+
+const { LOAD_VIDEOS_ERROR, LOAD_VIDEOS_SUCCESS } = ActionTypes;
 
 export const initialState = {
     videos: null,
@@ -7,14 +9,14 @@ export const initialState = {
 
 export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
-        case LoadVideosActionTypes.LOAD_VIDEOS_SUCCESS:
+        case LOAD_VIDEOS_SUCCESS:
             return {
                 ...state,
                 videosDownloadError: null,
                 videos: action.payload,
             };
 
-        case LoadVideosActionTypes.LOAD_VIDEOS_ERROR:
+        case LOAD_VIDEOS_ERROR:
             return {
                 ...state,
                 videosDownloadError: action.payload,

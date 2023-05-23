@@ -1,35 +1,31 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const path = require('node:path');
-const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 process.traceDeprecation = true;
 
 const isProduction = process.env.NODE_ENV === 'production';
 const commonOptions = {
+    name: 'common',
     watchOptions: {
-        // aggregateTimeout: 600,
-        // poll: 1000,
         ignored: '**/node_modules',
     },
     target: 'node18',
     mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? undefined : 'cheap-module-source-map', // 'inline-source-map',
-    entry: path.resolve('./src/common/index.js'),
+    entry: {
+        index: path.resolve('./src/common/index.js'),
+    },
     output: {
-        filename: 'index.cjs',
+        filename: '[name].cjs',
         path: path.resolve('./src/common'),
         publicPath: '',
-        // clean: true,
         library: {
             type: 'commonjs-static',
         },
     },
-    externals: [nodeExternals({
-        allowlist: ['react-toastify/dist/ReactToastify.css'],
-    })],
+    externals: [nodeExternals({})],
     module: {
         rules: [
             {
@@ -93,26 +89,12 @@ const commonOptions = {
             },
         ],
     },
-    optimization: {
-        concatenateModules: false,
-        mergeDuplicateChunks: true,
-        flagIncludedChunks: true,
-        minimize: false, // isProduction && !isServer
-    },
     plugins: [
-        /* !isServer && */!isProduction && new webpack.HotModuleReplacementPlugin(),
-        /* !isServer && */!isProduction && new ReactRefreshWebpackPlugin({
-            overlay: false,
-            forceEnable: true,
-            exclude: [/node_modules/],
-            // overlay: {
-            //     sockIntegration: 'whm'
-            // }
-        }),
         new MiniCssExtractPlugin({}),
-    ].filter(Boolean),
+    ],
 };
 const configOptions = {
+    name: 'config',
     cache: false,
     devtool: false,
     context: `${process.cwd()}/`,
@@ -143,6 +125,7 @@ const configOptions = {
 };
 const routeOptions = {
     ...configOptions,
+    name: 'route',
     entry: './src/routes/paths.js',
     output: {
         ...configOptions.output,

@@ -1,1 +1,1 @@
-export { default, DisconnectedVideoPlayerPage } from './components/VideoPlayerPage';
+export default from './components/VideoPlayerPage';

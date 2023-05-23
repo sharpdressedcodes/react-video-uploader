@@ -1,113 +1,82 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import isEqual from 'lodash.isequal';
-import { toast } from 'react-toastify';
-import { ConfigContext } from '../../../../context/Config';
-import { formatFileSize, isObjectEmpty } from '../../../../common';
-import { InfoTable, Uploader } from '../../../index';
+import React, { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { ConfigContext, ToastContext } from '../../../../context';
+import { formatFileSize, isArrayEmpty, isObjectEmpty } from '../../../../common';
+import InfoTable from '../../../InfoTable';
+import Uploader from '../../../Uploader';
+import { useDidUpdate } from '../../../../hooks';
+import { loadVideosSuccess } from '../../../../actions/loadVideos';
 import '../styles/upload-page.scss';
 
-class UploadPage extends Component {
-    static displayName = 'UploadPage';
+const UploadPage = () => {
+    const config = useContext(ConfigContext);
+    const toast = useContext(ToastContext);
+    const dispatch = useDispatch();
+    const { uploadValidationErrors, uploadError, uploadResult, uploadValidation } = useSelector(({ uploaderReducer }) => uploaderReducer);
+    const maxFiles = config.get('videoUpload.maxFiles', 0);
+    const maxFileSize = config.get('videoUpload.maxFileSize', 0);
+    const maxTotalFileSize = config.get('videoUpload.maxTotalFileSize', 0);
+    const allowedFileExtensions = config.get('allowedFileExtensions', []);
+    const formattedMaxFileSize = formatFileSize(maxFileSize);
+    const formattedMaxTotalFileSize = formatFileSize(maxTotalFileSize);
 
-    static contextType = ConfigContext;
+    const generateInfo = () => ([
+        { title: 'Allowed file types:', text: allowedFileExtensions.join(', ') },
+        { title: 'Maximum file size:', text: formattedMaxFileSize },
+        { title: 'Maximum files:', text: maxFiles },
+        { title: 'Maximum files size:', text: formattedMaxTotalFileSize },
+    ]);
 
-    static propTypes = {
-        uploadValidationErrors: PropTypes.arrayOf(PropTypes.string),
-        uploadError: PropTypes.string,
-        uploadResult: PropTypes.object,
-        uploadValidation: PropTypes.object,
-    };
-
-    static defaultProps = {
-        uploadValidationErrors: [],
-        uploadError: null,
-        uploadResult: null,
-        uploadValidation: null,
-    };
-
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState) || !isEqual(this.context, nextContext);
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        const { uploadValidationErrors, uploadError, uploadResult, uploadValidation } = this.props;
+    useDidUpdate(prevProps => {
+        const errorMessages = [];
 
         if (!isObjectEmpty(uploadValidation) && !uploadValidation.success) {
-            uploadValidation.overallErrors.map(toast.error);
+            uploadValidation.overallErrors.forEach(err => errorMessages.push(err));
 
-            if (!isObjectEmpty(uploadValidation.fileErrors)) {
-                Object.entries(uploadValidation.fileErrors).map(([, values]) => values.map(toast.error));
+            if (!isObjectEmpty(uploadValidation?.fileErrors)
+                && prevProps?.uploadValidation?.fileErrors !== uploadValidation.fileErrors) {
+                Object
+                    .values(uploadValidation.fileErrors)
+                    .forEach(values => {
+                        values.forEach(value => errorMessages.push(value));
+                    })
+                ;
             }
         }
 
-        if (uploadError) {
-            toast.error(uploadError);
+        if (uploadError && !prevProps.uploadError) {
+            errorMessages.push(uploadError);
         }
 
-        if (uploadResult) {
+        if (!isArrayEmpty(errorMessages)) {
+            toast.error(errorMessages.join('\n'));
+        } else if (uploadResult && !prevProps.uploadResult) {
             toast.success('Upload complete');
+
+            dispatch(loadVideosSuccess(uploadResult.items));
         }
-    }
+    }, [uploadValidationErrors, uploadError, uploadResult, uploadValidation]);
 
-    generateInfo() {
-        const { config } = this.context;
-        const maxFiles = config.get('videoUpload.maxFiles', 0);
-        const maxFileSize = config.get('videoUpload.maxFileSize', 0);
-        const maxTotalFileSize = config.get('videoUpload.maxTotalFileSize', 0);
-        const allowedFileExtensions = config.get('allowedFileExtensions', []);
-        const formattedMaxFileSize = formatFileSize(maxFileSize);
-        const formattedMaxTotalFileSize = formatFileSize(maxTotalFileSize);
+    return (
+        <div className="page-upload">
+            <h2>Upload</h2>
 
-        return [
-            { title: 'Allowed file types:', text: allowedFileExtensions.join(', ') },
-            { title: 'Maximum file size:', text: formattedMaxFileSize },
-            { title: 'Maximum files:', text: maxFiles },
-            { title: 'Maximum files size:', text: formattedMaxTotalFileSize },
-        ];
-    }
-
-    render() {
-        const { config } = this.context;
-        const maxFiles = config.get('videoUpload.maxFiles', 0);
-        const maxFileSize = config.get('videoUpload.maxFileSize', 0);
-        const maxTotalFileSize = config.get('videoUpload.maxTotalFileSize', 0);
-        const allowedFileExtensions = config.get('allowedFileExtensions', []);
-
-        return (
-            <div className="page-upload">
-                <h2>Upload</h2>
-                <section className="content">
-                    <InfoTable items={ this.generateInfo() } />
-                    <Uploader
-                        url={ this.context.config.get('endpoints.api.video.upload') }
-                        multiple
-                        progress
-                        maxFiles={ maxFiles }
-                        maxFileSize={ maxFileSize }
-                        maxTotalFileSize={ maxTotalFileSize }
-                        allowedFileExtensions={ allowedFileExtensions }
-                    />
-                </section>
-            </div>
-        );
-    }
-}
-
-const mapStateToProps = state => {
-    const { uploaderReducer: reducer } = state;
-    const { uploadValidationErrors, uploadError, uploadResult, uploadValidation } = reducer;
-
-    return {
-        uploadValidationErrors,
-        uploadError,
-        uploadResult,
-        uploadValidation,
-    };
+            <section className="content">
+                <InfoTable items={ generateInfo() } />
+                <Uploader
+                    url={ config.get('endpoints.api.video.upload') }
+                    multiple
+                    progress
+                    maxFiles={ maxFiles }
+                    maxFileSize={ maxFileSize }
+                    maxTotalFileSize={ maxTotalFileSize }
+                    allowedFileExtensions={ allowedFileExtensions }
+                />
+            </section>
+        </div>
+    );
 };
 
-const ConnectedUploadPage = connect(mapStateToProps)(UploadPage);
+UploadPage.displayName = 'UploadPage';
 
-export const DisconnectedUploadPage = UploadPage;
-export default ConnectedUploadPage;
+export default UploadPage;

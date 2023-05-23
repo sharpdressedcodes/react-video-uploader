@@ -1,1 +1,1 @@
-export { default, DisconnectedHomePage } from './components/HomePage';
+export default from './components/HomePage';

@@ -13,6 +13,8 @@ services:
     container_name: node
     volumes:
       - ./:/home/node/app
+      #- ./:/opt/project
+      #- /opt/project/node_modules/
       - ./docker/node/.bash_history:/home/node/.bash_history
       - ./cypress-cache:/home/node/.cache
       - /tmp/.X11-unix:/tmp/.X11-unix

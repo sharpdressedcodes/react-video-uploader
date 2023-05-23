@@ -1,40 +1,36 @@
-import React, { Component } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import isEqual from 'lodash.isequal';
+import classNames from 'classnames';
 
-// TODO: convert to function
-class InfoTable extends Component {
-    static displayName = 'InfoTable';
+const InfoTable = ({ className, items }) => {
+    const renderItems = () => items.map(item => (
+        <tr key={ item.title }>
+            <td>{item.title}</td>
+            <td>{item.text}</td>
+        </tr>
+    ));
 
-    static propTypes = {
-        items: PropTypes.arrayOf(PropTypes.shape({
-            title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-            text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-        })).isRequired,
-    };
+    return (
+        <div className={ classNames('info-table', className) }>
+            <table>
+                <tbody>{renderItems()}</tbody>
+            </table>
+        </div>
+    );
+};
 
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState) || !isEqual(this.context, nextContext);
-    }
+InfoTable.displayName = 'InfoTable';
 
-    renderItems() {
-        return this.props.items.map(item => (
-            <tr key={ item.title }>
-                <td>{item.title}</td>
-                <td>{item.text}</td>
-            </tr>
-        ));
-    }
+InfoTable.propTypes = {
+    items: PropTypes.arrayOf(PropTypes.shape({
+        title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    })).isRequired,
+    className: PropTypes.string,
+};
 
-    render() {
-        return (
-            <div className="info-table">
-                <table>
-                    <tbody>{this.renderItems()}</tbody>
-                </table>
-            </div>
-        );
-    }
-}
+InfoTable.defaultProps = {
+    className: null,
+};
 
-export default InfoTable;
+export default memo(InfoTable);

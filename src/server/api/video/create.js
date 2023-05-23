@@ -1,9 +1,8 @@
 const path = require('node:path');
 const multer = require('multer');
-const { v4: uuid } = require('uuid');
 const { generateGif, generatePoster, generateThumbnail, getVideoInfo, convertVideo } = require('../../ffmpeg');
 const { rename, stat, unlink, writeFile } = require('../../fileSystem');
-const { formatFileSize, getFileName, isArrayEmpty } = require('../../../common/index.cjs');
+const { createFileName, formatFileSize, isArrayEmpty, parseFileName } = require('../../../common/index.cjs');
 const enhancedFileValidation = require('../../enhancedFileValidation');
 
 const handleVideoCreate = async (req, res, next) => {
@@ -45,7 +44,7 @@ const handleVideoCreate = async (req, res, next) => {
                 cb(null, uploadPath);
             },
             filename: (request, file, cb) => {
-                cb(null, `${+new Date()}-${uuid()}-${getFileName(file)}`);
+                cb(null, createFileName(file));
             },
         });
         const uploadFiles = multer({ storage }).array('file');
@@ -113,8 +112,12 @@ const handleVideoCreate = async (req, res, next) => {
                     emitStepFile(5, 'Generating Metadata', defaultStepFileData);
                     const stats = await stat(file.path);
                     const { size } = stats;
+                    const fileName = path.basename(file.path);
+                    const fileInfo = parseFileName(fileName);
                     const json = {
-                        video: path.basename(file.path),
+                        video: fileName,
+                        uuid: fileInfo.uuid,
+                        timestamp: fileInfo.timestamp,
                         poster,
                         thumb,
                         animatedThumb,

@@ -1,3 +1,4 @@
+const checkForBot = require('./checkForBot');
 const checkVideoId = require('./checkVideoId');
 const fakeFavIcon = require('./fakeFavIcon');
 const injectCsrf = require('./injectCsrf');
@@ -10,6 +11,7 @@ const securityHeaders = require('./securityHeaders');
 const trapErrors = require('./trapErrors');
 
 module.exports = {
+    checkForBot,
     checkVideoId,
     fakeFavIcon,
     injectCsrf,

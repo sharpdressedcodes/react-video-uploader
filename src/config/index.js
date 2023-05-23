@@ -5,9 +5,12 @@ const publicPath = 'data/uploads';
 const path = `build/${publicPath}`;
 const maxFileSize = 1024 * 1024 * 150; // MB
 const maxFiles = 10;
+const appName = 'Video Uploader';
 const config = {
+    disableNodeStreaming: false,
     allowedFileTypes,
     allowedFileExtensions,
+    appName,
     server: {
         hostName: '0.0.0.0',
         port: 3000,
@@ -27,6 +30,13 @@ const config = {
                 get: '/api/video/get',
             },
         },
+    },
+    manifest: {
+        fileName: '/manifest.json',
+    },
+    serviceWorker: {
+        // enabled: process.env.NODE_ENV === 'production',
+        enabled: true,
     },
     webVitals: {
         // eslint-disable-next-line no-console

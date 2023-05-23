@@ -1,4 +1,13 @@
-import UploaderActionTypes from '../constants/uploader';
+import ActionTypes from '../constants/uploader';
+
+const {
+    UPLOAD_START,
+    UPLOAD_SUCCESS,
+    UPLOAD_ERROR,
+    UPLOAD_VALIDATION_ERRORS,
+    UPLOAD_PROGRESS,
+    UPLOAD_RESET,
+} = ActionTypes;
 
 export const initialState = {
     uploadValidationErrors: [],
@@ -12,13 +21,13 @@ export const initialState = {
 
 export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
-        case UploaderActionTypes.UPLOAD_START:
+        case UPLOAD_START:
             return {
                 ...initialState,
                 uploadUrl: action.payload,
             };
 
-        case UploaderActionTypes.UPLOAD_SUCCESS:
+        case UPLOAD_SUCCESS:
             return {
                 ...state,
                 uploadValidationErrors: [],
@@ -26,23 +35,28 @@ export default function reducer(state = initialState, action = {}) {
                 uploadResult: action.payload,
             };
 
-        case UploaderActionTypes.UPLOAD_ERROR:
+        case UPLOAD_ERROR:
             return {
                 ...initialState,
                 uploadError: action.payload,
             };
 
-        case UploaderActionTypes.UPLOAD_VALIDATION_ERRORS:
+        case UPLOAD_VALIDATION_ERRORS:
             return {
                 ...initialState,
                 // uploadValidationErrors: action.payload, // TODO: remove this
                 uploadValidation: action.payload,
             };
 
-        case UploaderActionTypes.UPLOAD_PROGRESS:
+        case UPLOAD_PROGRESS:
             return {
                 ...state,
                 uploadProgress: action.payload,
+            };
+
+        case UPLOAD_RESET:
+            return {
+                ...initialState,
             };
 
         default:

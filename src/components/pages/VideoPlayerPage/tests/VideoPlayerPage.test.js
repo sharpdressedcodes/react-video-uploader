@@ -1,5 +1,5 @@
 import React from 'react';
-import VideoPlayerPage, { DisconnectedVideoPlayerPage } from '../components/VideoPlayerPage';
+import VideoPlayerPage from '../components/VideoPlayerPage';
 import videosMock from '../../../../../tests/unit/__mocks__/videosMock';
 // import mount from '../../helpers/mount';
 import ActionTypes from '../../../../constants/loadVideos';

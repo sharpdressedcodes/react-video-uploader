@@ -1,20 +1,23 @@
+@use "@fontsource/ubuntu-mono/scss/mixins" as UbuntuMono;
+@use "@fontsource/roboto/scss/mixins" as Roboto;
 // Ubuntu Mono
-@import '~@fontsource/ubuntu-mono/400.css';
-@import '~@fontsource/ubuntu-mono/700.css';
-
-$font-family-ubuntu-mono: 'Ubuntu Mono', monospace;
+$font-family-ubuntu-mono: "#{UbuntuMono.$fontName}", monospace;
 $font-style-ubuntu-mono-regular: 400;
 $font-style-ubuntu-mono-bold: 700;
-// Roboto
-@import '~@fontsource/roboto/300.css';
-@import '~@fontsource/roboto/400.css';
-@import '~@fontsource/roboto/500.css';
-@import '~@fontsource/roboto/700.css';
-@import '~@fontsource/roboto/900.css';
 
-$font-family-roboto: 'Roboto', monospace;
+@include UbuntuMono.fontFace($weight: $font-style-ubuntu-mono-regular);
+@include UbuntuMono.fontFace($weight: $font-style-ubuntu-mono-bold);
+//
+// Roboto
+$font-family-roboto: "#{Roboto.$fontName}", monospace;
 $font-style-roboto-light: 300;
 $font-style-roboto-regular: 400;
 $font-style-roboto-medium: 500;
 $font-style-roboto-bold: 700;
 $font-style-roboto-black: 900;
+
+@include Roboto.fontFace($weight: $font-style-roboto-light);
+@include Roboto.fontFace($weight: $font-style-roboto-regular);
+@include Roboto.fontFace($weight: $font-style-roboto-medium);
+@include Roboto.fontFace($weight: $font-style-roboto-bold);
+@include Roboto.fontFace($weight: $font-style-roboto-black);

@@ -1,51 +1,37 @@
-import React, { Component } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import isEqual from 'lodash.isequal';
+import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import '../styles/nav.scss';
 
-class Nav extends Component {
-    static displayName = 'Nav';
+const Nav = ({ className, links }) => {
+    const renderLinks = () => Object
+        .entries(links)
+        .map(([key, value]) => (
+            <li key={ key }>
+                <NavLink to={ value }>{key}</NavLink>
+            </li>
+        ))
+    ;
 
-    static propTypes = {
-        links: PropTypes.object.isRequired,
-    };
+    return (
+        <nav className={ classNames('navbar', className) }>
+            <ul>
+                {renderLinks()}
+            </ul>
+        </nav>
+    );
+};
 
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState) || !isEqual(this.context, nextContext);
-    }
+Nav.displayName = 'Nav';
 
-    renderLinks() {
-        const { links } = this.props;
+Nav.propTypes = {
+    links: PropTypes.object.isRequired,
+    className: PropTypes.string,
+};
 
-        return Object
-            .entries(links)
-            .map(([key, value]) => (
-                <li key={ key }>
-                    <NavLink to={ value }>{key}</NavLink>
-                </li>
-            ))
-        ;
-        // return Object.keys(links).map((item, index) => {
-        //     const key = `link-${index}`;
-        //
-        //     return (
-        //         <li key={ key }>
-        //             <NavLink to={links[item]}>{item}</NavLink>
-        //         </li>
-        //     );
-        // });
-    }
+Nav.defaultProps = {
+    className: '',
+};
 
-    render() {
-        return (
-            <nav className="navbar">
-                <ul>
-                    {this.renderLinks()}
-                </ul>
-            </nav>
-        );
-    }
-}
-
-export default Nav;
+export default memo(Nav);

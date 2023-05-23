@@ -8,8 +8,9 @@ const chalk = require('chalk');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const {
+    checkForBot,
     checkVideoId,
-    fakeFavIcon,
+    // fakeFavIcon,
     injectCsrf,
     loadConfig,
     loadVideos,
@@ -41,8 +42,9 @@ app.use(cors());
 app.use(securityHeaders);
 app.use(cookieParser());
 app.use(loadConfig);
+app.use(checkForBot);
 app.use(loadWebSocket(server));
-app.use(fakeFavIcon);
+// app.use(fakeFavIcon);
 
 if (isFastRefresh) {
     Error.stackTraceLimit = Infinity;

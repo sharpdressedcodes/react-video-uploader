@@ -51,7 +51,7 @@ jobs:
           docker-compose -f docker-compose.ci.yml exec -T node npm run test:ci
           \
           echo "Running build process..."
-          docker-compose -f docker-compose.ci.yml exec -T node echo "" && npm run build
+          docker-compose -f docker-compose.ci.yml exec -T node npm run build:ci
           \
           echo "Running audit..."
           docker-compose -f docker-compose.ci.yml exec -T node npm run audit:ci

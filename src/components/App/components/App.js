@@ -1,82 +1,56 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
-import React, { Component } from 'react';
+import React, { memo, Suspense, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import isEqual from 'lodash.isequal';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { Route, Routes } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { ThemeProvider } from '@mui/material/styles';
-import { ErrorBoundary, Nav } from '../../index';
+import { useDispatch } from 'react-redux';
+import ErrorBoundary from '../../ErrorBoundary';
+import GlobalSpinner from '../../GlobalSpinner';
+import Nav from '../../Nav';
 import { routes, navLinks } from '../../../routes';
 import { loadVideosError, loadVideosSuccess } from '../../../actions/loadVideos';
-import { ConfigProvider } from '../../../context/Config';
-import theme from '../../../theme';
 import '../styles/app.scss';
 
-class App extends Component {
-    static displayName = 'App';
+const App = ({ data }) => {
+    const dispatch = useDispatch();
 
-    static propTypes = {
-        actions: PropTypes.object,
-        data: PropTypes.array.isRequired,
-    };
-
-    static defaultProps = {
-        actions: {},
-    };
-
-    componentDidMount() {
-        document.body.style.opacity = 1;
+    if (data) {
+        dispatch(loadVideosSuccess(data));
     }
 
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState) || !isEqual(this.context, nextContext);
-    }
-
-    render() {
-        const { data, actions } = this.props;
-
-        if (data) {
-            actions.loadVideosSuccess({ videos: data });
+    useEffect(() => {
+        if (document) {
+            document.body.style.opacity = '1';
         }
+    }, []);
 
-        return (
-            <ThemeProvider theme={ theme }>
-                <ConfigProvider>
-                    <ErrorBoundary>
-                        <ToastContainer />
-                        <h1>Video Uploader</h1>
-                        <Nav links={ navLinks } />
+    return (
+        <ErrorBoundary fallback={ <div>Oops! Something went wrong!</div> }>
+            <h1>Video Uploader</h1>
+            <Nav links={ navLinks } />
 
-                        <section className="page">
-                            <Routes>
-                                {routes.map(({ path, exact, element: Page, ...rest }) => (
-                                    <Route
-                                        key={ path }
-                                        path={ path }
-                                        exact={ exact }
-                                        element={ <Page { ...rest } /> }
-                                    />
-                                ))}
-                            </Routes>
-                        </section>
-                    </ErrorBoundary>
-                </ConfigProvider>
-            </ThemeProvider>
-        );
-    }
-}
+            <section className="page">
+                <Suspense fallback={ <GlobalSpinner /> }>
+                    <Routes>
+                        {routes.map(({ path, exact, element: Page, ...rest }) => (
+                            <Route
+                                key={ path }
+                                path={ path }
+                                exact={ exact }
+                                element={ <Page { ...rest } /> }
+                            />
+                        ))}
+                    </Routes>
+                </Suspense>
+            </section>
+        </ErrorBoundary>
+    );
+};
 
-const mapDispatchToProps = dispatch => ({
-    actions: {
-        loadVideosSuccess: payload => dispatch(loadVideosSuccess(payload.videos)),
-        // loadVideosError
-    },
-});
+App.displayName = 'App';
 
-const ConnectedApp = connect(null, mapDispatchToProps)(App);
+App.propTypes = {
+    data: PropTypes.array.isRequired,
+};
 
-export const DisconnectedApp = App;
-export default ConnectedApp;
+export default memo(App);

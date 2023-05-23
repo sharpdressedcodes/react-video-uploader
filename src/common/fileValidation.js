@@ -2,8 +2,21 @@ import FileValidator from './FileValidator';
 import FilesValidator from './FilesValidator';
 import isArrayEmpty from './isArrayEmpty';
 
+// Strip properties that won't serialise.
+const convertFile = ({ lastModified, name, size, type }) => ({
+    lastModified,
+    name,
+    size,
+    type,
+});
+
 const fileValidation = async ({
-    allowedFileExtensions = [], customValidator = null, files = [], maxFiles = 0, maxFileSize = 0, maxTotalFileSize = 0,
+    allowedFileExtensions = [],
+    customValidator = null,
+    files = [],
+    maxFiles = 0,
+    maxFileSize = 0,
+    maxTotalFileSize = 0,
 }) => {
     const filesValidator = new FilesValidator({ files, maxFiles, maxTotalFileSize });
     const fileErrors = {};
@@ -45,7 +58,7 @@ const fileValidation = async ({
                     },
                     invalid: [
                         ...acc.invalid,
-                        files[index],
+                        convertFile(files[index]),
                     ],
                 };
             }

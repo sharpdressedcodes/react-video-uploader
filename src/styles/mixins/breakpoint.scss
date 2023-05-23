@@ -1,4 +1,5 @@
 @use 'sass:list';
+@use '../helpers/breakpoints' as *;
 
 @mixin breakpoint($breakpoint) {
     $bp: $breakpoint;

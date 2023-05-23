@@ -6,6 +6,7 @@ const ActionTypes = keyMirror({
     UPLOAD_ERROR: null,
     UPLOAD_VALIDATION_ERRORS: null,
     UPLOAD_PROGRESS: null,
+    UPLOAD_RESET: null,
 });
 
 export default ActionTypes;

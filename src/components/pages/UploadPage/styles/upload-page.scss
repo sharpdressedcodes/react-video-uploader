@@ -1,7 +1,8 @@
-@import '../../../../styles/main';
+@use '../../../../styles/helpers/variables';
+@use '../../../../styles/mixins/breakpoint' as *;
 
 .page-upload {
-    max-width: $container-max-width;
+    max-width: variables.$container-max-width;
     margin: 0 auto;
 
     .info-table {

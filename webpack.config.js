@@ -3,8 +3,11 @@ const path = require('node:path');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const PublishManifestIconsPlugin = require('./scripts/publish-manifest-icons-plugin');
+const manifestJson = require('./src/config/manifest.json');
 
 process.traceDeprecation = true;
 
@@ -40,6 +43,7 @@ const baseConfig = {
                 type: 'asset/resource',
                 generator: {
                     filename: 'images/[name][ext]',
+                    emit: !isServer,
                 },
                 // loader: 'url-loader',
                 // options: {
@@ -51,6 +55,7 @@ const baseConfig = {
                 type: 'asset/resource',
                 generator: {
                     filename: 'fonts/[name][ext]',
+                    emit: !isServer,
                 },
             },
         ],
@@ -60,6 +65,12 @@ const baseConfig = {
         mergeDuplicateChunks: true,
         flagIncludedChunks: true,
         minimize: isProduction, // isProduction && !isServer
+    },
+    performance: {
+        // Uncomment to disable warning
+        // hints: false,
+        maxEntrypointSize: 768000, // 750 KB
+        maxAssetSize: 768000, // 750 KB
     },
     plugins: [
         /* !isServer && */!isProduction && isFastRefresh && new webpack.HotModuleReplacementPlugin(),
@@ -79,17 +90,16 @@ const baseConfig = {
 };
 const browserConfig = {
     ...baseConfig,
+    name: 'browser',
     target: 'web',
     entry: {
         app: [
-            !isProduction && isFastRefresh && 'webpack-hot-middleware/client?reload=true',
+            !isProduction && isFastRefresh && 'webpack-hot-middleware/client?reload=true&name=browser',
             'core-js/modules/es.promise',
             'core-js/modules/es.array.iterator',
             'normalize.css/normalize.css',
             path.resolve('./src/index.js'),
-            // path.resolve('./src/bootstrap-chunk.js')
-        ].filter(Boolean), // ,
-        // sw: path.resolve('./src/sw.js')
+        ].filter(Boolean),
     },
     output: {
         filename: '[name].js',
@@ -122,7 +132,6 @@ const browserConfig = {
                             sassOptions: {
                                 outputStyle: 'compressed',
                             },
-                            // sourceMap: false
                             sourceMap: true,
                         },
                     },
@@ -135,11 +144,29 @@ const browserConfig = {
         new webpack.DefinePlugin({
             __isBrowser__: 'true',
         }),
+        new WebpackManifestPlugin({
+            publicPath: '',
+            seed: {
+                ...manifestJson,
+            },
+            writeToFileEmit: isFastRefresh,
+        }),
+        new PublishManifestIconsPlugin({}),
     ].filter(Boolean),
     ...(!isProduction ? {} : {
         optimization: {
             ...baseConfig.optimization,
-            // mergeDuplicateChunks: true,
+            runtimeChunk: 'single',
+            splitChunks: {
+                cacheGroups: {
+                    vendors: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name: 'vendors',
+                        chunks: 'all',
+                        enforce: true,
+                    },
+                },
+            },
             minimize: true,
             minimizer: [
                 '...',
@@ -160,11 +187,16 @@ const browserConfig = {
 };
 const serverConfig = {
     ...baseConfig,
+    name: 'server',
     target: 'node18',
-    entry: path.resolve('./src/server/server-entry.js'),
+    entry: {
+        'server-entry': path.resolve('./src/server/server-entry.js'),
+    },
     output: {
-        filename: 'server-entry.js',
-        path: path.resolve('build'),
+        filename: '[name].js',
+        path: path.resolve('server'),
+        // hotUpdateChunkFilename: '[id].hot-update.js',
+        // hotUpdateMainFilename: '[runtime].[fullhash].hot-update.json',
         library: {
             type: 'commonjs2',
         },
@@ -175,37 +207,7 @@ const serverConfig = {
             ...baseConfig.module.rules,
             {
                 test: /\.s?css$/,
-                use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            emit: false,
-                        },
-                    },
-                    // MiniCssExtractPlugin.loader,
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            sourceMap: false,
-                        },
-                    },
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            sourceMap: false,
-                        },
-                    },
-                    'resolve-url-loader',
-                    {
-                        loader: 'sass-loader',
-                        options: {
-                            sassOptions: {
-                                outputStyle: 'compressed',
-                            },
-                            // sourceMap: false
-                        },
-                    },
-                ],
+                loader: 'ignore-loader',
             },
         ],
     },
@@ -215,9 +217,7 @@ const serverConfig = {
             __isBrowser__: 'false',
         }),
     ].filter(Boolean),
-    externals: [nodeExternals({
-        allowlist: ['react-toastify/dist/ReactToastify.css'],
-    })],
+    externals: [nodeExternals({})],
     externalsPresets: { node: true },
 };
 

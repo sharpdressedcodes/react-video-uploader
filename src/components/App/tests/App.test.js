@@ -1,6 +1,6 @@
 import React from 'react';
 // import mount from '../helpers/mount';
-// import App, { DisconnectedApp } from '../../../src/js/shared/app';
+// import App from '../../../src/js/shared/app';
 
 describe(`Making sure the app renders correctly`, () => {
     it(`Renders the App component`, () => {

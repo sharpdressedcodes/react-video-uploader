@@ -14,14 +14,17 @@ as long as you don't upload any files.
 ## Features
 
 * Form validation on both client and server. Server also validates file headers.
-* WebSockets.
+* WebSockets used during file upload to provide status updates.
 * Server-side rendering.
-* NodeJS streaming.
+* NodeJS streaming. Full support for browsers, and opt out for bots, etc.
 * Hot reloading.
+* Code Splitting.
+* Smooth page transitions in `React.lazy` and `React.Suspense` with `BrowserRouter`.
 * Docker.
 * Linting for JS, styles, MarkDown and Yaml.
 * Material-UI.
 * SASS.
+* Dark mode support `@media (prefers-color-scheme: dark)` via sass mixin `@include prefers-dark-mode() {}`.
 
 ## With docker
 
@@ -124,29 +127,23 @@ and [here](https://create-react-app.dev/docs/measuring-performance/).
 
 * Get cypress tests working in pipeline (was getting address in use error)
 * Redux slices?
-* service worker, web worker?
-* manifest
+* web worker?
 * i18n
   * https://www.i18next.com/
   * https://locize.com/blog/react-i18next/
   * https://phrase.com/blog/posts/localizing-react-apps-with-i18next/
   * https://lokalise.com/blog/react-i18n-intl/
   * https://github.com/privatenumber/webpack-localize-assets-plugin
-* swap express for fastify
+* swap express for fastify?
 * Try using a nodejs worker thread for converting video
 * add websocket ping for server and client
 * Video player instead of html player https://www.google.com/search?q=video+js+react
 * CRUD videos
 * Authenticating the user before allowing to CUD (create, update, delete)
-* Split up js and css
 * Stub the api return calls during `IS_TESTING`, then assert on the items in TeaserList in HomePage
 * Drag and drop
 * TypeScript
-* React suspense
 * Lazy load images on home page
 * a11y
 * BEM
-* Turn components into functions
-* change url-loader, file-loader amd raw-loader to https://webpack.js.org/guides/asset-modules/
-* Turn video id into a uuid, so it can't be guessed and navigated to.
 * https://www.npmjs.com/package/eslint-webpack-plugin
