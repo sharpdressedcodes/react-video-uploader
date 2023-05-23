@@ -1,18 +1,19 @@
-.idea
-.vscode
+/.idea/
+/.vscode/
 
-build
-node_modules
-server
-tests/unit/coverage
-tests/unit/**/__snapshots__
-tests/e2e/downloads
-tests/e2e/screenshots
-tests/e2e/videos
+/build/
+/cypress-cache/
+/node_modules/
+/server/
+/tests/unit/coverage
+/tests/unit/**/__snapshots__
+/tests/e2e/downloads
+/tests/e2e/screenshots
+/tests/e2e/videos
 
 .bash_history
 .env
 *.map
-src/common/index.cjs
-src/config/index.cjs
-src/routes/paths.cjs
+/src/common/index.cjs
+/src/config/index.cjs
+/src/routes/paths.cjs
