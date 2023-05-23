@@ -126,14 +126,12 @@ and [here](https://create-react-app.dev/docs/measuring-performance/).
 ## TODO
 
 * Get cypress tests working in pipeline (was getting address in use error)
-* web worker?
 * i18n
   * https://www.i18next.com/
   * https://locize.com/blog/react-i18next/
   * https://phrase.com/blog/posts/localizing-react-apps-with-i18next/
   * https://lokalise.com/blog/react-i18n-intl/
   * https://github.com/privatenumber/webpack-localize-assets-plugin
-* Try using a nodejs worker thread for converting video
 * add websocket ping for server and client
 * Video player instead of html player https://www.google.com/search?q=video+js+react
 * CRUD videos
@@ -143,4 +141,3 @@ and [here](https://create-react-app.dev/docs/measuring-performance/).
 * TypeScript
 * a11y
 * BEM
-* https://www.npmjs.com/package/eslint-webpack-plugin

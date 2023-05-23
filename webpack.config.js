@@ -6,6 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const PublishManifestIconsPlugin = require('./scripts/publish-manifest-icons-plugin');
 const manifestJson = require('./src/config/manifest.json');
 
@@ -86,6 +87,7 @@ const baseConfig = {
         !isProduction ? false : new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production'),
         }),
+        new ESLintPlugin(),
     ].filter(Boolean),
 };
 const browserConfig = {

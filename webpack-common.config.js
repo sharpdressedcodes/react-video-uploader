@@ -2,6 +2,7 @@
 const path = require('node:path');
 const nodeExternals = require('webpack-node-externals');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 process.traceDeprecation = true;
 
@@ -91,6 +92,7 @@ const commonOptions = {
     },
     plugins: [
         new MiniCssExtractPlugin({}),
+        new ESLintPlugin({}),
     ],
 };
 const configOptions = {
@@ -122,6 +124,9 @@ const configOptions = {
     },
     externalsPresets: { node: true },
     externals: [nodeExternals({})],
+    plugins: [
+        new ESLintPlugin({}),
+    ],
 };
 const routeOptions = {
     ...configOptions,
