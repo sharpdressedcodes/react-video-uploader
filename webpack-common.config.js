@@ -14,9 +14,10 @@ const commonOptions = {
     },
     target: 'node18',
     mode: isProduction ? 'production' : 'development',
-    devtool: isProduction ? undefined : 'cheap-module-source-map', // 'inline-source-map',
+    // devtool: isProduction ? undefined : 'cheap-module-source-map', // 'inline-source-map',
+    devtool: isProduction ? undefined : 'source-map', // 'inline-source-map',
     entry: {
-        index: path.resolve('./src/common/index.js'),
+        index: path.resolve('./src/common/index.ts'),
     },
     output: {
         filename: '[name].cjs',
@@ -30,9 +31,15 @@ const commonOptions = {
     module: {
         rules: [
             {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
+            {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                use: { loader: 'babel-loader' },
+                // use: { loader: 'babel-loader' },
+                use: ['source-map-loader', 'babel-loader'],
             },
             {
                 test: /\.s?css$/,
@@ -68,6 +75,11 @@ const commonOptions = {
             },
             {
                 test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+                issuer: /\.tsx?$/,
+                use: ['ts-loader', '@svgr/webpack', 'url-loader'],
+            },
+            {
+                test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
                 loader: 'url-loader',
             },
             {
@@ -92,15 +104,20 @@ const commonOptions = {
     },
     plugins: [
         new MiniCssExtractPlugin({}),
-        new ESLintPlugin({}),
+        // new ESLintPlugin({}),
     ],
+    resolve: {
+        extensions: ['.tsx', '.ts', '.jsx', '.js'],
+    },
 };
 const configOptions = {
     name: 'config',
     cache: false,
-    devtool: false,
+    // devtool: isProduction ? undefined : 'cheap-module-source-map', // 'inline-source-map',
+    devtool: isProduction ? undefined : 'source-map', // 'inline-source-map',
     context: `${process.cwd()}/`,
-    entry: './src/config/index.js',
+    // entry: './src/config/index.js',
+    entry: './src/config/index.ts',
     output: {
         path: path.join(process.cwd(), './src/config'),
         filename: 'index.cjs',
@@ -110,28 +127,34 @@ const configOptions = {
             type: 'commonjs-static',
         },
     },
-    resolve: { extensions: ['.js'] },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.jsx', '.js'],
+    },
     module: {
         rules: [
             {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
+            {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                },
+                // use: { loader: 'babel-loader' },
+                use: ['source-map-loader', 'babel-loader'],
             },
         ],
     },
     externalsPresets: { node: true },
     externals: [nodeExternals({})],
     plugins: [
-        new ESLintPlugin({}),
+        // new ESLintPlugin({}),
     ],
 };
 const routeOptions = {
     ...configOptions,
     name: 'route',
-    entry: './src/routes/paths.js',
+    entry: './src/routes/paths.ts',
     output: {
         ...configOptions.output,
         filename: 'paths.cjs',

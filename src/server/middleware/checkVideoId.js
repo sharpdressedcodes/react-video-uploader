@@ -9,7 +9,7 @@ const checkVideoId = async (req, res, next) => {
         try {
             const files = await readDirectory(uploadPath);
 
-            if (!findItemByUuid(id, files)) {
+            if (!findItemByUuid/*<string>*/(id, files)) {
                 res.status(404).send('Not found');
             } else {
                 next();

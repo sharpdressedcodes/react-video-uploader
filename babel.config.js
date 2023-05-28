@@ -2,6 +2,7 @@ module.exports = api => ({
     presets: [
         ['@babel/preset-env', { targets: { node: 'current', browsers: ['last 2 versions', 'ie >= 11'] } }],
         ['@babel/preset-react', { development: !api.env('production'), runtime: 'automatic', pure: true, useBuiltIns: true }],
+        // ['@babel/preset-typescript'],
     ],
     plugins: [
         !api.env('production') && process.env.FAST_REFRESH === 'true' && 'react-refresh/babel',

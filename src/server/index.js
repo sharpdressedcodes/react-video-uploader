@@ -81,10 +81,6 @@ if (isFastRefresh) {
     });
 }
 
-app.get('/server-entry.js', (req, res) => {
-    res.status(404).send('');
-});
-
 app.use(express.static('build', {
     maxAge: isProduction ? '1y' : 0,
     index: false,

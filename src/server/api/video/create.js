@@ -7,13 +7,16 @@ const enhancedFileValidation = require('../../enhancedFileValidation');
 
 const handleVideoCreate = async (req, res, next) => {
     try {
+        let currentStep = 1;
+        let currentFileStep = 1;
+        let currentProgressStep = 1;
         const { config } = req.app.locals;
         const webSocket = req.app.locals.getWebSocket();
-        const emit = (event, data) => {
-            webSocket?.send(JSON.stringify({ event, data }));
-        };
         const defaultStepData = {
             total: 4,
+        };
+        const emit = (event, data) => {
+            webSocket?.send(JSON.stringify({ event, data }));
         };
         const emitStep = (step, status) => {
             emit('upload.step', {

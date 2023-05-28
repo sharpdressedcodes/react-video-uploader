@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import configureStore from '../../../src/state/stores/app';
@@ -17,16 +16,6 @@ function CustomProvider({ children, customStore }) {
 }
 
 CustomProvider.displayName = 'CustomProvider';
-
-CustomProvider.propTypes = {
-    children: PropTypes.node,
-    customStore: PropTypes.object,
-};
-
-CustomProvider.defaultProps = {
-    children: null,
-    customStore: null,
-};
 
 /**
  * Usage:

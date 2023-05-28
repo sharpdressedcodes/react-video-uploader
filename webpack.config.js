@@ -22,18 +22,30 @@ const baseConfig = {
         ignored: '**/node_modules',
     },
     mode: isProduction ? 'production' : 'development',
-    devtool: isProduction && !isServer ? undefined : 'cheap-module-source-map', // 'inline-source-map',
+    // devtool: isProduction && !isServer ? undefined : 'cheap-module-source-map', // 'inline-source-map',
+    devtool: isProduction && !isServer ? undefined : 'source-map', // 'inline-source-map',
     module: {
         rules: [
             {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
+            {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                use: { loader: 'babel-loader' },
+                // use: { loader: 'babel-loader' },
+                use: ['source-map-loader', 'babel-loader'],
             },
             {
                 test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
                 issuer: /\.jsx?$/,
                 use: ['babel-loader', '@svgr/webpack', 'url-loader'],
+            },
+            {
+                test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+                issuer: /\.tsx?$/,
+                use: ['ts-loader', '@svgr/webpack', 'url-loader'],
             },
             {
                 test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
@@ -83,12 +95,15 @@ const baseConfig = {
             //     sockIntegration: 'whm'
             // }
         }),
-        new MiniCssExtractPlugin({}),
-        !isProduction ? false : new webpack.DefinePlugin({
+        new MiniCssExtractPlugin(),
+        isProduction && new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production'),
         }),
         new ESLintPlugin(),
     ].filter(Boolean),
+    resolve: {
+        extensions: ['.tsx', '.ts', '.jsx', '.js'],
+    },
 };
 const browserConfig = {
     ...baseConfig,
@@ -102,6 +117,7 @@ const browserConfig = {
             'normalize.css/normalize.css',
             path.resolve('./src/index.js'),
         ].filter(Boolean),
+        sw: path.resolve('./src/workers/service/serviceWorker.ts'),
     },
     output: {
         filename: '[name].js',

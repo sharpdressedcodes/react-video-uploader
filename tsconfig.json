@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "allowUnreachableCode": false,
+        "allowSyntheticDefaultImports": true,
+        "alwaysStrict": true,
+        "esModuleInterop": true,
+        "jsx": "react",
+        "lib": [
+            "dom", "es2015"
+        ],
+        "module": "esnext",
+        "moduleResolution": "node",
+        // "noImplicitAny": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        // "noUnusedLocals": true,
+        "outDir": "./build/",
+        // "sourceMap": true,
+        "strict": true,
+        "target": "es6"
+    },
+    "exclude": ["node_modules"],
+    "include": [
+        "src/**/*",
+        "custom.d.ts"
+    ]
+}

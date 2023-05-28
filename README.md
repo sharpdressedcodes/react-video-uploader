@@ -111,7 +111,7 @@ run this (the foreground-scripts arg will show hidden Cypress output):
 ```shell
 rm -rf node_modules package-lock.json ./cypress-cache/Cypress ./cypress-cache/mesa_shader_cache
 npm cache clean -f
-npm i --legacy-peer-deps --foreground-scripts
+npm i --foreground-scripts
 ```
 
 ## Measuring Performance
@@ -138,6 +138,5 @@ and [here](https://create-react-app.dev/docs/measuring-performance/).
 * Authenticating the user before allowing to CUD (create, update, delete)
 * Stub the api return calls during `IS_TESTING`, then assert on the items in TeaserList in HomePage
 * Drag and drop
-* TypeScript
 * a11y
 * BEM

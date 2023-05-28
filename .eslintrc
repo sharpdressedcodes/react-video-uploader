@@ -1,15 +1,18 @@
+/* eslint-env node */
 {
     "extends": [
-        "airbnb"
+        // "airbnb",
+        "plugin:@typescript-eslint/recommended"
     ],
-    "parser": "@babel/eslint-parser",
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "babelOptions": {
-             "configFile": "./babel.config.js"
-        },
-        "sourceType": "module"
-    },
+    "parser": "@typescript-eslint/parser",
+//    "parser": "@babel/eslint-parser",
+//    "parserOptions": {
+//        "ecmaVersion": "latest",
+//        "babelOptions": {
+//             "configFile": "./babel.config.js"
+//        },
+//        "sourceType": "module"
+//    },
     "env": {
         "browser": true,
         "node": true,
@@ -28,14 +31,24 @@
         "destructuring",
         "import",
         "jsx-a11y",
-        "react"
+        "react",
+        "@typescript-eslint"
     ],
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
+    "root": true,
     "rules": {
         "@babel/new-cap": "error",
         "@babel/no-invalid-this": "error",
         "@babel/no-unused-expressions": 0,
         "@babel/object-curly-spacing": 0,
         "@babel/semi": "error",
+         "@typescript-eslint/no-explicit-any": 0,
+        "@typescript-eslint/no-unused-vars": 0,
+        "@typescript-eslint/no-var-requires": 0,
         "arrow-parens": ["error", "as-needed"],
         "indent": ["error", 4, { "ignoredNodes": ["ConditionalExpression"], "SwitchCase": 1 }],
         "import/first": 0,

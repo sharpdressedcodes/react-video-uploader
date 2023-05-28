@@ -12,7 +12,7 @@ const loadVideos = async (id, uploadPath) => {
         return (await Promise.all(promises)).map(result => JSON.parse(result));
     }
 
-    const item = findItemByUuid(id, items);
+    const item = findItemByUuid/*<string>*/(id, items);
 
     if (!item) {
         return null;
