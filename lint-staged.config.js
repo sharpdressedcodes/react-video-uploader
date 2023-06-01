@@ -59,7 +59,7 @@ module.exports = allStagedFiles => {
 
         codeCommands.push(`npm run lint:js:staged -- ${customConfig} ${mapped.join(' ')}`);
         codeCommands.push(`npm run lint:ts -- --project ${tsConfigFileName}`);
-        // codeCommands.push(`rimraf ${tsConfigFileName}`);
+        codeCommands.push(`rimraf ${tsConfigFileName}`);
 
         codeCommand = codeCommands.join(' ; ');
     }
