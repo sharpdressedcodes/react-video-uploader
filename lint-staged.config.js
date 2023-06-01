@@ -26,19 +26,19 @@ const generateTsConfig = files => {
     const json = {
         'extends': './tsconfig.json',
         include,
-        exclude: [
-            '.idea',
-            '.vscode',
-            '.github',
-            '.husky',
-            'build',
-            'cypress-cache',
-            'docker',
-            'hooks',
-            'server',
-            '**/node_modules/**',
-            './tsconfig.lint-staged.json',
-        ],
+        // exclude: [
+        //     '.idea',
+        //     '.vscode',
+        //     '.github',
+        //     '.husky',
+        //     'build',
+        //     'cypress-cache',
+        //     'docker',
+        //     'hooks',
+        //     'server',
+        //     '**/node_modules/**',
+        //     './tsconfig.lint-staged.json',
+        // ],
     };
 
     fs.writeFileSync(tsConfigFileName, JSON.stringify(json));
