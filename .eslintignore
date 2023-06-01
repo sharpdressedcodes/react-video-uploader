@@ -7,4 +7,4 @@
 /docker/
 /hooks/
 /server/
-tsconfig.lint-staged.json
+*.json

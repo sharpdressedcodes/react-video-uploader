@@ -87,12 +87,12 @@ module.exports = allStagedFiles => {
         // if (isValid(tsCodeFiles)) {
         //     generateTsConfig(tsCodeFiles);
         generateTsConfig(mapped);
-        // codeCommands.push(`npm run lint:ts -- --project ${tsConfigFileName} && rimraf ${tsConfigFileName}`);
-        codeCommands.push(`npm run lint:ts -- --project ${tsConfigFileName}`);
+        codeCommands.push(`npm run lint:ts -- --project ${tsConfigFileName}; rimraf ${tsConfigFileName}`);
+        // codeCommands.push(`npm run lint:ts -- --project ${tsConfigFileName}`);
     }
 
     if (!isArrayEmpty(codeCommands)) {
-        codeCommand = codeCommands.join(' && ');
+        codeCommand = codeCommands.join(' ; ');
     }
 
     return [
