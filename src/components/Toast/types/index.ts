@@ -6,8 +6,8 @@ export type DefaultPropsType = {
     className?: Nullable<string>;
     onClosed?: () => void;
     severity?: Nullable<AlertColor>;
-}
+};
 
 export type PropsType = DefaultPropsType & {
     children: ReactNode;
-}
+};

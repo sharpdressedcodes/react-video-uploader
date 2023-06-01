@@ -1,8 +1,28 @@
 module.exports = api => ({
+    parserOpts: {
+        esModuleInterop: true,
+        strictMode: true,
+    },
     presets: [
-        ['@babel/preset-env', { targets: { node: 'current', browsers: ['last 2 versions', 'ie >= 11'] } }],
-        ['@babel/preset-react', { development: !api.env('production'), runtime: 'automatic', pure: true, useBuiltIns: true }],
-        // ['@babel/preset-typescript'],
+        [
+            '@babel/preset-env',
+            {
+                targets: {
+                    node: 'current',
+                    browsers: ['last 2 versions', '> 0.25%', 'not dead'],
+                },
+            },
+        ],
+        [
+            '@babel/preset-react',
+            {
+                development: !api.env('production'),
+                runtime: 'automatic',
+                pure: true,
+                useBuiltIns: true,
+            },
+        ],
+        ['@babel/preset-typescript'],
     ],
     plugins: [
         !api.env('production') && process.env.FAST_REFRESH === 'true' && 'react-refresh/babel',

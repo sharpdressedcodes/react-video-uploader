@@ -1,1 +1,2 @@
-export { default } from './components/Html';
+export { default, defaultProps } from './components/Html';
+export { DefaultPropsType, PropsType } from './types';

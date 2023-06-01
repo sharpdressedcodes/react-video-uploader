@@ -1,0 +1,19 @@
+{
+    "extends": "./tsconfig.json",
+    "exclude": [
+        ".idea",
+        ".vscode",
+        ".github",
+        ".husky",
+        "build",
+        "cypress-cache",
+        "docker",
+        "hooks",
+        "server",
+        "**/node_modules/**"
+    ],
+    "include": [
+        "./**/*",
+        "custom.d.ts"
+    ]
+}

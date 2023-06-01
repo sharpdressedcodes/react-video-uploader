@@ -7,7 +7,7 @@ export type ToastContextType = {
     info: (msg: ReactNode) => void;
     plain: (msg: ReactNode) => void;
     dismiss: () => Promise<void>;
-}
+};
 
 const ToastContext = createContext<ToastContextType>({
     error: () => void 0,

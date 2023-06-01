@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import Head, { defaultProps as defaultHeadProps } from './Head';
 import { DefaultPropsType, PropsType } from '../types';
 
-const defaultProps: DefaultPropsType = {
+export const defaultProps: DefaultPropsType = {
     appId: 'app',
     bodyScripts: null,
     bodyStyle: {},

@@ -2,65 +2,65 @@ import { getObjectValue } from '../common';
 import {
     FileTypesType,
     fileTypes as allowedFileTypes,
-    fileExtensions as allowedFileExtensions
+    fileExtensions as allowedFileExtensions,
 } from './fileTypes';
 
 export type GetConfigType = <T = unknown>(key: string, defaultValue?: T) => T;
 
 export type ConnectionConfigType = {
-    hostName: string
-    port: number
-}
+    hostName: string;
+    port: number;
+};
 
 export type FeatureToggleConfigType = {
-    enabled?: boolean
-}
+    enabled?: boolean;
+};
 
 export type VideoUploadConfigType = {
-    thumbnailDimensions: string
-    maxFiles: number
-    maxFileSize: number
-    maxTotalFileSize: number
-    path: string
-    publicPath: string
-}
+    thumbnailDimensions: string;
+    maxFiles: number;
+    maxFileSize: number;
+    maxTotalFileSize: number;
+    path: string;
+    publicPath: string;
+};
 
 export type VideoApiEndpointsConfigType = {
-    upload: string
-    get: string
-}
+    upload: string;
+    get: string;
+};
 
 export type ApiEndpointsConfigType = {
-    video: VideoApiEndpointsConfigType
-}
+    video: VideoApiEndpointsConfigType;
+};
 
 export type EndpointsConfigType = {
-    api: ApiEndpointsConfigType
-}
+    api: ApiEndpointsConfigType;
+};
 
 export type ManifestConfigType = {
-    fileName: string
-}
+    fileName: string;
+};
 
-export type ServiceWorkerConfigType = FeatureToggleConfigType
+export type ServiceWorkerConfigType = FeatureToggleConfigType;
 
 export type WebVitalsConfigType = FeatureToggleConfigType | {
-    callback?: (...args: any[]) => void
-}
+    callback?: (...args: any[]) => void;
+};
 
 export type ConfigType = {
-    disableNodeStreaming: boolean,
-    allowedFileTypes: Record<string, FileTypesType>
-    allowedFileExtensions: string[]
-    appName: string
-    server: ConnectionConfigType,
-    videoUpload: VideoUploadConfigType
-    endpoints: EndpointsConfigType
-    manifest: ManifestConfigType
-    serviceWorker: ServiceWorkerConfigType
-    webVitals: WebVitalsConfigType
-    get: GetConfigType
-}
+    disableNodeStreaming: boolean;
+    allowedFileTypes: Record<string, FileTypesType>;
+    allowedFileExtensions: string[];
+    appName: string;
+    server: ConnectionConfigType;
+    videoUpload: VideoUploadConfigType;
+    endpoints: EndpointsConfigType;
+    manifest: ManifestConfigType;
+    serviceWorker: ServiceWorkerConfigType;
+    webVitals: WebVitalsConfigType;
+    get: GetConfigType;
+};
 
 const publicPath = 'data/uploads';
 const path = `build/${publicPath}`;

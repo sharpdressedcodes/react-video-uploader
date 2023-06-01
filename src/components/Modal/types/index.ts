@@ -5,6 +5,6 @@ export type DefaultPropsType = {
     className?: string;
     closeOnClick?: boolean;
     onClosed?: () => void;
-}
+};
 
-export type PropsType = DefaultPropsType
+export type PropsType = DefaultPropsType;

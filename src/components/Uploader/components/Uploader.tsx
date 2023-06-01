@@ -17,14 +17,8 @@ import {
 import { useAppDispatch } from '../../../state/hooks';
 import { fileValidation, formatFileSize, isArrayEmpty, SimpleWebSocket } from '../../../common';
 import { upload } from '../api';
-import {
-    StateType,
-    DefaultPropsType,
-    PropsType,
-    UploadStepType,
-    UploadFileStepType,
-    UploadProgressStepType,
-} from '../types';
+import { StateType, DefaultPropsType, PropsType } from '../types';
+import { UploadStepType, UploadFileStepType, UploadProgressStepType } from '../../../server/types';
 
 export const DEFAULT_STATE: StateType = {
     selectedFiles: null,
@@ -130,7 +124,6 @@ const Uploader = ({
 
         if (!result.success) {
             // eslint-disable-next-line no-param-reassign
-            // event.target.value = null;
             event.target.value = '';
             dispatch(uploadValidationErrors(result));
         } else {
@@ -204,9 +197,9 @@ const Uploader = ({
             <ul className="files">
                 {selectedFiles.map((item, index) => {
                     const uploadItem = uploadedFiles[index];
-                    const s = uploadItem?.status
-                        ? `Step ${uploadItem.step} of ${uploadItem.total} - ${uploadItem.status}`
-                        : 'Ready to upload';
+                    const s = uploadItem?.status ?
+                        `Step ${uploadItem.step} of ${uploadItem.total} - ${uploadItem.status}` :
+                        'Ready to upload';
 
                     return (
                         <li key={ item.name } className="file">

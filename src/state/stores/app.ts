@@ -26,6 +26,6 @@ const configureAppStore = (preloadedState?: PreloadedState<RootState>) => {
 
 export type StoreType = ReturnType<typeof configureAppStore>;
 // type RootState__ = ReturnType<Store['getState']> //alternate way
-export type AppDispatch = StoreType['dispatch']
+export type AppDispatch = StoreType['dispatch'];
 
 export default configureAppStore;

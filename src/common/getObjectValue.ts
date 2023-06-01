@@ -14,7 +14,6 @@ const getObjectValue: GetObjectValueParametersType = (config: any, key: string, 
     for (let i = 0, n = a.length; i < n; ++i) {
         const k = a[i];
 
-
         if (isObject(o) && k in o) {
             o = o[k];
         } else {

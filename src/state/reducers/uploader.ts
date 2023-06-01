@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FileValidationValidationType } from '../../common/fileValidation';
+import { FileValidationValidationType } from '../../common/validation/fileValidation';
 import { GetVideosResultType } from '../types';
 
 export type UploaderStateType = {
@@ -9,7 +9,7 @@ export type UploaderStateType = {
     uploadProgress: Nullable<number>;
     uploadResult: Nullable<GetVideosResultType>;
     uploadValidation: Nullable<FileValidationValidationType>;
-}
+};
 
 export const initialState: UploaderStateType = {
     uploadError: null,
@@ -70,6 +70,5 @@ export const {
     uploadProgress,
     uploadReset,
 } = uploaderSlice.actions;
-
 
 export default uploaderSlice.reducer;

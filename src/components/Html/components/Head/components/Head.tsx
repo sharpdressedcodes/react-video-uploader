@@ -27,7 +27,7 @@ const Head = ({
     viewport = defaultProps.viewport,
 }: PropsType) => (
     <head>
-        <style dangerouslySetInnerHTML={ { __html: `body {opacity: 0;}` } } />
+        <style dangerouslySetInnerHTML={ { __html: 'body {opacity: 0;}' } } />
         <title>{title}</title>
         <meta charSet={ charset } />
         <meta name="description" content={ description || title } />

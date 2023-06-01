@@ -6,7 +6,7 @@ import Uploader from '../../../Uploader';
 import useDidUpdate from '../../../../hooks/useDidUpdate';
 import { loadVideosSuccess } from '../../../../state/reducers/loadVideos';
 import { useAppDispatch, useAppSelector } from '../../../../state/hooks';
-import { FileValidationValidationType } from '../../../../common/fileValidation';
+import { FileValidationValidationType } from '../../../../common/validation/fileValidation';
 import { LoadedVideoType } from '../../../../state/types';
 import '../styles/upload-page.scss';
 
@@ -14,7 +14,7 @@ type DependenciesType = {
     uploadValidation: FileValidationValidationType;
     uploadError: string;
     uploadResult: LoadedVideoType;
-}
+};
 
 const UploadPage = () => {
     const config = useContext(ConfigContext);
@@ -39,10 +39,10 @@ const UploadPage = () => {
         const errorMessages: string[] = [];
 
         if (!isObjectEmpty(uploadValidation) && !uploadValidation?.success) {
-            uploadValidation?.overallErrors?.forEach(err => errorMessages.push(err));
+            uploadValidation?.overallErrors?.forEach((err: string) => errorMessages.push(err));
 
-            if (!isObjectEmpty(uploadValidation?.fileErrors)
-                && prevProps?.uploadValidation?.fileErrors !== uploadValidation?.fileErrors) {
+            if (!isObjectEmpty(uploadValidation?.fileErrors) &&
+                prevProps?.uploadValidation?.fileErrors !== uploadValidation?.fileErrors) {
                 Object
                     .values(uploadValidation?.fileErrors as Record<number, string[]>)
                     .forEach(values => {

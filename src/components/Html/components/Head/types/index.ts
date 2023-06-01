@@ -10,10 +10,10 @@ export type DefaultPropsType = {
     scripts?: ReactNode;
     styles?: ReactNode;
     viewport?: string;
-}
+};
 
 export type PropsType = DefaultPropsType & {
     initialData: string;
     preloadedState: string;
     title: string;
-}
+};

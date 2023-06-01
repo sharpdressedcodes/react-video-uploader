@@ -5,11 +5,13 @@ export type SimpleWebSocketListenersType = {
     onMessage?: (event: MessageEvent) => any,
     onError?: (event: Event) => any,
     onClose?: (event: Event) => any,
-}
+};
 
 export default class SimpleWebSocket {
     protected protocols: string | string[] = [];
+
     protected socket: Nullable<WebSocket> = null;
+
     protected url: Nullable<string> = null;
 
     constructor(url: Nullable<string> = null, protocols: string | string[] = []) {

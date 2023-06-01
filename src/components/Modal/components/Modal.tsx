@@ -6,7 +6,7 @@ import '../styles/modal.scss';
 export const defaultProps: DefaultPropsType = {
     children: null,
     closeOnClick: false,
-    onClosed: () => { return; },
+    onClosed: () => {},
 };
 
 const Modal = ({
@@ -19,7 +19,9 @@ const Modal = ({
     const onClick = () => {
         if (closeOnClick) {
             setClosed(true);
-            onClosed && onClosed();
+            if (onClosed) {
+                onClosed();
+            }
         }
     };
 

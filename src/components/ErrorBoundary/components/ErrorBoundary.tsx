@@ -11,7 +11,7 @@ class ErrorBoundary extends Component<PropsType, StatesType> {
     public static displayName = 'ErrorBoundary';
 
     public static defaultProps: DefaultPropsType = {
-        onComponentDidCatch: () => { return; },
+        onComponentDidCatch: () => {},
         errorMessage: <h1>An unexpected error has occurred</h1>,
     };
 
@@ -27,14 +27,16 @@ class ErrorBoundary extends Component<PropsType, StatesType> {
     }
 
     public override shouldComponentUpdate(nextProps: PropsType, nextState: StatesType, nextContext: any) {
-        return !isEqual(this.props, nextProps)
-            || !isEqual(this.state, nextState)
-            || !isEqual(this.context, nextContext)
+        return !isEqual(this.props, nextProps) ||
+            !isEqual(this.state, nextState) ||
+            !isEqual(this.context, nextContext)
         ;
     }
 
     public override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-        this.props.onComponentDidCatch && this.props.onComponentDidCatch(error, errorInfo);
+        if (this.props.onComponentDidCatch) {
+            this.props.onComponentDidCatch(error, errorInfo);
+        }
     }
 
     public override render() {

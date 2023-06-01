@@ -2,7 +2,7 @@ import axios from 'axios';
 import { DefaultApiUploadPropsType, ApiUploadPropsType } from '../types';
 
 export const defaultProps: DefaultApiUploadPropsType = {
-    onProgress: () => { return; },
+    onProgress: () => {},
     options: {},
 };
 

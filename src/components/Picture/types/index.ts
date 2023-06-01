@@ -4,8 +4,8 @@ export type DefaultPropsType = {
     caption?: string;
     order?: string[];
     className?: string;
-}
+};
 
 export type PropsType = DefaultPropsType & {
     src: string;
-}
+};

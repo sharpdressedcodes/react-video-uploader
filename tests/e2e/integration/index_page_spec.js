@@ -1,7 +1,7 @@
 const url = '/';
 
-describe(`The Home Page`, () => {
-    it(`Should successfully load`, () => {
+describe('The Home Page', () => {
+    it('Should successfully load', () => {
         cy.visit(url);
 
         cy.get('h1')

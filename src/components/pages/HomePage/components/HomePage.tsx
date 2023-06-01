@@ -11,7 +11,7 @@ import '../styles/home-page.scss';
 
 type DependenciesType = {
     videosDownloadError: string;
-}
+};
 
 const HomePage = () => {
     const config = useContext(ConfigContext);

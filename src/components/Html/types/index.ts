@@ -15,7 +15,7 @@ export type DefaultPropsType = {
     scripts?: DefaultHeadPropsType['scripts'];
     styles?: DefaultHeadPropsType['styles'];
     viewport?: DefaultHeadPropsType['viewport'];
-}
+};
 
 export type PropsType = DefaultPropsType & {
     children: ReactNode;
@@ -23,4 +23,4 @@ export type PropsType = DefaultPropsType & {
     preloadedState: HeadPropsType['preloadedState'];
     title: string;
     version: string;
-}
+};

@@ -17,7 +17,7 @@ describe('The Upload Page', () => {
         cy.visit(url);
     });
 
-    it(`Should successfully load`, () => {
+    it('Should successfully load', () => {
         cy.get('.page-upload')
             .should(el => {
                 expect(el).to.have.length(1);
@@ -35,7 +35,7 @@ describe('The Upload Page', () => {
             });
     });
 
-    it(`Should render the Uploader component in default state`, () => {
+    it('Should render the Uploader component in default state', () => {
         cy.get('.uploader')
             .should(el => {
                 expect(el).to.have.length(1);
@@ -68,7 +68,7 @@ describe('The Upload Page', () => {
             .should('have.text', 'No files selected');
     });
 
-    it(`Should fail validation because the file is too large`, () => {
+    it('Should fail validation because the file is too large', () => {
         cy.get('.files')
             .should(el => {
                 expect(el).to.have.length(0);
@@ -96,7 +96,7 @@ describe('The Upload Page', () => {
             });
     });
 
-    it(`Should fail validation because the file has the wrong file extension`, () => {
+    it('Should fail validation because the file has the wrong file extension', () => {
         cy.get('.files')
             .should(el => {
                 expect(el).to.have.length(0);
@@ -170,7 +170,7 @@ describe('The Upload Page', () => {
     //         });
     // });
 
-    it(`Should fail validation because the total size of files is too large`, () => {
+    it('Should fail validation because the total size of files is too large', () => {
         cy.get('.files')
             .should(el => {
                 expect(el).to.have.length(0);
@@ -198,7 +198,7 @@ describe('The Upload Page', () => {
             });
     });
 
-    it(`Should fail validation because there are too many files`, () => {
+    it('Should fail validation because there are too many files', () => {
         cy.get('.files')
             .should(el => {
                 expect(el).to.have.length(0);

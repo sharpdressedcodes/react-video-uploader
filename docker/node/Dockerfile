@@ -3,7 +3,9 @@ FROM sharpdressedcodes/node:18.16.0-bullseye-slim
 ARG USER_ID
 ARG GROUP_ID
 ARG TZ=Australia/Sydney
+
 ENV IS_DOCKER=1
+ENV PATH=$PATH:/home/node/app/node_modules/.bin
 
 USER root
 

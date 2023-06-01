@@ -3,8 +3,8 @@ export type DefaultPropsType = {
     className?: string;
     controls?: boolean;
     poster?: string;
-}
+};
 
 export type PropsType = DefaultPropsType & {
     src: string;
-}
+};

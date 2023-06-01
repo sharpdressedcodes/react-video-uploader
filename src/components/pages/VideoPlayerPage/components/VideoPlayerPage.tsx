@@ -10,7 +10,7 @@ import '../styles/video-player-page.scss';
 
 type DependenciesType = {
     videoPlaybackError: string;
-}
+};
 
 const VideoPlayerPage = () => {
     const config = useContext(ConfigContext);
@@ -19,8 +19,8 @@ const VideoPlayerPage = () => {
     const { videoPlaybackError } = useAppSelector(({ videoReducer }) => videoReducer);
     const video = useAppSelector(
         ({
-            loadVideosReducer: { videos }
-        }) => (!videos ? null : findItemByUuid<LoadedVideoType>(id as string, videos))
+            loadVideosReducer: { videos },
+        }) => (!videos ? null : findItemByUuid<LoadedVideoType>(id as string, videos)),
     ) as LoadedVideoType;
     const hasVideo = Boolean(video) && isObject(video) && !isObjectEmpty(video);
 

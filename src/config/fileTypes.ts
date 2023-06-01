@@ -1,14 +1,29 @@
-export type FileSignatureType = {
-    length: number
-    value: string
-    offset?: number
-    check?: (buffer: Buffer) => boolean
+export enum FileSignaturePositions {
+    'start' = 'start',
+    'end' = 'end',
 }
+export type FileSignaturePositionType = FileSignaturePositions.start | FileSignaturePositions.end;
+
+export type FileSignatureType = {
+    length: number;
+    value: Nullable<string>;
+    offset?: number;
+    position?: FileSignaturePositionType;
+    check?: (buffer: Buffer) => boolean;
+};
+
+export const defaultFileSignature: FileSignatureType = {
+    length: 0,
+    value: null,
+    offset: 0,
+    position: FileSignaturePositions.start,
+    check: () => true,
+};
 
 export type FileTypesType = {
-    extensions: string[]
-    signatures: Partial<FileSignatureType>[]
-}
+    extensions: string[];
+    signatures: Partial<FileSignatureType>[];
+};
 
 const matroskaFileSignature: Partial<FileSignatureType> = {
     length: 4,

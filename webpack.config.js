@@ -28,12 +28,18 @@ const baseConfig = {
         rules: [
             {
                 test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/,
+                // use: 'ts-loader',
+                exclude: /(node_modules|cypress_cache)/,
+                use: {
+                    loader: 'ts-loader',
+                    options: {
+                        // configFile: './tsconfig.eslint.json',
+                    },
+                },
             },
             {
                 test: /\.jsx?$/,
-                exclude: /node_modules/,
+                exclude: /(node_modules|cypress_cache)/,
                 // use: { loader: 'babel-loader' },
                 use: ['source-map-loader', 'babel-loader'],
             },
@@ -115,7 +121,7 @@ const browserConfig = {
             'core-js/modules/es.promise',
             'core-js/modules/es.array.iterator',
             'normalize.css/normalize.css',
-            path.resolve('./src/index.js'),
+            path.resolve('./src/index.tsx'),
         ].filter(Boolean),
         sw: path.resolve('./src/workers/service/serviceWorker.ts'),
     },
@@ -208,7 +214,7 @@ const serverConfig = {
     name: 'server',
     target: 'node18',
     entry: {
-        'server-entry': path.resolve('./src/server/server-entry.js'),
+        server: path.resolve('./src/server/index.ts'),
     },
     output: {
         filename: '[name].js',

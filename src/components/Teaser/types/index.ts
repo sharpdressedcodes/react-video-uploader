@@ -6,6 +6,6 @@ export type DefaultPropsType = {
     text?: string;
     order?: string[];
     className?: string;
-}
+};
 
-export type PropsType = DefaultPropsType
+export type PropsType = DefaultPropsType;

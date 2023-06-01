@@ -3,12 +3,12 @@ import FavIcon, { defaultProps as defaultFavIconProps, PropsType as FavIconProps
 import { DefaultPropsType, PropsType } from '../types';
 
 export const defaultProps: DefaultPropsType = {
-    icons: []
+    icons: [],
 };
 
 const FavIcons = ({ icons = defaultProps.icons }: PropsType) => (
     <>
-        {icons?.map(({
+        {icons!.map(({
             src,
             type,
             rel = defaultFavIconProps.rel,

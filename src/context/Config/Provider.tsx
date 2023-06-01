@@ -4,7 +4,7 @@ import mainConfig, { testConfig, ConfigType } from '../../config';
 
 type PropsType = {
     children: ReactNode;
-}
+};
 
 const Provider = ({ children }: PropsType) => (
     <Context.Provider value={ useMemo<ConfigType>(() => (process.env.NODE_ENV === 'test' ? testConfig : mainConfig), []) }>

@@ -13,15 +13,15 @@ import '../styles/app.scss';
 const App = ({ data }: PropsType) => {
     const dispatch = useAppDispatch();
 
-    if (data) {
-        dispatch(loadVideosSuccess(data));
-    }
-
     useEffect(() => {
         if (document) {
             document.body.style.opacity = '1';
         }
-    }, []);
+
+        if (data) {
+            dispatch(loadVideosSuccess(data));
+        }
+    }, [data]);
 
     return (
         <>

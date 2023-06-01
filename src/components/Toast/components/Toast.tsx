@@ -14,7 +14,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>((
 export const defaultProps: DefaultPropsType = {
     autoHideDuration: 6000,
     className: null,
-    onClosed: () => { return; },
+    onClosed: () => {},
     severity: null,
 };
 
@@ -28,11 +28,17 @@ const Toast = ({
     const [open, setOpen] = useState<boolean>(true);
     const handleAlertClose = (event: SyntheticEvent) => {
         setOpen(false);
-        onClosed && onClosed();
+
+        if (onClosed) {
+            onClosed();
+        }
     };
     const handleButtonClose = (event: MouseEvent<HTMLButtonElement>) => {
         setOpen(false);
-        onClosed && onClosed();
+
+        if (onClosed) {
+            onClosed();
+        }
     };
     const handleSnackbarClose = (event: React.SyntheticEvent<any> | Event, reason: SnackbarCloseReason) => {
         if (reason === 'clickaway') {
@@ -40,7 +46,10 @@ const Toast = ({
         }
 
         setOpen(false);
-        onClosed && onClosed();
+
+        if (onClosed) {
+            onClosed();
+        }
     };
     const action = (
         <IconButton

@@ -4,12 +4,12 @@ import Context, { ToastContextType } from './Context';
 
 type PropsType = {
     children: ReactNode;
-}
+};
 
 const Provider = ({ children }: PropsType) => {
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [severity, setSeverity] = useState<ToastPropsType['severity']>(defaultToastProps.severity);
-    const [message, setMessage] = useState<ReactNode>(<></>);
+    const [message, setMessage] = useState<Nullable<ReactNode>>(null);
     const [autoHideDuration, setAutoHideDuration] = useState<ToastPropsType['autoHideDuration']>(defaultToastProps.autoHideDuration);
     const dismiss = () => new Promise<void>(resolve => {
         setIsVisible(false);

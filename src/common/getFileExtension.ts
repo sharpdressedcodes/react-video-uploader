@@ -1,3 +1,5 @@
+import { Express } from 'express';
+
 const getFileExtension = (file: File | Express.Multer.File): string | null => {
     const prop: string = 'path' in file ? file.path : file.name;
     const pos: number = prop.lastIndexOf('.');

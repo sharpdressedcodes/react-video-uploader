@@ -1,12 +1,13 @@
+import { Express } from 'express';
 import { v4 as uuid } from 'uuid';
 import { getFileName } from './index';
 import { LoadedVideoType } from '../state/types';
 
 export const createFileName = (file: File | Express.Multer.File): string => `${+new Date()}-${uuid()}-${getFileName(file)}`;
 
-export type ParsedFileNameType = { timestamp: string, uuid: string } | null;
+export type ParsedFileNameType = { timestamp: string, uuid: string };
 
-export const parseFileName = (fileName: string): ParsedFileNameType => {
+export const parseFileName = (fileName: string): ParsedFileNameType | null => {
     const rx = /^(\d{13})-(([a-z0-9]{8})-([a-z0-9]{4})-([a-z0-9]{4})-([a-z0-9]{4})-([a-z0-9]{12}))/i;
     const match = fileName.match(rx);
 

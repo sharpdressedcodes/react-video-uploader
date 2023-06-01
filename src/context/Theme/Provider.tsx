@@ -7,7 +7,7 @@ import GlobalStyles from '../../components/GlobalStyles';
 
 type ThemeProviderPropsType = {
     children: ReactNode;
-}
+};
 
 /**
  * Wrapper for MUI ThemeProvider that watches for dark mode changes.

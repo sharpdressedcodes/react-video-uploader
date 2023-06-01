@@ -14,6 +14,3 @@
 .bash_history
 .env
 *.map
-/src/common/index.cjs
-/src/config/index.cjs
-/src/routes/paths.cjs

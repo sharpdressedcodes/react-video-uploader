@@ -36,7 +36,7 @@ function createXHRMock(data = mockData) {
     window.XMLHttpRequest = jest.fn().mockImplementation(xhrMockClass);
 }
 
-describe(`Ensure the Uploader works correctly`, () => {
+describe('Ensure the Uploader works correctly', () => {
     const wrapper = null;
     const component = null;
     const store = null;
@@ -55,7 +55,7 @@ describe(`Ensure the Uploader works correctly`, () => {
     //     input = component.find('input[type="file"]');
     // });
 
-    it(`Should render the Uploader component in default state`, () => {
+    it('Should render the Uploader component in default state', () => {
         // expect(component.find('.uploader').length).toEqual(1);
         // expect(component.find('.form-upload').length).toEqual(1);
         // expect(component.find('button[type="submit"]').length).toEqual(1);

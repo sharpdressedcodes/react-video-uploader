@@ -1,13 +1,25 @@
 declare module '*.svg' {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const content: any;
     export default content;
 }
 
-// Used in service worker
+// Hot reloading
+declare module 'webpack-hot-middleware';
+
+interface ImportMeta {
+    webpackHot: any;
+}
+
 interface Window {
+    // Used in service worker
     __WB_MANIFEST: any;
     skipWaiting: () => void;
+    // Used in server/render and browser index for server side rendering
+    loaded: boolean;
+    boot: () => void;
+    reactRoot: any;
+    reactInitialData: any;
+    reactPreloadedState: any;
 }
 
 declare type Nullable<T> = T | null;
