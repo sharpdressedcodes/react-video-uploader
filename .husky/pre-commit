@@ -4,4 +4,4 @@
 # Docker reads line 5 and runs that as the hook, so keep everything on line 5.
 npx lint-staged; npx rimraf tsconfig.lint-staged.json
 # Removed git update-index as lint-staged does this now.
-#npx lint-staged && git update-index --again
+# npx lint-staged && git update-index --again
