@@ -127,7 +127,7 @@ const serverEntry: RequestHandler = (req, res, next) => new Promise<void>(resolv
         try {
             let hasError = false;
             const config: ConfigType = req.app.locals.config;
-            const manifestFile = config.get<string>('manifest.fileName');
+            const manifestFile = config.manifest.fileName;
             // NOTE: !isProduction automatically injects relevant js and css files when needed.
             // So if you go to 1 page, only that page js and css will have loaded.
             // If you navigate to another page, the js and css for that new page will then be injected.
@@ -152,12 +152,12 @@ const serverEntry: RequestHandler = (req, res, next) => new Promise<void>(resolv
                 scripts: js,
                 store,
                 styles: css,
-                title: activeRoute?.pageTitle || config.get('app.title', 'Video Uploader'),
+                title: activeRoute?.pageTitle || config.appName,
                 url: req.url,
                 version: process.env.npm_package_version as string,
             });
 
-            if (config.get('disableNodeStreaming')) {
+            if (!config.server.streaming.enabled) {
                 const str = renderToStaticMarkup(html);
 
                 res.statusCode = 200;

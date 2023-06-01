@@ -32,7 +32,7 @@ const VideoPlayerPage = () => {
         return null;
     };
     const renderContent = () => {
-        const publicPath = config.get('videoUpload.publicPath', 'data/uploads');
+        const { publicPath } = config.videoUpload;
 
         if (!hasVideo) {
             return <div className="centered">Acquiring...</div>;

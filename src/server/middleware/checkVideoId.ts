@@ -3,7 +3,7 @@ import { readDirectory } from '../utils/fileSystem';
 import { findItemByUuid } from '../../common';
 
 const checkVideoId: RequestHandler = async (req, res, next) => {
-    const uploadPath = req.app.locals.config.get('videoUpload.path', 'build/data/uploads');
+    const uploadPath = req.app.locals.config.videoUpload.path;
     const id = req.params.id;
 
     if (id !== null) {

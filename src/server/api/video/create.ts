@@ -71,9 +71,8 @@ const handleVideoCreate: RequestHandler = async (req, res, next) => {
                 percent,
             });
         };
-        // const thumbnailDimensions = config.get('videoUpload.thumbnailDimensions');
         const thumbnailDimensions = config.videoUpload.thumbnailDimensions;
-        const uploadPath = config.get('videoUpload.path', 'build/data/uploads');
+        const uploadPath = config.videoUpload.path;
         const storage = multer.diskStorage({
             destination: (request, file, cb) => {
                 cb(null, uploadPath);
@@ -103,11 +102,11 @@ const handleVideoCreate: RequestHandler = async (req, res, next) => {
         const files = Array.from(req.files as ExpressFile[]);
         const validationResult = await serverFileValidation({
             files,
-            allowedFileTypes: config.get('allowedFileTypes', {}),
-            allowedFileExtensions: config.get('allowedFileExtensions', []),
-            maxFiles: config.get('videoUpload.maxFiles', 0),
-            maxFileSize: config.get('videoUpload.maxFileSize', 0),
-            maxTotalFileSize: config.get('videoUpload.maxTotalFileSize', 0),
+            allowedFileTypes: config.allowedFileTypes,
+            allowedFileExtensions: config.allowedFileExtensions,
+            maxFiles: config.videoUpload.maxFiles,
+            maxFileSize: config.videoUpload.maxFileSize,
+            maxTotalFileSize: config.videoUpload.maxTotalFileSize,
         });
         const { invalidFiles, validFiles } = validationResult;
 

@@ -133,8 +133,8 @@ const setupServer = () => {
 const listen = () => {
     try {
         const listener = server.listen(
-            process.env.PORT || config.get('server.port', DEFAULT_PORT),
-            process.env.HOST || config.get('server.hostName', DEFAULT_HOST),
+            (process.env.PORT || (config.server.port ?? DEFAULT_PORT)) as number,
+            process.env.HOST || (config.server.hostName ?? DEFAULT_HOST),
             () => {
                 const { address, port } = listener.address() as AddressInfo;
                 const hostName = address === DEFAULT_HOST ? 'localhost' : address;

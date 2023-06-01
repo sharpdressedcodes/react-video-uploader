@@ -43,7 +43,7 @@ import config from './config';
                     window.reactRoot.render(jsx);
                 }
 
-                if (config.get('serviceWorker.enabled')) {
+                if (config.serviceWorker.enabled) {
                     const serviceWorkerRegistration = await import(/* webpackChunkName: "service-worker" */ './workers/service/serviceWorkerRegistration');
 
                     // If you want your app to work offline and load faster, you can change
@@ -52,8 +52,8 @@ import config from './config';
                     serviceWorkerRegistration.unregister();
                 }
 
-                if (config.get('webVitals.enabled')) {
-                    reportWebVitals(config.get('webVitals.callback', null));
+                if (config.webVitals.enabled && config.webVitals.callback) {
+                    reportWebVitals(config.webVitals.callback);
                 }
             } catch (err: unknown) {
                 if (!isProduction) {

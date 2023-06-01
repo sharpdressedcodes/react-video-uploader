@@ -21,10 +21,10 @@ const UploadPage = () => {
     const toast = useContext(ToastContext);
     const dispatch = useAppDispatch();
     const { uploadError, uploadResult, uploadValidation } = useAppSelector(({ uploaderReducer }) => uploaderReducer);
-    const maxFiles = config.get('videoUpload.maxFiles', 0);
-    const maxFileSize = config.get('videoUpload.maxFileSize', 0);
-    const maxTotalFileSize = config.get('videoUpload.maxTotalFileSize', 0);
-    const allowedFileExtensions = config.get('allowedFileExtensions', []);
+    const maxFiles = config.videoUpload.maxFiles;
+    const maxFileSize = config.videoUpload.maxFileSize;
+    const maxTotalFileSize = config.videoUpload.maxTotalFileSize;
+    const allowedFileExtensions = config.allowedFileExtensions;
     const formattedMaxFileSize = formatFileSize(maxFileSize);
     const formattedMaxTotalFileSize = formatFileSize(maxTotalFileSize);
 
@@ -72,7 +72,7 @@ const UploadPage = () => {
             <section className="content">
                 <InfoTable items={ generateInfo() } />
                 <Uploader
-                    url={ config.get('endpoints.api.video.upload') }
+                    url={ config.endpoints.api.video.upload }
                     multiple
                     progress
                     maxFiles={ maxFiles }

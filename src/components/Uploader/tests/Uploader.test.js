@@ -46,7 +46,7 @@ describe('Ensure the Uploader works correctly', () => {
     // beforeEach(() => {
     //     ({ wrapper, store } = mount(
     //         <Uploader
-    //             url={ testConfig.get('endpoints.api.video.upload') }
+    //             url={ testConfig.endpoints.api.video.upload }
     //             multiple
     //             progress
     //         />

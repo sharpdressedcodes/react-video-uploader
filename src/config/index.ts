@@ -5,15 +5,18 @@ import {
     fileExtensions as allowedFileExtensions,
 } from './fileTypes';
 
-export type GetConfigType = <T = unknown>(key: string, defaultValue?: T) => T;
+export type GetConfigType = <T>(key: string, defaultValue?: T) => T;
+
+export type FeatureToggleConfigType = {
+    enabled?: boolean;
+};
+
+export type StreamingConfigType = FeatureToggleConfigType;
 
 export type ConnectionConfigType = {
     hostName: string;
     port: number;
-};
-
-export type FeatureToggleConfigType = {
-    enabled?: boolean;
+    streaming: StreamingConfigType;
 };
 
 export type VideoUploadConfigType = {
@@ -49,7 +52,6 @@ export type WebVitalsConfigType = FeatureToggleConfigType | {
 };
 
 export type ConfigType = {
-    disableNodeStreaming: boolean;
     allowedFileTypes: Record<string, FileTypesType>;
     allowedFileExtensions: string[];
     appName: string;
@@ -68,13 +70,15 @@ const maxFileSize = 1024 * 1024 * 150; // MB
 const maxFiles = 10;
 const appName = 'Video Uploader';
 const config = {
-    disableNodeStreaming: false,
     allowedFileTypes,
     allowedFileExtensions,
     appName,
     server: {
         hostName: '0.0.0.0',
         port: 3000,
+        streaming: {
+            enabled: true,
+        },
     },
     videoUpload: {
         thumbnailDimensions: '320x180', // 16:9
@@ -105,7 +109,7 @@ const config = {
         // enabled: process.env.NODE_ENV === 'development',
         enabled: false,
     },
-    get: (key: string, defaultValue?: any) => defaultValue,
+    get: <T>(key: string, defaultValue: any) => defaultValue,
 };
 
 export const testConfig = {
@@ -124,11 +128,8 @@ export const testConfig = {
     },
 };
 
-// export type GetConfigType = <T = unknown>(key: string, defaultValue?: T) => T;
-
-config.get = <T = unknown>(key: string): GetConfigType => getObjectValue(config, key, null);
-config.get = <T = unknown>(key: string, defaultValue: T): GetConfigType => getObjectValue(config, key, defaultValue);
-testConfig.get = <T = unknown>(key: string): GetConfigType => getObjectValue(testConfig, key, null);
-testConfig.get = <T = unknown>(key: string, defaultValue: T): GetConfigType => getObjectValue(testConfig, key, defaultValue);
+// Override `get` methods to automatically check the current config object
+config.get = <T>(key: string, defaultValue: T): GetConfigType => getObjectValue(config, key, defaultValue);
+testConfig.get = <T>(key: string, defaultValue: T): GetConfigType => getObjectValue(testConfig, key, defaultValue);
 
 export default config;

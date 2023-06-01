@@ -19,7 +19,7 @@ const HomePage = () => {
     const { videos, videosDownloadError } = useAppSelector(({ loadVideosReducer }) => loadVideosReducer);
     const hasVideos = Array.isArray(videos) && !isArrayEmpty(videos);
     const renderItems = () => {
-        const videoPath = config.get('videoUpload.publicPath');
+        const videoPath = config.videoUpload.publicPath;
 
         if (!hasVideos) {
             return null;

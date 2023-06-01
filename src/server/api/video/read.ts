@@ -28,7 +28,7 @@ const handleGetVideos: RequestHandler = async (req, res, next) => {
     const key = `item${id === null ? 's' : ''}`;
 
     try {
-        const uploadPath = req.app.locals.config.get('videoUpload.path', 'build/data/uploads');
+        const uploadPath = req.app.locals.config.videoUpload.path;
         const result = await loadVideos(id, uploadPath);
 
         res.json({ [key]: result });
