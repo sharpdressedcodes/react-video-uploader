@@ -21,10 +21,10 @@ const findDefinitionFile = () => {
     const files = fs.readdirSync(cwd);
     const match = files.find(file => file.toLowerCase().endsWith('.d.ts'));
 
-    return !match ? match : match?.replace(`${cwd}/`, '');
+    return !match ? match : match?.replace(`${cwd}/`, './');
 };
 const generateTsConfig = files => {
-    const definitionFile = findDefinitionFile();
+    const definitionFile = findDefinitionFile() ?? '';
     const include = (files.includes(`${cwd}/${definitionFile}`) ? files : [
         ...files,
         definitionFile,
@@ -58,8 +58,8 @@ module.exports = allStagedFiles => {
         generateTsConfig(mapped);
 
         codeCommands.push(`npm run lint:js:staged -- ${customConfig} ${mapped.join(' ')}`);
-        codeCommands.push(`npm run lint:ts -- --project ${tsConfigFileName}`);
-        codeCommands.push(`rimraf ${tsConfigFileName}`);
+        codeCommands.push(`npm run lint:ts -- --project ${tsConfigFileName}; rimraf ${tsConfigFileName}`);
+        // codeCommands.push(`rimraf ${tsConfigFileName}`);
 
         codeCommand = codeCommands.join(' ; ');
     }
