@@ -51,17 +51,14 @@ module.exports = allStagedFiles => {
     let codeCommand = '';
 
     if (isValid(codeFiles)) {
-        const codeCommands = [];
-        const customConfig = `--parser-options project:${tsConfigFileName} --parser-options tsconfigRootDir:${cwd}`;
         const mapped = codeFiles.map(file => file.replace(`${cwd}/`, './'));
 
         generateTsConfig(mapped);
 
-        codeCommands.push(`npm run lint:js:staged -- ${customConfig} ${mapped.join(' ')}`);
-        codeCommands.push(`npm run lint:ts -- --project ${tsConfigFileName}`);
-        codeCommands.push(`rimraf ${tsConfigFileName}`);
-
-        codeCommand = codeCommands.join(' ; ');
+        codeCommand = [
+            `npm run lint:js:staged -- --parser-options project:${tsConfigFileName} --parser-options tsconfigRootDir:${cwd} ${mapped.join(' ')}`,
+            `npm run lint:ts -- --project ${tsConfigFileName}`,
+        ].join(' && ');
     }
 
     return [
