@@ -1,10 +1,12 @@
 import React, { ReactElement, ReactNode, StrictMode } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Providers, { PropsType as ProvidersPropsType } from '../../../src/components/Providers';
 import configureStore, { RootState } from '../../../src/state/stores/app';
 
 export { act, cleanup, fireEvent, render, screen, waitFor, waitForOptions } from '@testing-library/react';
+export { default as userEvent } from '@testing-library/user-event';
 
 export type RootStateType = RootState;
 
@@ -80,6 +82,7 @@ export default function mount(component: ReactElement, {
     routePath = '/',
     state,
 }: Partial<MountOptionsType> = {}) {
+    const user = userEvent.setup();
     const store = configureStore(state);
     const wrapper = ({ children }: WrapperPropsType) => (
         <MemoryRouter
@@ -106,5 +109,11 @@ export default function mount(component: ReactElement, {
         </MemoryRouter>
     );
 
-    return { component, wrapper, store, renderer: render(component, { wrapper, container }) };
+    return {
+        component,
+        wrapper,
+        store,
+        renderer: render(component, { wrapper, container }),
+        user,
+    };
 }

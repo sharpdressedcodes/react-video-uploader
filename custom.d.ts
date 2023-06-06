@@ -20,6 +20,9 @@ interface Window {
     reactRoot: any;
     reactInitialData: any;
     reactPreloadedState: any;
+
+    // Used in tests (jest mock)
+    XMLHttpRequest: any;
 }
 
 declare type Nullable<T> = T | null;

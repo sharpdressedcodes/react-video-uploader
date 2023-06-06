@@ -83,6 +83,8 @@ const fileValidation = async ({
         if (!await filesValidator.validate()) {
             overallErrors.push(...filesValidator.validationErrors);
             success = false;
+
+            return { fileErrors, overallErrors, validFiles, invalidFiles, success };
         }
 
         const validationResults = await Promise.all(fileValidations);

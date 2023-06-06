@@ -10,6 +10,7 @@ export { default as isArrayEmpty } from './isArrayEmpty';
 export { default as isInViewport } from './isInViewport';
 export { default as isObject } from './isObject';
 export { default as isObjectEmpty } from './isObjectEmpty';
+export { default as maybePromiseResolver } from './maybePromiseResolver';
 export { default as roundTo } from './roundTo';
 export { default as setTimeoutAsync } from './setTimeoutAsync';
 export { default as SimpleWebSocket } from './SimpleWebSocket';

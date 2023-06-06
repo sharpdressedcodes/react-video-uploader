@@ -7,6 +7,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const TerserPlugin = require('terser-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const PublishManifestIconsPlugin = require('./scripts/publish-manifest-icons-plugin');
 const manifestJson = require('./src/config/manifest.json');
 
@@ -19,7 +20,20 @@ const baseConfig = {
     watchOptions: {
         // aggregateTimeout: 600,
         // poll: 1000,
-        ignored: '**/node_modules',
+        // ignored: '**/node_modules',
+        ignored: [
+            '.idea',
+            '.vscode',
+            '.github',
+            '.husky',
+            '**/node_modules',
+            'build',
+            'cypress-cache',
+            'docker',
+            'hooks',
+            'scripts',
+            'server',
+        ],
     },
     mode: isProduction ? 'production' : 'development',
     // devtool: isProduction && !isServer ? undefined : 'cheap-module-source-map', // 'inline-source-map',
@@ -34,6 +48,7 @@ const baseConfig = {
                     loader: 'ts-loader',
                     options: {
                         // configFile: './tsconfig.eslint.json',
+                        transpileOnly: isFastRefresh,
                     },
                 },
             },
@@ -102,6 +117,7 @@ const baseConfig = {
             // }
         }),
         new MiniCssExtractPlugin(),
+        isFastRefresh && new ForkTsCheckerWebpackPlugin(),
         isProduction && new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production'),
         }),
@@ -110,6 +126,11 @@ const baseConfig = {
     resolve: {
         extensions: ['.tsx', '.ts', '.jsx', '.js'],
     },
+    ignoreWarnings: [
+        isFastRefresh && {
+            message: /export .* was not found in/,
+        },
+    ].filter(Boolean),
 };
 const browserConfig = {
     ...baseConfig,

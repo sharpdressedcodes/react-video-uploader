@@ -29,23 +29,12 @@ type DefaultUploadFileStepType = Pick<UploadFileStepType, 'total'> & {
     file?: UploadFileStepType['file'];
 };
 
-const defaultStepFileData: DefaultUploadFileStepType = {
-    total: 6,
-};
-
 const isProduction = process.env.NODE_ENV === 'production';
 
 const handleVideoCreate: RequestHandler = async (req, res, next) => {
     try {
-        // let currentStep = 1;
-        // let currentFileStep = 1;
-        // let currentProgressStep = 1;
-        // const { config } = req.app.locals;
         const config: ConfigType = req.app.locals.config;
         const webSocket: WebSocket = req.app.locals.getWebSocket();
-        // const defaultStepData = {
-        //     total: 4,
-        // };
         const emit = (event: string, data: UploadStepType | UploadFileStepType | UploadProgressStepType) => {
             webSocket?.send(JSON.stringify({ event, data }));
         };
@@ -114,17 +103,14 @@ const handleVideoCreate: RequestHandler = async (req, res, next) => {
         const promises = ((validFiles as ExpressFile[]) || []).map((file, index) => new Promise((resolve, reject) => {
             (async () => {
                 try {
-                    // const defaultStepFileData = {
-                    //     total: 6,
-                    //     file,
-                    //     index,
-                    // };
-                    defaultStepFileData.file = file;
-                    defaultStepFileData.index = index;
-
+                    const defaultStepFileData: DefaultUploadFileStepType = {
+                        total: 6,
+                        file,
+                        index,
+                    };
                     const options: Record<string, string> = { ...(thumbnailDimensions ? { size: thumbnailDimensions } : {}) };
 
-                    emitStepFile(1, 'Converting', defaultStepFileData);
+                    emitStepFile(1, 'Converting video', defaultStepFileData);
                     const converted = await convertVideo(file.path, {
                         onProgress: (progress: FfProgressEventType) => {
                             emitStepFileProgress(1, 'Converting', progress.percent, defaultStepFileData);

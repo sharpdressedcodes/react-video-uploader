@@ -53,7 +53,9 @@ const Html = ({
             viewport={ viewport }
         />
         <body style={ bodyStyle }>
-            <div id={ appId }>{children}</div>
+            <div id={ appId }>
+                {children}
+            </div>
             {bodyScripts}
         </body>
     </html>
