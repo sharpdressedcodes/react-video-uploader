@@ -84,7 +84,7 @@ const setupMiddleware = () => {
         app.use(hotReload(onBundleValid));
     }
 
-    app.use(staticServer('build', isProduction));
+    app.use(staticServer('build/browser', isProduction));
 };
 const setupRoutes = () => {
     app.get(

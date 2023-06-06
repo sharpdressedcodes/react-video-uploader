@@ -65,7 +65,7 @@ export type ConfigType = {
 };
 
 const publicPath = 'data/uploads';
-const path = `build/${publicPath}`;
+const path = `build/browser/${publicPath}`;
 const maxFileSize = 1024 * 1024 * 150; // MB
 const maxFiles = 10;
 const appName = 'Video Uploader';
@@ -101,7 +101,8 @@ const config = {
     },
     serviceWorker: {
         // enabled: process.env.NODE_ENV === 'production',
-        enabled: true,
+        // TODO: fix sw issue in production
+        enabled: false,
     },
     webVitals: {
         // eslint-disable-next-line no-console

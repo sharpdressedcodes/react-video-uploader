@@ -117,7 +117,7 @@ const videosMock = [
                 },
             }],
             format: {
-                filename: 'build/data/uploads/1569760709638-Learn Go in 12 Minutes.mp4',
+                filename: 'build/browser/data/uploads/1569760709638-Learn Go in 12 Minutes.mp4',
                 nb_streams: 2,
                 nb_programs: 0,
                 format_name: 'mov,mp4,m4a,3gp,3g2,mj2',

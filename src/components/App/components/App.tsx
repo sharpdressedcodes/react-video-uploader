@@ -21,7 +21,7 @@ const App = ({ data }: PropsType) => {
         if (data) {
             dispatch(loadVideosSuccess(data));
         }
-    }, [data]);
+    }, []);
 
     return (
         <>

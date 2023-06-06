@@ -6,5 +6,4 @@
 /cypress-cache/
 /docker/
 /hooks/
-/server/
 *.json

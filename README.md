@@ -129,3 +129,4 @@ and [here](https://create-react-app.dev/docs/measuring-performance/).
 * Authenticating the user before allowing to CUD (create, update, delete)
 * Stub the api return calls during `IS_TESTING`, then assert on the items in TeaserList in HomePage
 * Drag and drop
+* Fix service worker issue in production.

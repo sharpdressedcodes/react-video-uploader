@@ -9,7 +9,6 @@
         "cypress-cache",
         "docker",
         "hooks",
-        "server",
         "**/node_modules/**"
     ],
     "include": [

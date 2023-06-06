@@ -4,7 +4,6 @@
 /build/
 /cypress-cache/
 /node_modules/
-/server/
 /tests/unit/coverage
 /tests/unit/**/__snapshots__
 /tests/e2e/downloads

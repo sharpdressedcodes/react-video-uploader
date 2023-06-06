@@ -32,7 +32,7 @@ const baseConfig = {
             'docker',
             'hooks',
             'scripts',
-            'server',
+            // 'server',
         ],
     },
     mode: isProduction ? 'production' : 'development',
@@ -148,7 +148,7 @@ const browserConfig = {
     },
     output: {
         filename: '[name].js',
-        path: path.resolve('build'),
+        path: path.resolve('build/browser'),
     },
     module: {
         ...baseConfig.module,
@@ -239,7 +239,7 @@ const serverConfig = {
     },
     output: {
         filename: '[name].js',
-        path: path.resolve('server'),
+        path: path.resolve('build/server'),
         // hotUpdateChunkFilename: '[id].hot-update.js',
         // hotUpdateMainFilename: '[runtime].[fullhash].hot-update.json',
         library: {

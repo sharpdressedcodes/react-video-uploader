@@ -11,7 +11,7 @@ const reducer = {
 
 export type RootState = StateFromReducersMapObject<typeof reducer>;
 
-const configureAppStore = (preloadedState?: PreloadedState<RootState>) => {
+const configureAppStore = (preloadedState?: Partial<PreloadedState<RootState>>) => {
     const store = configureStore({
         preloadedState,
         reducer,

@@ -10,6 +10,7 @@ import App from '../../components/App';
 import Providers from '../../components/Providers';
 import Html, { PropsType as HtmlPropsType } from '../../components/Html';
 import configureStore, { StoreType } from '../../state/stores/app';
+import { initialState as initialLoadVideosState } from '../../state/reducers/loadVideos';
 import { ConfigType } from '../../config';
 import { routes } from '../../routes';
 
@@ -33,7 +34,7 @@ type RenderHtmlType = {
     content: ReactNode;
 };
 
-type AssetListType = {
+export type AssetListType = {
     css: string[];
     js: string[];
 };
@@ -81,9 +82,9 @@ const renderHtml = ({
         </StaticRouter>
     </Html>
 );
-const getAssetsFromManifest = async (manifestFile: string): Promise<AssetListWithIconsType> => {
+const getAssetsFromManifest = async (manifestFile: string, config: ConfigType): Promise<AssetListWithIconsType> => {
     try {
-        const file = path.join(process.cwd(), 'build', manifestFile);
+        const file = path.join(process.cwd(), 'build/browser', manifestFile);
         const manifest = (await fs.readFile(file));
         const json = JSON.parse(manifest.toString());
         const { css, js }: AssetListType = Object
@@ -97,6 +98,10 @@ const getAssetsFromManifest = async (manifestFile: string): Promise<AssetListWit
                             curr,
                         ],
                     };
+                }
+
+                if (!config.serviceWorker.enabled && (curr.endsWith('sw.js') || curr.endsWith('service-worker.js'))) {
+                    return acc;
                 }
 
                 if (curr.endsWith('.js')) {
@@ -133,14 +138,19 @@ const serverEntry: RequestHandler = (req, res, next) => new Promise<void>(resolv
             // If you navigate to another page, the js and css for that new page will then be injected.
             const assets = !isProduction ?
                 { css: ['app.css'], js: ['app.js'], favIcons: [] } :
-                await getAssetsFromManifest(manifestFile);
+                await getAssetsFromManifest(manifestFile, config);
             const css = assets.css.map(p => <link key={ p } href={ `/${p}` } rel="stylesheet" />);
             // NOTE: renderToPipeableStream injects app.js automatically
             const bodyJs = null;
             const js = null;
             const activeRoute = routes.find(route => matchPath(route.path as string, req.url));// || {};
             const data = req.app.locals?.data?.videos || [];
-            const store = configureStore();
+            const store = configureStore({
+                loadVideosReducer: {
+                    ...initialLoadVideosState,
+                    videos: data,
+                },
+            });
             const content = renderContent({ data, store });
             const html = renderHtml({
                 bodyScripts: bodyJs,

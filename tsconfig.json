@@ -17,6 +17,7 @@
         "noImplicitThis": true,
         // "noUnusedLocals": true,
         "outDir": "./build/",
+        "resolveJsonModule": true,
         // "sourceMap": true,
         "skipLibCheck": true,
         "strict": true,
@@ -31,7 +32,6 @@
         "cypress-cache",
         "docker",
         "hooks",
-        "server",
         "**/node_modules/**",
         // remove Cypress config as it causes collisions with Jest
         // https://github.com/cypress-io/cypress/issues/22059
