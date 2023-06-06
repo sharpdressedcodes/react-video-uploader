@@ -52,7 +52,7 @@ jobs:
           docker-compose -f docker-compose.ci.yml exec -T node npm i --foreground-scripts
           \
           echo "Running build process..."
-          docker-compose -f docker-compose.ci.yml exec -T node npm run build:ci
+          docker-compose -f docker-compose.ci.yml exec -T node npm run build
           \
           echo "Running linting..."
           docker-compose -f docker-compose.ci.yml exec -T node npm run lint
