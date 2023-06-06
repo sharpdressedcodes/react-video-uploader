@@ -37,7 +37,6 @@
         "clean": "rimraf ./build/server ./build/browser/fonts ./build/browser/images ./build/browser/*.js* ./build/browser/*.css && node -e \"fs.mkdirSync('./build/browser/data/uploads', { recursive: true });\"",
         "build:browser": "cross-env APP_ENV=browser webpack --color --stats errors-warnings",
         "build:server": "cross-env APP_ENV=server webpack --color --stats errors-warnings",
-        "buildOLD": "npm run clean && cross-env NODE_ENV=production npm run build:browser -- --bail --progress && cross-env NODE_ENV=production npm run build:server -- --bail --progress",
         "build": "npm run clean && concurrently --kill-others-on-fail --names \"browser,server\" -c \"bgBlue.bold,bgCyan.bold\" \"cross-env NODE_ENV=production npm run build:browser -- --bail\" \"cross-env NODE_ENV=production npm run build:server -- --bail\"",
         "dev": "npm run clean && concurrently --kill-others-on-fail --names \"build,server\" -c \"bgBlue.bold,bgCyan.bold\" \"cross-env NODE_ENV=development FAST_REFRESH=true npm run build:server -- -w\" \"wait-on ./build/server/server.js && cross-env NODE_ENV=development FAST_REFRESH=true npm run start -- --watch --trace-warnings --stack-trace-limit=9999\"",
         "dev:no-watch": "npm run clean && concurrently --kill-others-on-fail --names \"browser,server\" -c \"bgBlue.bold,bgCyan.bold\" \"cross-env NODE_ENV=development npm run build:browser -- --bail\" \"cross-env NODE_ENV=development npm run build:server -- --bail\" && cross-env NODE_ENV=development npm run start -- --trace-warnings --stack-trace-limit=9999",
