@@ -19,19 +19,13 @@
         "url": "git+https://github.com/sharpdressedcodes/react-video-uploader.git"
     },
     "homepage": "https://github.com/sharpdressedcodes/react-video-uploader#readme",
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "IE 11"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version",
-            "IE 11"
-        ]
-    },
+    "browserslist": [
+        ">0.2%",
+        "last 2 versions",
+        "Firefox ESR",
+        "not dead",
+        "node 18"
+    ],
     "scripts": {
         "prepare": "node --stack-trace-limit=9999 --trace-warnings ./scripts/install-husky.js",
         "clean": "rimraf ./build/server ./build/browser/fonts ./build/browser/images ./build/browser/*.js* ./build/browser/*.css && node -e \"fs.mkdirSync('./build/browser/data/uploads', { recursive: true });\"",
@@ -156,17 +150,17 @@
         "eslint-config-airbnb": "19.0.4",
         "eslint-config-airbnb-typescript": "17.0.0",
         "eslint-plugin-babel": "5.3.1",
+        "eslint-plugin-destructuring": "2.2.1",
         "eslint-plugin-import": "2.27.5",
         "eslint-plugin-jsx-a11y": "6.7.1",
-        "eslint-plugin-destructuring": "2.2.1",
         "eslint-plugin-react": "7.32.2",
         "eslint-webpack-plugin": "4.0.1",
         "file-loader": "6.2.0",
         "fork-ts-checker-webpack-plugin": "8.0.0",
-        "jest": "29.5.0",
-        "jest-environment-jsdom": "29.5.0",
         "husky": "8.0.3",
         "ignore-loader": "0.1.2",
+        "jest": "29.5.0",
+        "jest-environment-jsdom": "29.5.0",
         "lint-staged": "13.2.2",
         "markdownlint-cli2": "0.7.1",
         "micromatch": "4.0.5",

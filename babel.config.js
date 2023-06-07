@@ -9,7 +9,7 @@ module.exports = api => ({
             {
                 targets: {
                     node: 'current',
-                    browsers: ['last 2 versions', '> 0.25%', 'not dead'],
+                    browsers: ['> 0.2%', 'last 2 versions', 'Firefox ESR', 'not dead', 'node 18'],
                 },
             },
         ],
