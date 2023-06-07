@@ -1,21 +1,25 @@
 import isObject from './isObject';
 
-const removeIfExists = (item: string, arr: string[]) => {
-    const index = arr.indexOf(item);
+// Choose the most recent value in array
+const dedupe = (arr: string[]): string[] => arr
+    .reverse()
+    .reduce((acc, curr) => {
+        if (acc.includes(curr)) {
+            return acc;
+        }
 
-    if (index > -1) {
-        arr.splice(index, 1);
-    }
-};
-
+        return [
+            ...acc,
+            curr,
+        ];
+    }, [] as string[])
+    .reverse()
+;
 const parseExpression = (expression: any) => {
     const arr: string[] = [];
     const type = typeof expression;
     const add = (item: string) => {
-        const trimmed = item.trim();
-
-        removeIfExists(trimmed, arr);
-        arr.push(trimmed);
+        arr.push(item.trim());
     };
 
     if (type === 'string') {
@@ -23,41 +27,39 @@ const parseExpression = (expression: any) => {
     } else if (type === 'number') {
         add(expression.toString());
     } else if (Array.isArray(expression)) {
-        expression.forEach(item => {
-            if (item) {
+        expression
+            .filter(Boolean)
+            .forEach(item => {
                 const parsed = parseExpression(item);
 
                 if (parsed) {
                     add(parsed);
                 }
-            }
-        });
+            })
+        ;
     } else if (isObject(expression)) {
-        Object.entries(expression).forEach(([key, value]) => {
-            if (value) {
+        Object
+            .entries(expression)
+            .filter(([, value]) => Boolean(value))
+            .forEach(([key]) => {
                 add(key);
-            }
-        });
+            })
+        ;
     }
 
-    return arr.join(' ');
+    return dedupe(arr).join(' ');
 };
-
-const classNames = (...args: any[]) => args.reduce((acc, curr) => {
+const classNames = (...args: any[]) => dedupe(args.reduce((acc, curr) => {
     const parsed = parseExpression(curr);
 
     if (parsed) {
-        const trimmed = parsed.trim();
-
-        removeIfExists(trimmed, acc);
-
         return [
             ...acc,
-            trimmed,
+            parsed.trim(),
         ];
     }
 
     return acc;
-}, []).join(' ');
+}, [])).join(' ');
 
 export default classNames;
