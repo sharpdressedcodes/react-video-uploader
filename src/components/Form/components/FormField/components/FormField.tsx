@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import classNames from 'classnames';
+import { classNames } from '../../../../../common';
 import { DefaultPropsType, PropsType } from '../types';
 import '../styles/form-field.scss';
 

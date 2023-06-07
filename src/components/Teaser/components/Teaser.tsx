@@ -1,5 +1,5 @@
 import React, { memo, ReactNode } from 'react';
-import classNames from 'classnames';
+import { classNames } from '../../../common';
 import Picture from '../../Picture';
 import { DefaultPropsType, PropsType } from '../types';
 

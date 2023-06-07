@@ -1,8 +1,7 @@
 import React, { ChangeEvent, HTMLAttributes, HTMLProps, memo, useState } from 'react';
-import classNames from 'classnames';
 import Button, { ButtonProps as MuiButtonProps } from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-import { isArrayEmpty, maybePromiseResolver } from '../../../../../common';
+import { classNames, isArrayEmpty, maybePromiseResolver } from '../../../../../common';
 import { DefaultPropsType, PropsType } from '../types';
 import '../styles/form-file.scss';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import classNames from 'classnames';
+import { classNames } from '../../../../common';
 import { PropsType } from '../types';
 
 const ErrorPage = ({

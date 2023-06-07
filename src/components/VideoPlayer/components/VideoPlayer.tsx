@@ -1,5 +1,5 @@
 import React, { memo, SyntheticEvent, useEffect, useRef, useState } from 'react';
-import classNames from 'classnames';
+import { classNames } from '../../../common';
 import { videoPlaybackError } from '../../../state/reducers/video';
 import { useAppDispatch } from '../../../state/hooks';
 import { DefaultPropsType, PropsType } from '../types';

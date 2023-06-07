@@ -1,9 +1,9 @@
 import React, { forwardRef, memo, MouseEvent, SyntheticEvent, useState } from 'react';
-import classNames from 'classnames';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { classNames } from '../../../common';
 import { DefaultPropsType, PropsType } from '../types';
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>((

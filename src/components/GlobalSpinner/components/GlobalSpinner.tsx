@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import classNames from 'classnames';
+import { classNames } from '../../../common';
 import Modal from '../../Modal';
 import Spinner from '../../Spinner';
 import { PropsType } from '../types';

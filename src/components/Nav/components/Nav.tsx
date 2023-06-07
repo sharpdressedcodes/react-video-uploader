@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import classNames from 'classnames';
+import { classNames } from '../../../common';
 import { PropsType } from '../types';
 import NavLink, { NavLinkType } from './NavLink';
 import { RouteType } from '../../../routes';

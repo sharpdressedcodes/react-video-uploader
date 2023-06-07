@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
-import classNames from 'classnames';
 import LinearProgress from '@mui/material/LinearProgress';
+import { classNames } from '../../../common';
 import { DefaultPropsType, PropsType } from '../types';
 import '../styles/page-progressbar.scss';
 

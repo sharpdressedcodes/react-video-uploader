@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import classNames from 'classnames';
+import { classNames } from '../../../common';
 import InfoTableItem, { PropsType as InfoTableItemPropsType } from './InfoTableItem';
 import { PropsType } from '../types';
 
