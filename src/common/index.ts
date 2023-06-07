@@ -1,5 +1,6 @@
 export { default as canUseDOM } from './canUseDOM';
 export { default as classNames } from './classNames';
+export { default as dedupe } from './dedupe';
 export { createFileName, findItemByUuid, parseFileName } from './fileName';
 export { default as formatFileSize } from './formatFileSize';
 export { default as getFileExtension } from './getFileExtension';

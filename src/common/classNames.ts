@@ -1,20 +1,6 @@
+import dedupe from './dedupe';
 import isObject from './isObject';
 
-// Choose the most recent value in array
-const dedupe = (arr: string[]): string[] => arr
-    .reverse()
-    .reduce((acc, curr) => {
-        if (acc.includes(curr)) {
-            return acc;
-        }
-
-        return [
-            ...acc,
-            curr,
-        ];
-    }, [] as string[])
-    .reverse()
-;
 const parseExpression = (expression: any) => {
     const arr: string[] = [];
     const type = typeof expression;
@@ -47,8 +33,9 @@ const parseExpression = (expression: any) => {
         ;
     }
 
-    return dedupe(arr).join(' ');
+    return dedupe(arr, false).join(' ');
 };
+
 const classNames = (...args: any[]) => dedupe(args.reduce((acc, curr) => {
     const parsed = parseExpression(curr);
 
@@ -60,6 +47,6 @@ const classNames = (...args: any[]) => dedupe(args.reduce((acc, curr) => {
     }
 
     return acc;
-}, [])).join(' ');
+}, []), false).join(' ');
 
 export default classNames;
