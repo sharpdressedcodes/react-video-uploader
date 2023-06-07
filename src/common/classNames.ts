@@ -1,52 +1,81 @@
-import dedupe from './dedupe';
 import isObject from './isObject';
 
-const parseExpression = (expression: any) => {
-    const arr: string[] = [];
-    const type = typeof expression;
-    const add = (item: string) => {
-        arr.push(item.trim());
-    };
+const removeItem = (item: string, arr: string[]): string[] => {
+    const index = arr.indexOf(item.trim());
 
-    if (type === 'string') {
-        add(expression);
-    } else if (type === 'number') {
-        add(expression.toString());
-    } else if (Array.isArray(expression)) {
-        expression
-            .filter(Boolean)
-            .forEach(item => {
-                const parsed = parseExpression(item);
-
-                if (parsed) {
-                    add(parsed);
-                }
-            })
-        ;
-    } else if (isObject(expression)) {
-        Object
-            .entries(expression)
-            .filter(([, value]) => Boolean(value))
-            .forEach(([key]) => {
-                add(key);
-            })
-        ;
+    if (index > -1) {
+        arr.splice(index, 1);
     }
 
-    return dedupe(arr, false).join(' ');
+    return [...arr];
 };
 
-const classNames = (...args: any[]) => dedupe(args.reduce((acc, curr) => {
-    const parsed = parseExpression(curr);
+const parseExpression = (expression: any, currentList: string[]): string[] => {
+    let list = currentList;
+    let s: string;
 
-    if (parsed) {
-        return [
-            ...acc,
-            parsed.trim(),
-        ];
+    switch (typeof expression) {
+        case 'string':
+            s = expression.trim();
+            list = removeItem(s, list);
+
+            if (s) {
+                list.push(s);
+            }
+            break;
+
+        case 'number':
+            s = expression.toString().trim();
+            list = removeItem(s, list);
+
+            if (s) {
+                list.push(s);
+            }
+            break;
+
+        default:
+            if (Array.isArray(expression)) {
+                expression.forEach(item => {
+                    parseExpression(item, list).forEach(newItem => {
+                        list = removeItem(newItem, list);
+
+                        if (newItem) {
+                            list.push(newItem);
+                        }
+                    });
+                });
+            } else if (isObject(expression)) {
+                Object
+                    .entries(expression)
+                    .forEach(([key, value]) => {
+                        s = key.trim();
+                        list = removeItem(s, list);
+
+                        if (value) {
+                            list.push(s);
+                        }
+                    })
+                ;
+            }
     }
 
-    return acc;
-}, []), false).join(' ');
+    return list;
+};
+
+const classNames = (...args: any[]): string => {
+    let arr: string[] = [];
+
+    args.filter(Boolean).forEach(arg => {
+        parseExpression(arg, arr).forEach(item => {
+            arr = removeItem(item, arr);
+
+            if (item) {
+                arr.push(item);
+            }
+        });
+    });
+
+    return arr.join(' ');
+};
 
 export default classNames;
