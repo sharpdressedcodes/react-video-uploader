@@ -68,22 +68,22 @@ describe('UploadPage component', () => {
         if (!isArrayEmpty(allowedFileExtensions)) {
             const extensions = allowedFileExtensions.join(', ');
 
-            expect(screen.queryByText('Allowed file types:')).toBeInTheDocument();
+            expect(screen.queryByText('Allowed file types')).toBeInTheDocument();
             expect(screen.queryByText(extensions)).toBeInTheDocument();
         }
 
         if (maxFiles) {
-            expect(screen.queryByText('Maximum files:')).toBeInTheDocument();
+            expect(screen.queryByText('Maximum files')).toBeInTheDocument();
             expect(screen.queryByText(maxFiles.toString())).toBeInTheDocument();
         }
 
         if (maxFileSize) {
-            expect(screen.queryByText('Maximum file size:')).toBeInTheDocument();
+            expect(screen.queryByText('Maximum file size')).toBeInTheDocument();
             expect(screen.queryByText(formatFileSize(maxFileSize))).toBeInTheDocument();
         }
 
         if (maxTotalFileSize) {
-            expect(screen.queryByText('Maximum files size:')).toBeInTheDocument();
+            expect(screen.queryByText('Maximum files size')).toBeInTheDocument();
             expect(screen.queryByText(formatFileSize(maxTotalFileSize))).toBeInTheDocument();
         }
 
@@ -165,7 +165,7 @@ describe('UploadPage component', () => {
     });
 
     it('Should successfully upload a file and report progress', async () => {
-        const { store, user } = mount(renderComponent());
+        const { renderer, store, user } = mount(renderComponent());
 
         createXHRMock();
 
@@ -180,19 +180,20 @@ describe('UploadPage component', () => {
 
         const itemProgressbar = document.querySelector('.status-progress');
 
+        expect(itemProgressbar).not.toBeNull();
         expect(itemProgressbar?.getAttribute('aria-valuenow')).toEqual('0');
 
         act(() => {
             (onProgress as UploadProgressType)(buildProgressEventData(1, 2));
         });
 
-        expect(itemProgressbar?.getAttribute('aria-valuenow')).toEqual('50');
+        expect(renderer.queryByText('50%')).toBeInTheDocument();
 
         act(() => {
             (onProgress as UploadProgressType)(buildProgressEventData(2, 2));
         });
 
-        expect(itemProgressbar?.getAttribute('aria-valuenow')).toEqual('100');
+        expect(renderer.queryByText('100%')).toBeInTheDocument();
 
         expect(xhr.onloadend).not.toBeNull();
         xhr.onloadend(buildProgressEventData(2, 2));
@@ -200,7 +201,7 @@ describe('UploadPage component', () => {
         await waitFor(() => {
             const uploaderReducer = store.getState().uploaderReducer;
 
-            return expect(uploaderReducer.uploadResult).toEqual(mockData);
+            return expect(uploaderReducer.result).toEqual(mockData);
         });
     });
 });

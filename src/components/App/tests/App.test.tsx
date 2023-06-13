@@ -16,7 +16,6 @@ describe('App component', () => {
 
         await waitFor(() => expect(document.querySelector('.page-home')).toBeTruthy());
 
-        expect(document.querySelector('.page-home')).toBeTruthy();
         expect(document.querySelector('.global-spinner')).toBeNull();
     });
 

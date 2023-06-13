@@ -18,3 +18,12 @@ $colour-nav-hyperlink-active-dark: #bbb;
 //
 $colour-spinner: #2277d0;
 $colour-spinner-dark: #92cbf7;
+//
+$colour-drop-zone-bg: #fff;
+$colour-drop-zone-bg-dark: #303030;
+$colour-drop-zone-bg-dragging: color.adjust($colour-drop-zone-bg, $lightness: -5%);
+$colour-drop-zone-bg-dragging-dark: color.adjust($colour-drop-zone-bg-dark, $lightness: 5%);
+$colour-drop-zone-border: #777;
+$colour-drop-zone-border-dark: #686868;
+$colour-drop-zone-text: $colour-primary;
+$colour-drop-zone-text-dark: $colour-primary-dark;

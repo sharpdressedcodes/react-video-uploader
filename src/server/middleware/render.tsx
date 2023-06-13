@@ -13,6 +13,7 @@ import configureStore, { StoreType } from '../../state/stores/app';
 import { initialState as initialLoadVideosState } from '../../state/reducers/loadVideos';
 import { ConfigType } from '../../config';
 import { routes } from '../../routes';
+import createHtmlTransformStream from '../streams/createHtmlTransformStream';
 
 type RenderContentType = {
     data: any;
@@ -44,6 +45,7 @@ type AssetListWithIconsType = AssetListType & {
 };
 
 const isProduction = process.env.NODE_ENV === 'production';
+const isFastRefresh = process.env.FAST_REFRESH === 'true';
 const renderContent = ({ data, store }: RenderContentType) => (
     <StrictMode>
         <Providers store={ store }>
@@ -104,6 +106,10 @@ const getAssetsFromManifest = async (manifestFile: string, config: ConfigType): 
                     return acc;
                 }
 
+                if (!config.webVitals.enabled && curr.endsWith('web-vitals.js')) {
+                    return acc;
+                }
+
                 if (curr.endsWith('.js')) {
                     return {
                         ...acc,
@@ -136,7 +142,7 @@ const serverEntry: RequestHandler = (req, res, next) => new Promise<void>(resolv
             // NOTE: !isProduction automatically injects relevant js and css files when needed.
             // So if you go to 1 page, only that page js and css will have loaded.
             // If you navigate to another page, the js and css for that new page will then be injected.
-            const assets = !isProduction ?
+            const assets = isFastRefresh ?
                 { css: ['app.css'], js: ['app.js'], favIcons: [] } :
                 await getAssetsFromManifest(manifestFile, config);
             const css = assets.css.map(p => <link key={ p } href={ `/${p}` } rel="stylesheet" />);
@@ -178,57 +184,72 @@ const serverEntry: RequestHandler = (req, res, next) => new Promise<void>(resolv
                 return;
             }
 
-            const pipeOut = (pipe: PipeableStream['pipe']) => {
+            // const transform = createHtmlTransformStream('<script>console.log("transformed");</script>');
+            const transform = createHtmlTransformStream();
+            const pipe = (stream: PipeableStream) => {
                 res.statusCode = hasError ? 500 : 200;
                 res.setHeader('Content-type', 'text/html');
-                pipe(res);
+
+                stream.pipe(transform).pipe(res);
 
                 resolve();
             };
-            const { pipe, abort }: PipeableStream = renderToPipeableStream(html, {
-                bootstrapScriptContent: '(function(){ window.boot ? window.boot() : (window.loaded = true) })();',
-                bootstrapScripts: assets.js.map(item => `/${item}`),
+            const bootstrapScriptContent = '(function(){ window.boot ? window.boot() : (window.loaded = true) })();';
+            const bootstrapScripts = assets.js.map(item => `/${item}`);
+            const bootstrapModules: string[] = [];
+            const onShellReady = (stream: PipeableStream) => {
+                // The content above all Suspense boundaries is ready.
+                // If something errored before we started streaming, we set the error code appropriately.
+
+                // console.log('onShellReady');
+                if (!req.app.locals.isBot) {
+                    pipe(stream);
+                }
+            };
+            const onShellError = (err: unknown) => {
+                // Something errored before we could complete the shell, so we emit an alternative shell.
+                if (!isProduction) {
+                    // eslint-disable-next-line no-console
+                    console.log('onShellError', err);
+                }
+
+                next(err);
+                // res.statusCode = 500;
+                // res.send(
+                //     '<!doctype html><p>Loading...</p><script src="clientrender.js"></script>'
+                // );
+            };
+            const onAllReady = (stream: PipeableStream) => {
+                // If you don't want streaming, use this instead of onShellReady.
+                // This will fire after the entire page content is ready.
+                // You can use this for crawlers or static generation.
+
+                // console.log('onAllReady');
+                if (req.app.locals.isBot) {
+                    pipe(stream);
+                }
+            };
+            const onError = (err: unknown) => {
+                hasError = true;
+
+                if (!isProduction) {
+                    // eslint-disable-next-line no-console
+                    console.error(`renderToPipeableStream Error: ${(err as Error).message}`, err);
+                }
+            };
+            const stream: PipeableStream = renderToPipeableStream(html, {
+                bootstrapScriptContent,
+                bootstrapScripts,
                 // If you use ESM, you use the bootstrapModules option instead of bootstrapScripts.
-                bootstrapModules: [],
+                bootstrapModules,
                 onShellReady() {
-                    // The content above all Suspense boundaries is ready.
-                    // If something errored before we started streaming, we set the error code appropriately.
-
-                    // console.log('onShellReady');
-                    if (!req.app.locals.isBot) {
-                        pipeOut(pipe);
-                    }
+                    onShellReady(stream);
                 },
-                onShellError(err) {
-                    // Something errored before we could complete the shell, so we emit an alternative shell.
-                    if (!isProduction) {
-                        // eslint-disable-next-line no-console
-                        console.log('onShellError', err);
-                    }
-
-                    next(err);
-                    // res.statusCode = 500;
-                    // res.send(
-                    //     '<!doctype html><p>Loading...</p><script src="clientrender.js"></script>'
-                    // );
-                },
+                onShellError,
                 onAllReady() {
-                    // If you don't want streaming, use this instead of onShellReady.
-                    // This will fire after the entire page content is ready.
-                    // You can use this for crawlers or static generation.
-
-                    // console.log('onAllReady');
-                    if (req.app.locals.isBot) {
-                        pipeOut(pipe);
-                    }
+                    onAllReady(stream);
                 },
-                onError(err: unknown) {
-                    hasError = true;
-                    if (!isProduction) {
-                        // eslint-disable-next-line no-console
-                        console.error(`renderToPipeableStream Error: ${(err as Error).message}`, err);
-                    }
-                },
+                onError,
             });
         } catch (err) {
             next(err);

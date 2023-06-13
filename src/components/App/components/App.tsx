@@ -14,14 +14,10 @@ const App = ({ data }: PropsType) => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (document) {
-            document.body.style.opacity = '1';
-        }
-
         if (data) {
             dispatch(loadVideosSuccess(data));
         }
-    }, []);
+    }, [data]);
 
     return (
         <>

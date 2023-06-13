@@ -1,32 +1,33 @@
-import React, { FormEvent, useContext, useState } from 'react';
+import React, { FormEvent, useContext } from 'react';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Button, { ButtonProps as MuiButtonProps } from '@mui/material/Button';
-import LinearProgress from '@mui/material/LinearProgress';
 import { AnyAction } from '@reduxjs/toolkit';
 import { AxiosProgressEvent } from 'axios';
 import { ConfigContext, ToastContext } from '../../../../context';
 import { fileValidation, formatFileSize, isArrayEmpty, isObjectEmpty } from '../../../../common';
+import { LinearProgressWithLabel } from '../../../LinearProgressWithLabel';
 import { Form } from '../../../Form';
+import { FormNotes } from '../../../Form/components/FormNotes';
+import { FormNote } from '../../../Form/components/FormNote';
 import { FormField } from '../../../Form/components/FormField';
 import { FormFields } from '../../../Form/components/FormFields';
 import { FormControls } from '../../../Form/components/FormControls';
 import { FormFile } from '../../../Form/components/FormFile';
-import InfoTable from '../../../InfoTable';
 import useDidUpdate from '../../../../hooks/useDidUpdate';
 import useWebSocket from '../../../../hooks/useWebSocket';
+import useSetState from '../../../../hooks/useSetState';
 import {
     uploadError,
     uploadProgress,
     uploadStart,
     uploadSuccess,
-    uploadValidationErrors,
     uploadReset,
 } from '../../../../state/reducers/uploader';
 import { loadVideosSuccess } from '../../../../state/reducers/loadVideos';
 import { useAppDispatch, useAppSelector } from '../../../../state/hooks';
 import { LoadedVideoType } from '../../../../state/types';
+import { ConvertFileStepType, ConvertProgressStepType, CreateStepType } from '../../../../server/types';
 import { DependenciesType, StateType } from '../types';
-import { UploadFileStepType, UploadProgressStepType, UploadStepType } from '../../../../server/types';
 import submitUploadForm from '../api/submitUploadForm';
 import '../styles/upload-page.scss';
 
@@ -35,37 +36,26 @@ export const DEFAULT_STATE: StateType = {
     loaded: 0,
     uploading: false,
     uploadedFiles: [],
+    validation: null,
 };
 
 const UploadPage = () => {
     const config = useContext(ConfigContext);
     const toast = useContext(ToastContext);
     const dispatch = useAppDispatch();
-    // const { uploadError, uploadResult, uploadValidation } = useAppSelector(({ uploaderReducer }) => uploaderReducer);
-    const { error, result, validation } = useAppSelector(({ uploaderReducer }) => uploaderReducer);
+    const { error, result } = useAppSelector(({ uploaderReducer }) => uploaderReducer);
     const maxFiles = config.videoUpload.maxFiles;
     const maxFileSize = config.videoUpload.maxFileSize;
     const maxTotalFileSize = config.videoUpload.maxTotalFileSize;
     const allowedFileExtensions = config.allowedFileExtensions;
-    const formattedMaxFileSize = formatFileSize(maxFileSize);
-    const formattedMaxTotalFileSize = formatFileSize(maxTotalFileSize);
-    const [loaded, setLoaded] = useState(UploadPage.DEFAULT_STATE.loaded);
-    const [selectedFiles, setSelectedFiles] = useState(UploadPage.DEFAULT_STATE.selectedFiles);
-    const [uploading, setUploading] = useState(UploadPage.DEFAULT_STATE.uploading);
-    const [uploadedFiles, setUploadedFiles] = useState(UploadPage.DEFAULT_STATE.uploadedFiles);
+    const [state, setState] = useSetState(UploadPage.DEFAULT_STATE);
     const formUrl = config.endpoints.api.video.upload;
 
     const dispatchAndWait = (action: AnyAction) => new Promise(resolve => {
         dispatch(action);
         setTimeout(resolve);
     });
-    const generateInfo = () => ([
-        { title: 'Allowed file types:', text: allowedFileExtensions.join(', ') },
-        { title: 'Maximum file size:', text: formattedMaxFileSize },
-        { title: 'Maximum files:', text: maxFiles },
-        { title: 'Maximum files size:', text: formattedMaxTotalFileSize },
-    ]);
-    const onUploadStep = (params: UploadStepType) => {
+    const onCreateStep = (params: CreateStepType) => {
         const { step, total, status } = params;
         /* step: 3,
         total: 3,
@@ -76,17 +66,17 @@ const UploadPage = () => {
         //     this.setState({ uploadedFiles: [] });
         // }
     };
-    const onUploadStepFile = (params: UploadFileStepType) => {
+    const onConvertStepFile = (params: ConvertFileStepType) => {
         const { index } = params;
 
-        uploadedFiles[index] = params;
-        setUploadedFiles([...uploadedFiles]);
+        state.uploadedFiles[index] = params;
+        setState({ uploadedFiles: state.uploadedFiles });
     };
-    const onUploadStepFileProgress = (params: UploadProgressStepType) => {
+    const onConvertStepFileProgress = (params: ConvertProgressStepType) => {
         const { index } = params;
 
-        uploadedFiles[index] = params;
-        setUploadedFiles([...uploadedFiles]);
+        state.uploadedFiles[index] = params;
+        setState({ uploadedFiles: state.uploadedFiles });
         // console.log('upload.step.file.progress', params);
     };
     const onUploadProgress = ({ event: { lengthComputable }, loaded: progressLoaded, total }: AxiosProgressEvent) => {
@@ -94,7 +84,7 @@ const UploadPage = () => {
             const percentage = (progressLoaded / total) * 100;
 
             dispatch(uploadProgress(percentage));
-            setLoaded(percentage);
+            setState({ loaded: percentage });
         }
     };
     const onFileValidate = async (files: File[]): Promise<File[]> => {
@@ -107,9 +97,10 @@ const UploadPage = () => {
         });
 
         await dispatchAndWait(uploadReset());
+        setState({ validation: UploadPage.DEFAULT_STATE.validation });
 
         if (!validationResult.success) {
-            dispatch(uploadValidationErrors(validationResult));
+            setState({ validation: validationResult });
             return [];
         }
 
@@ -120,56 +111,40 @@ const UploadPage = () => {
 
         if (isArrayEmpty(files)) {
             // User opened dialog, then clicked cancel
-            setLoaded(UploadPage.DEFAULT_STATE.loaded);
-            setSelectedFiles(UploadPage.DEFAULT_STATE.selectedFiles);
-            setUploading(UploadPage.DEFAULT_STATE.uploading);
-            setUploadedFiles(UploadPage.DEFAULT_STATE.uploadedFiles);
+            setState({
+                loaded: UploadPage.DEFAULT_STATE.loaded,
+                selectedFiles: UploadPage.DEFAULT_STATE.selectedFiles,
+                uploading: UploadPage.DEFAULT_STATE.uploading,
+                uploadedFiles: UploadPage.DEFAULT_STATE.uploadedFiles,
+            });
             return;
         }
 
-        // await dispatchAndWait(uploadReset());
-        //
-        // const validationResult = await fileValidation({
-        //     files: files as File[],
-        //     allowedFileExtensions,
-        //     maxFiles,
-        //     maxFileSize,
-        //     maxTotalFileSize,
-        // });
-        //
-        // if (!validationResult.success) {
-        //     // eslint-disable-next-line no-param-reassign
-        //     // event.target.value = '';
-        //     dispatch(uploadValidationErrors(validationResult));
-        // } else {
-        //     setSelectedFiles(files);
-        //     setUploadedFiles([]);
-        // }
-
-        setSelectedFiles(files);
-        setUploadedFiles([]);
-
-        setLoaded(UploadPage.DEFAULT_STATE.loaded);
-        setUploading(UploadPage.DEFAULT_STATE.uploading);
+        setState({
+            loaded: UploadPage.DEFAULT_STATE.loaded,
+            selectedFiles: files,
+            uploading: UploadPage.DEFAULT_STATE.uploading,
+            uploadedFiles: [],
+        });
     };
     const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
         const data = new FormData();
 
         event.preventDefault();
         await dispatchAndWait(uploadReset());
+        setState({ validation: UploadPage.DEFAULT_STATE.validation });
 
-        if (!selectedFiles) {
+        if (!state.selectedFiles) {
             dispatch(uploadError('Error: No files selected'));
             return;
         }
 
-        selectedFiles.forEach(file => {
+        state.selectedFiles.forEach(file => {
             data.append('file', file);
         });
 
         try {
-            setLoaded(UploadPage.DEFAULT_STATE.loaded);
-            setUploading(true);
+            setState({ loaded: UploadPage.DEFAULT_STATE.loaded, uploading: true });
             dispatch(uploadStart(formUrl));
 
             const submissionResult = await submitUploadForm({
@@ -179,18 +154,20 @@ const UploadPage = () => {
             });
 
             if (submissionResult.data.validation) {
-                dispatch(uploadValidationErrors(submissionResult.data.validation));
+                setState({ validation: submissionResult.data.validation });
             } else {
                 dispatch(uploadSuccess(submissionResult.data));
             }
         } catch (err: unknown) {
             dispatch(uploadError((err as Error).message));
         } finally {
-            setLoaded(UploadPage.DEFAULT_STATE.loaded);
-            setUploadedFiles(UploadPage.DEFAULT_STATE.uploadedFiles);
-            setUploading(UploadPage.DEFAULT_STATE.uploading);
-            // Uncomment below to auto reset after upload
-            // setSelectedFiles(UploadPage.DEFAULT_STATE.selectedFiles);
+            setState({
+                loaded: UploadPage.DEFAULT_STATE.loaded,
+                // Uncomment below to auto reset after upload
+                // selectedFiles: UploadPage.DEFAULT_STATE.selectedFiles,
+                uploadedFiles: UploadPage.DEFAULT_STATE.uploadedFiles,
+                uploading: UploadPage.DEFAULT_STATE.uploading,
+            });
         }
     };
     const onWebSocketMessage = (event: MessageEvent) => {
@@ -198,35 +175,42 @@ const UploadPage = () => {
         // console.log('websocket message', message);
 
         switch (message.event) {
-            case 'upload.step':
-                onUploadStep(message.data);
+            case 'create.step':
+                onCreateStep(message.data);
                 break;
-            case 'upload.step.file':
-                onUploadStepFile(message.data);
+            case 'convert.step.file':
+                onConvertStepFile(message.data);
                 break;
-            case 'upload.step.file.progress':
-                onUploadStepFileProgress(message.data);
+            case 'convert.step.file.progress':
+                onConvertStepFileProgress(message.data);
                 break;
             default:
         }
     };
     const webSocket = useWebSocket({ onMessage: onWebSocketMessage });
     const renderProgress = () => {
-        if (selectedFiles) {
-            return <LinearProgress className="status-progress" variant="determinate" value={ loaded } />;
+        if (state.selectedFiles) {
+            return (
+                <LinearProgressWithLabel
+                    className="status-progress"
+                    hideLabelWhenEmpty
+                    variant="determinate"
+                    value={ state.loaded }
+                />
+            );
         }
 
         return null;
     };
     const renderFiles = () => {
-        if (!selectedFiles) {
+        if (!state.selectedFiles) {
             return <span>No files selected</span>;
         }
 
         return (
             <ul className="files">
-                {selectedFiles.map((item, index) => {
-                    const uploadItem = uploadedFiles[index];
+                {state.selectedFiles.map((item, index) => {
+                    const uploadItem = state.uploadedFiles[index];
                     const s = uploadItem?.status && uploadItem.step !== uploadItem.total ?
                         `Step ${uploadItem.step} of ${uploadItem.total} - ${uploadItem.status}` :
                         'Ready to upload';
@@ -238,9 +222,10 @@ const UploadPage = () => {
                             <span className="file-size">{formatFileSize(item.size)}</span>
                             <span className="file-status">{s}</span>
                             <span className="file-progress">
-                                <LinearProgress
+                                <LinearProgressWithLabel
+                                    hideLabelWhenEmpty
                                     variant="determinate"
-                                    value={ (uploadItem as UploadProgressStepType)?.percent ?? 0 }
+                                    value={ (uploadItem as ConvertProgressStepType)?.percent ?? 0 }
                                 />
                             </span>
                         </li>
@@ -252,6 +237,7 @@ const UploadPage = () => {
 
     useDidUpdate<DependenciesType>(prevProps => {
         const errorMessages: string[] = [];
+        const { validation } = state;
 
         if (!isObjectEmpty(validation) && !validation?.success) {
             validation?.overallErrors?.forEach((err: string) => errorMessages.push(err));
@@ -278,7 +264,7 @@ const UploadPage = () => {
 
             dispatch(loadVideosSuccess(result.items as LoadedVideoType[]));
         }
-    }, [error, result, validation]);
+    }, [error, result, state.validation]);
 
     const submitButtonAttributes: MuiButtonProps<'button', { component: 'button' }> = {
         variant: 'contained',
@@ -288,7 +274,7 @@ const UploadPage = () => {
     const files = renderFiles();
     const progressElement = renderProgress();
 
-    if (!selectedFiles || uploading) {
+    if (!state.selectedFiles || state.uploading) {
         submitButtonAttributes.disabled = true;
     }
 
@@ -297,25 +283,42 @@ const UploadPage = () => {
             <h2>Upload Videos</h2>
 
             <section className="content">
-                <InfoTable items={ generateInfo() } />
                 <Form
                     className="form-upload"
                     method="POST"
                     action={ formUrl }
                     onSubmit={ onSubmit }
                 >
+                    <FormNotes>
+                        <FormNote>
+                            Your videos will be converted to mp4 format.
+                            Thumbnail and animated thumbnail images will also be generated.
+                        </FormNote>
+                    </FormNotes>
                     <FormFields>
                         <FormField>
                             <FormFile
                                 allowedFileExtensions={ allowedFileExtensions }
-                                enabled={ !uploading }
+                                enabled={ !state.uploading }
+                                maxFiles={ maxFiles }
+                                maxFileSize={ maxFileSize }
+                                maxTotalFileSize={ maxTotalFileSize }
                                 multiple
                                 name="file"
+                                // useDragAndDrop={ false }
                                 onChange={ onFileChange }
                                 onValidate={ onFileValidate }
                             />
                         </FormField>
+                        <div className="form-files">
+                            {files}
+                        </div>
                     </FormFields>
+                    {progressElement && (
+                        <div className="form-progress">
+                            {progressElement}
+                        </div>
+                    )}
                     <FormControls>
                         <Button { ...submitButtonAttributes }>
                             Upload
@@ -323,11 +326,6 @@ const UploadPage = () => {
                         </Button>
                     </FormControls>
                 </Form>
-
-                <div className="status">
-                    <div className="status-files">{files}</div>
-                    {progressElement}
-                </div>
             </section>
         </div>
     );

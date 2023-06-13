@@ -161,5 +161,4 @@ const run = () => {
 };
 
 run();
-
 /* eslint-enable no-console */

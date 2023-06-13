@@ -14,19 +14,19 @@ import { rename, stat, unlink, writeFile } from '../../utils/fileSystem';
 import { createFileName, formatFileSize, isArrayEmpty, parseFileName } from '../../../common';
 import { ConfigType } from '../../../config';
 import serverFileValidation from '../../validation/serverFileValidation';
-import { UploadStepType, UploadFileStepType, UploadProgressStepType } from '../../types';
+import { CreateStepType, ConvertFileStepType, ConvertProgressStepType } from '../../types';
 import { LoadedVideoType } from '../../../state/types';
 import { NormalisedFileType } from '../../../common/validation/fileValidation';
 
 type ExpressFile = Express.Multer.File;
 
-const defaultStepData: Pick<UploadStepType, 'total'> = {
+const defaultStepData: Pick<CreateStepType, 'total'> = {
     total: 4,
 };
 
-type DefaultUploadFileStepType = Pick<UploadFileStepType, 'total'> & {
-    index?: UploadFileStepType['index'];
-    file?: UploadFileStepType['file'];
+type DefaultUploadFileStepType = Pick<ConvertFileStepType, 'total'> & {
+    index?: ConvertFileStepType['index'];
+    file?: ConvertFileStepType['file'];
 };
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -35,25 +35,25 @@ const handleVideoCreate: RequestHandler = async (req, res, next) => {
     try {
         const config: ConfigType = req.app.locals.config;
         const webSocket: WebSocket = req.app.locals.getWebSocket();
-        const emit = (event: string, data: UploadStepType | UploadFileStepType | UploadProgressStepType) => {
+        const emit = (event: string, data: CreateStepType | ConvertFileStepType | ConvertProgressStepType) => {
             webSocket?.send(JSON.stringify({ event, data }));
         };
         const emitStep = (step: number, status: string) => {
-            emit('upload.step', {
+            emit('create.step', {
                 ...defaultStepData,
                 step,
                 status,
             });
         };
         const emitStepFile = (step: number, status: string, defaultData: any) => {
-            emit('upload.step.file', {
+            emit('convert.step.file', {
                 ...defaultData,
                 step,
                 status,
             });
         };
         const emitStepFileProgress = (step: number, status: string, percent: number, defaultData: any) => {
-            emit('upload.step.file.progress', {
+            emit('convert.step.file.progress', {
                 ...defaultData,
                 step,
                 status,

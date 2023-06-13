@@ -1,9 +1,12 @@
 import { FormEventHandler, ReactNode } from 'react';
 
+export type AllowedFormMethods = 'DIALOG' | 'GET' | 'POST';
+
 export type DefaultPropsType = {
     className: string;
     onSubmit: FormEventHandler<HTMLFormElement> | undefined;
-    method: string;
+    // method: FormHTMLAttributes<HTMLFormElement>['method'];
+    method: AllowedFormMethods;
 };
 
 export type PropsType = Partial<DefaultPropsType> & {

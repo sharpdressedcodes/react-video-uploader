@@ -5,19 +5,11 @@
     max-width: variables.$container-max-width;
     margin: 0 auto;
 
-    .info-table {
-        margin-bottom: 25px;
-    }
-}
-
-.form-upload {
-    margin-bottom: 30px;
-}
-
-.status {
-    &-files {
+    .form-upload {
         margin-bottom: 30px;
+    }
 
+    .form-files {
         .file {
             margin-bottom: 20px;
             display: flex;
@@ -64,4 +56,9 @@
             }
         }
     }
+
+    .form-progress {
+        margin-bottom: 30px;
+    }
 }
+

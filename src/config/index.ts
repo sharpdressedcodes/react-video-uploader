@@ -47,7 +47,7 @@ export type ManifestConfigType = {
 
 export type ServiceWorkerConfigType = FeatureToggleConfigType;
 
-export type WebVitalsConfigType = FeatureToggleConfigType | {
+export type WebVitalsConfigType = FeatureToggleConfigType & {
     callback?: (...args: any[]) => void;
 };
 

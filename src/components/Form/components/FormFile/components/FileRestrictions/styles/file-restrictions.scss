@@ -1,0 +1,33 @@
+@use 'sass:color';
+@use '../../../../../../../styles/helpers/colours';
+@use '../../../../../../../styles/mixins/breakpoint' as *;
+@use '../../../../../../../styles/mixins/prefers-dark-mode' as *;
+
+.file-restrictions {
+    display: grid;
+    grid-template-columns: 100%;
+    font-size: 0.9em;
+    gap: 4px 8px;
+
+    &__title {
+        color: color.adjust(colours.$colour-drop-zone-text, $lightness: 20%);
+
+        &:not(:first-child) {
+            margin-top: 8px;
+        }
+    }
+
+    @include breakpoint(medium up) {
+        grid-template-columns: max-content auto;
+
+        &__title:not(:first-child) {
+            margin-top: 0;
+        }
+    }
+
+    @include prefers-dark-mode {
+        &__title {
+            color: color.adjust(colours.$colour-drop-zone-text-dark, $lightness: -20%);
+        }
+    }
+}

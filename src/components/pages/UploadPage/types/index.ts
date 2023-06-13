@@ -1,7 +1,7 @@
 import { AxiosProgressEvent, AxiosRequestConfig } from 'axios';
 import { FileValidationValidationType } from '../../../../common/validation/fileValidation';
 import { LoadedVideoType } from '../../../../state/types';
-import { UploadFileStepType, UploadProgressStepType } from '../../../../server/types';
+import { ConvertFileStepType, ConvertProgressStepType } from '../../../../server/types';
 
 export type DefaultSubmitUploadFormPropsType = {
     onProgress?: (event: AxiosProgressEvent) => void;
@@ -23,5 +23,6 @@ export type StateType = {
     selectedFiles: Nullable<File[]>;
     loaded: number;
     uploading: boolean;
-    uploadedFiles: Array<UploadFileStepType | UploadProgressStepType>;
+    uploadedFiles: Array<ConvertFileStepType | ConvertProgressStepType>;
+    validation: Nullable<FileValidationValidationType>;
 };

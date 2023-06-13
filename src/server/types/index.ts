@@ -1,16 +1,16 @@
 import { Express } from 'express';
 
-export type UploadStepType = {
+export type CreateStepType = {
     step: number;
     total: number;
     status: string;
 };
 
-export type UploadFileStepType = UploadStepType & {
+export type ConvertFileStepType = CreateStepType & {
     index: number;
     file: File | Express.Multer.File;
 };
 
-export type UploadProgressStepType = UploadFileStepType & {
+export type ConvertProgressStepType = ConvertFileStepType & {
     percent: number;
 };
