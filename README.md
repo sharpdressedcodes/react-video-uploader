@@ -124,9 +124,4 @@ and [here](https://create-react-app.dev/docs/measuring-performance/).
   * https://phrase.com/blog/posts/localizing-react-apps-with-i18next/
   * https://lokalise.com/blog/react-i18n-intl/
   * https://github.com/privatenumber/webpack-localize-assets-plugin
-* Video player instead of html player https://www.google.com/search?q=video+js+react
-* CRUD videos
-* Authenticating the user before allowing to CUD (create, update, delete)
-* Stub the api return calls during `IS_TESTING`, then assert on the items in TeaserList in HomePage
-* Drag and drop
 * Fix service worker issue in production.
