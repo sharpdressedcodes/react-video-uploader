@@ -117,7 +117,7 @@ const setupRoutes = () => {
         csrfSynchronisedProtection,
         emitUploadStatusStep,
         // req.files and req.body are both empty at this point.
-        uploadParser(config.videoUpload.path, 'file', true),
+        uploadParser(config.videoUpload.path, 'videos', true),
         // req.files and req.body and now available.
         handleVideoCreate,
         handleGetVideos,

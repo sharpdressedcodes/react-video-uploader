@@ -84,13 +84,13 @@ const handleVideoCreate: RequestHandler = async (req, res, next) => {
         const thumbnailDimensions = config.videoUpload.thumbnailDimensions;
         const uploadPath = config.videoUpload.path;
         // This is the same as client side validation, apart from validateFileSignature
-        const validateFile = async (): Promise<Record<string, string[]>> => {
+        const validateVideos = async (): Promise<Record<string, string[]>> => {
             const files = Array.from(req.files as ExpressFile[]);
-            const errors: Record<string, string[]> = validateFormFile(files, componentConfig.file.rules!);
+            const errors: Record<string, string[]> = validateFormFile(files, componentConfig.videos.rules!);
 
             if (!isArrayEmpty(files)) {
                 const results = await Promise.all(
-                    files.map(file => validateFileSignature(file, componentConfig.file.rules!.allowedFileTypes)),
+                    files.map(file => validateFileSignature(file, componentConfig.videos.rules!.allowedFileTypes)),
                 );
 
                 results.forEach((result, index) => {
@@ -103,7 +103,7 @@ const handleVideoCreate: RequestHandler = async (req, res, next) => {
             return errors;
         };
         const validateForm = async () => ({
-            file: await validateFile(),
+            videos: await validateVideos(),
         });
 
         // First step gets emitted before uploadParser middleware
@@ -112,10 +112,10 @@ const handleVideoCreate: RequestHandler = async (req, res, next) => {
         emitStep(2, 'Validating');
         const files = Array.from(req.files as ExpressFile[]);
         const validationResult = await validateForm();
-        const hasFileErrors = !isObjectEmpty(validationResult.file);
+        const hasVideosErrors = !isObjectEmpty(validationResult.videos);
 
-        if (hasFileErrors) {
-            // if (hasFileErrors) {
+        if (hasVideosErrors) {
+            // if (hasVideosErrors) {
             await Promise.all(files.map(file => unlink(file.path)));
             // }
 

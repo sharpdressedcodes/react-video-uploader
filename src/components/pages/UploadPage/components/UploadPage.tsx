@@ -49,18 +49,18 @@ import '../styles/upload-page.scss';
 
 export const DEFAULT_FORM_STATE: FormStateType = {
     ...defaultBaseFormWithProgressState,
-    file: [],
+    videos: [],
     // errorMessages: {
-    //     file: ['Error'],
+    //     videos: ['Error'],
     // },
     // warningMessages: {
-    //     file: ['Test warning'],
+    //     videos: ['Test warning'],
     // },
     // infoMessages: {
-    //     file: ['Test info'],
+    //     videos: ['Test info'],
     // },
     // successMessages: {
-    //     file: ['Test success'],
+    //     videos: ['Test success'],
     // },
 };
 
@@ -77,17 +77,17 @@ const UploadPage = () => {
     const [state, setState] = useSetState(UploadPage.DEFAULT_STATE);
     const [formState, setFormState] = useSetState(DEFAULT_FORM_STATE);
     const refs = {
-        file: useRef<Nullable<HTMLInputElement>>(null),
+        videos: useRef<Nullable<HTMLInputElement>>(null),
     };
 
-    const validateFile = (): Record<string, string[]> => validateFormFile(formState.file, componentConfig.file.rules!);
+    const validateVideos = (): Record<string, string[]> => validateFormFile(formState.videos, componentConfig.videos.rules!);
     const validateForm = (): BaseFormMessageType => ({
-        file: validateFile(),
+        videos: validateVideos(),
     });
     const isFormValid = () => {
-        const { file } = validateForm();
+        const { videos } = validateForm();
         const checks = [
-            isObjectEmpty(file),
+            isObjectEmpty(videos),
         ];
 
         return checks.filter(Boolean).length === checks.length;
@@ -114,21 +114,21 @@ const UploadPage = () => {
     });
     const focusOnFirstError = (hasFileErrors: boolean) => {
         if (hasFileErrors) {
-            refs.file?.current?.focus();
+            refs.videos?.current?.focus();
         }
     };
     const getMessages = (record: Nullable<BaseFormMessageType>): BaseFormMessageType => {
         if (!record) {
-            return { file: {}, form: [] };
+            return { videos: {}, form: [] };
         }
 
         return {
-            file: record?.file ?? {},
+            videos: record?.videos ?? {},
             form: record?.form ?? [],
         };
     };
     const buildFieldAlerts = (id: string) => {
-        const isObject = ['file'].includes(id);
+        const isObject = ['videos'].includes(id);
         const {
             [id]: errorMessages = isObject ? {} : [],
         } = getMessages(formState?.errorMessages);
@@ -188,39 +188,39 @@ const UploadPage = () => {
             setFormState({ progressPercentage: percentage });
         }
     };
-    const onFileChange = async (files: Nullable<File[]>) => {
+    const onVideosChange = async (videos: Nullable<File[]>) => {
         // User opened dialog, then clicked cancel.
-        if (!files || isArrayEmpty(files)) {
+        if (!videos || isArrayEmpty(videos)) {
             setState({ files: UploadPage.DEFAULT_STATE.files });
-            setFormState({ file: UploadPage.DEFAULT_FORM_STATE.file });
+            setFormState({ videos: UploadPage.DEFAULT_FORM_STATE.videos });
             return;
         }
 
-        setState({ files: (files as File[]).map(file => ({
+        setState({ files: videos.map(file => ({
             file,
             alerts: null,
             convertStep: null,
             convertProgress: null,
         }) as SelectedFileType) });
         setFormState({
-            file: files as File[],
+            videos,
             errorMessages: {
                 ...formState.errorMessages,
-                file: {},
+                videos: {},
             },
         });
     };
-    const onFileChanged = () => {
+    const onVideosChanged = () => {
         // Treat this field a little differently than the others.
         // Perform validation on change, but only show the
         // 'required' message if the form has actually been submitted.
-        const fileErrors = validateFile();
+        const videosErrors = validateVideos();
         const newFormState: Partial<FormStateType> = {};
 
-        if (!formState.hasSubmit && isArrayEmpty(formState.file)) {
+        if (!formState.hasSubmit && isArrayEmpty(formState.videos)) {
             newFormState.errorMessages = {
                 ...formState.errorMessages,
-                file: {},
+                videos: {},
             };
 
             setFormState(newFormState);
@@ -230,13 +230,13 @@ const UploadPage = () => {
 
         newFormState.errorMessages = {
             ...formState.errorMessages,
-            file: fileErrors,
+            videos: videosErrors,
         };
 
         setFormState(newFormState);
 
-        if (!isObjectEmpty(fileErrors)) {
-            syncFileState(fileErrors);
+        if (!isObjectEmpty(videosErrors)) {
+            syncFileState(videosErrors);
         }
     };
     const onUploadResultChanged = (prevProps: { uploadStateResult: LoadedVideoType }) => {
@@ -262,14 +262,14 @@ const UploadPage = () => {
             errorMessages: validationResult,
         });
 
-        const hasFileValidationErrors = !isObjectEmpty(validationResult.file);
+        const hasVideosValidationErrors = !isObjectEmpty(validationResult.videos);
 
-        if (hasFileValidationErrors) {
-            // if (hasFileValidationErrors) {
-            syncFileState(validationResult.file);
+        if (hasVideosValidationErrors) {
+            // if (hasVideosValidationErrors) {
+            syncFileState(validationResult.videos);
             // }
 
-            focusOnFirstError(hasFileValidationErrors);
+            focusOnFirstError(hasVideosValidationErrors);
             setFormState({ isSubmitting: false });
             return;
         }
@@ -278,7 +278,7 @@ const UploadPage = () => {
 
         state.files?.forEach(file => {
             if (!file.alerts || isArrayEmpty(file.alerts)) {
-                data.append(componentConfig.file.id, file.file);
+                data.append(componentConfig.videos.id, file.file);
             }
         });
 
@@ -297,8 +297,8 @@ const UploadPage = () => {
                     isSubmitting: false,
                 });
 
-                if (!isObjectEmpty(submissionResult.data.errors.file)) {
-                    syncFileState(submissionResult.data.errors.file);
+                if (!isObjectEmpty(submissionResult.data.errors.videos)) {
+                    syncFileState(submissionResult.data.errors.videos);
                 }
             } else {
                 dispatch(uploadSuccess(submissionResult.data));
@@ -335,7 +335,7 @@ const UploadPage = () => {
         }
     };
     const renderProgress = () => {
-        if (formState.file) {
+        if (formState.videos) {
             return (
                 <LinearProgressWithLabel
                     className="status-progress"
@@ -400,19 +400,19 @@ const UploadPage = () => {
     );
     const renderFormAlerts = () => {
         const {
-            file: fileErrorMessages = {},
+            videos: videosErrorMessages = {},
             form: formErrorMessages = [],
         } = getMessages(formState?.errorMessages);
         const {
-            file: fileWarningMessages = {},
+            videos: videosWarningMessages = {},
             form: formWarningMessages = [],
         } = getMessages(formState?.warningMessages);
         const {
-            file: fileInfoMessages = {},
+            videos: videosInfoMessages = {},
             form: formInfoMessages = [],
         } = getMessages(formState?.infoMessages);
         const {
-            file: fileSuccessMessages = {},
+            videos: videosSuccessMessages = {},
             form: formSuccessMessages = [],
         } = getMessages(formState?.successMessages);
         const mapComponentMessages = (
@@ -436,33 +436,33 @@ const UploadPage = () => {
             <FormAlerts
                 errorMessages={ [
                     ...mapComponentMessages(
-                        fileErrorMessages,
-                        componentConfig.file.id,
-                        componentConfig.file.label,
+                        videosErrorMessages,
+                        componentConfig.videos.id,
+                        componentConfig.videos.label,
                     ),
                     ...mapFormMessages(formErrorMessages as string[]),
                 ] }
                 warningMessages={ [
                     ...mapComponentMessages(
-                        fileWarningMessages,
-                        componentConfig.file.id,
-                        componentConfig.file.label,
+                        videosWarningMessages,
+                        componentConfig.videos.id,
+                        componentConfig.videos.label,
                     ),
                     ...mapFormMessages(formWarningMessages as string[]),
                 ] }
                 infoMessages={ [
                     ...mapComponentMessages(
-                        fileInfoMessages,
-                        componentConfig.file.id,
-                        componentConfig.file.label,
+                        videosInfoMessages,
+                        componentConfig.videos.id,
+                        componentConfig.videos.label,
                     ),
                     ...mapFormMessages(formInfoMessages as string[]),
                 ] }
                 successMessages={ [
                     ...mapComponentMessages(
-                        fileSuccessMessages,
-                        componentConfig.file.id,
-                        componentConfig.file.label,
+                        videosSuccessMessages,
+                        componentConfig.videos.id,
+                        componentConfig.videos.label,
                     ),
                     ...mapFormMessages(formSuccessMessages as string[]),
                 ] }
@@ -478,7 +478,7 @@ const UploadPage = () => {
         const files = renderFiles();
         const progressElement = renderProgress();
         const hasError = !isObjectEmpty(formState.errorMessages) &&
-            !isObjectEmpty(formState.errorMessages?.file)
+            !isObjectEmpty(formState.errorMessages?.videos)
         ;
 
         if (!isFormValid() || hasError || formState.isSubmitting) {
@@ -502,19 +502,19 @@ const UploadPage = () => {
 
                         <FormFields>
                             <FormFile
-                                alertMessages={ buildFieldAlerts(componentConfig.file.id) }
+                                alertMessages={ buildFieldAlerts(componentConfig.videos.id) }
                                 allowedFileExtensions={ allowedFileExtensions }
-                                componentRef={ refs.file }
+                                componentRef={ refs.videos }
                                 disabled={ formState.isSubmitting }
-                                helpMessage={ componentConfig.file.helpMessage }
-                                id={ componentConfig.file.id }
-                                label={ componentConfig.file.label }
-                                maxFiles={ componentConfig.file.rules!.maxArrayLength.value }
-                                maxFileSize={ componentConfig.file.rules!.maxFileSize.value }
-                                maxTotalFileSize={ componentConfig.file.rules!.maxTotalFileSize.value }
-                                required={ Boolean(componentConfig.file.rules!.required) }
+                                helpMessage={ componentConfig.videos.helpMessage }
+                                id={ componentConfig.videos.id }
+                                label={ componentConfig.videos.label }
+                                maxFiles={ componentConfig.videos.rules!.maxArrayLength.value }
+                                maxFileSize={ componentConfig.videos.rules!.maxFileSize.value }
+                                maxTotalFileSize={ componentConfig.videos.rules!.maxTotalFileSize.value }
+                                required={ Boolean(componentConfig.videos.rules!.required) }
                                 // useDragAndDrop={ false }
-                                onChange={ onFileChange }
+                                onChange={ onVideosChange }
                             />
                         </FormFields>
                         <div className="form-files">
@@ -537,7 +537,7 @@ const UploadPage = () => {
         );
     };
 
-    useDidUpdate(onFileChanged, [formState.file]);
+    useDidUpdate(onVideosChanged, [formState.videos]);
     useDidUpdate(onUploadErrorChanged, [uploadStateError]);
     useDidUpdate(onUploadResultChanged, [uploadStateResult]);
 

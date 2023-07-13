@@ -30,5 +30,5 @@ export type StateType = {
 };
 
 export type FormStateType = BaseFormWithProgressStateType & {
-    file: File[],
+    videos: File[],
 };
