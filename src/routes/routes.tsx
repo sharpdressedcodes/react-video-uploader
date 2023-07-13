@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { RouteType } from './types';
 import paths from './paths';
 
+const ContactPage = lazy(() => import(/* webpackChunkName: "contact-page" */ '../components/pages/ContactPage'));
 const HomePage = lazy(() => import(/* webpackChunkName: "home-page" */ '../components/pages/HomePage'));
 const UploadPage = lazy(() => import(/* webpackChunkName: "upload-page" */ '../components/pages/UploadPage'));
 const VideoPlayerPage = lazy(() => import(/* webpackChunkName: "video-player-page" */ '../components/pages/VideoPlayerPage'));
@@ -17,6 +18,11 @@ const routes: RouteType[] = [
         name: 'uploadPage',
         element: UploadPage,
         navLinkText: 'Upload',
+    },
+    {
+        name: 'contactPage',
+        element: ContactPage,
+        navLinkText: 'Contact',
     },
     {
         name: 'videoPlayerPage',

@@ -1,0 +1,93 @@
+@use '../../../../styles/helpers/colours';
+@use '../../../../styles/helpers/variables';
+@use '../../../../styles/mixins/breakpoint' as *;
+@use '../../../../styles/mixins/prefers-dark-mode' as *;
+
+.page-contact {
+    max-width: variables.$container-max-width;
+    margin: 0 auto;
+
+    .form-contact {
+        margin-bottom: 30px;
+    }
+
+    .form-files {
+        margin-bottom: 20px;
+
+        .file {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: initial;
+            white-space: initial;
+
+            & > span[class*='file-'] {
+                display: block;
+
+                &:not(:last-child) {
+                    margin-bottom: 3px;
+                }
+            }
+
+            & > span.file-progress {
+                margin-top: 10px;
+            }
+
+            & > span.file-status {
+                &__badge {
+                    margin-left: 5px;
+                }
+
+                svg {
+                    width: 24px;
+                    height: 24px;
+
+                    path {
+                        fill: colours.$colour-form-field-error;
+
+                        @include prefers-dark-mode {
+                            fill: colours.$colour-form-field-error-dark;
+                        }
+                    }
+                }
+            }
+
+            @include breakpoint(medium up) {
+                align-items: center;
+                white-space: nowrap;
+                flex-direction: row;
+
+                & > span.file-name {
+                    position: relative;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    width: 100%;
+                }
+
+                // & > span.file-status {
+                //    width: 100%;
+                // }
+
+                & > span[class*='file-'] {
+                    display: initial;
+
+                    &:not(:last-child) {
+                        margin-right: 20px;
+                        margin-bottom: 0;
+                    }
+                }
+
+                // & > span.file-progress {
+                //    display: inline-block;
+                //    max-width: 100px;
+                //    width: 100%;
+                //    margin-top: 0;
+                // }
+            }
+        }
+    }
+
+    .form-progress {
+        margin-bottom: 30px;
+    }
+}

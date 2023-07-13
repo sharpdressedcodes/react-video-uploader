@@ -11,6 +11,6 @@ export type ConvertFileStepType = CreateStepType & {
     file: File | Express.Multer.File;
 };
 
-export type ConvertProgressStepType = ConvertFileStepType & {
+export type ConvertProgressStepType = Pick<ConvertFileStepType, 'index'> & {
     percent: number;
 };

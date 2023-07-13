@@ -1,7 +1,7 @@
 import { AxiosProgressEvent, AxiosRequestConfig } from 'axios';
-import { FileValidationValidationType } from '../../../../common/validation/fileValidation';
-import { LoadedVideoType } from '../../../../state/types';
+import { AlertColor } from '@mui/material/Alert';
 import { ConvertFileStepType, ConvertProgressStepType } from '../../../../server/types';
+import { BaseFormWithProgressStateType } from '../../../Form';
 
 export type DefaultSubmitUploadFormPropsType = {
     onProgress?: (event: AxiosProgressEvent) => void;
@@ -13,16 +13,22 @@ export type SubmitUploadFormPropsType = DefaultSubmitUploadFormPropsType & {
     data: any;
 };
 
-export type DependenciesType = {
-    validation: FileValidationValidationType;
-    error: string;
-    result: LoadedVideoType;
+export type AlertType = {
+    severity: AlertColor;
+    message: string;
+};
+
+export type SelectedFileType = {
+    file: File;
+    alerts: Nullable<AlertType[]>;
+    convertStep: Nullable<ConvertFileStepType>;
+    convertProgress: Nullable<ConvertProgressStepType>;
 };
 
 export type StateType = {
-    selectedFiles: Nullable<File[]>;
-    loaded: number;
-    uploading: boolean;
-    uploadedFiles: Array<ConvertFileStepType | ConvertProgressStepType>;
-    validation: Nullable<FileValidationValidationType>;
+    files: Nullable<SelectedFileType[]>;
+};
+
+export type FormStateType = BaseFormWithProgressStateType & {
+    file: File[],
 };

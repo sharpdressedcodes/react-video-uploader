@@ -1,0 +1,92 @@
+@use '../../../../../../../styles/helpers/colours';
+@use '../../../../../../../styles/mixins/prefers-dark-mode' as *;
+
+.form-field-alerts {
+    font-size: 85%;
+    margin-top: 10px;
+
+
+    &__alert {
+        label {
+            display: flex;
+            cursor: pointer;
+        }
+
+        &-icon svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 7px;
+            user-select: none;
+        }
+
+        &:not(:last-child) {
+            margin-bottom: 5px;
+        }
+
+        &.form-field-alerts__alert--error {
+            color: colours.$colour-form-field-error-text;
+
+            svg path {
+                fill: colours.$colour-form-field-error;
+            }
+        }
+
+        &.form-field-alerts__alert--info {
+            color: colours.$colour-form-field-info-text;
+
+            svg path {
+                fill: colours.$colour-form-field-info;
+            }
+        }
+
+        &.form-field-alerts__alert--success {
+            color: colours.$colour-form-field-success-text;
+
+            svg path {
+                fill: colours.$colour-form-field-success;
+            }
+        }
+
+        &.form-field-alerts__alert--warning {
+            color: colours.$colour-form-field-warning-text;
+
+            svg path {
+                fill: colours.$colour-form-field-warning;
+            }
+        }
+
+        @include prefers-dark-mode {
+            &.form-field-alerts__alert--error {
+                color: colours.$colour-form-field-error-text-dark;
+
+                svg path {
+                    fill: colours.$colour-form-field-error-dark;
+                }
+            }
+
+            &.form-field-alerts__alert--info {
+                color: colours.$colour-form-field-info-text-dark;
+
+                svg path {
+                    fill: colours.$colour-form-field-info-dark;
+                }
+            }
+
+            &.form-field-alerts__alert--success {
+                color: colours.$colour-form-field-success-text-dark;
+
+                svg path {
+                    fill: colours.$colour-form-field-success-dark;
+                }
+            }
+
+            &.form-field-alerts__alert--warning {
+                color: colours.$colour-form-field-warning-text-dark;
+
+                svg path {
+                    fill: colours.$colour-form-field-warning-dark;
+                }
+            }
+        }
+    }
+}

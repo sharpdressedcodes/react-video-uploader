@@ -1,9 +1,9 @@
 import { getObjectValue } from '../common';
-import {
-    FileTypesType,
-    fileTypes as allowedFileTypes,
-    fileExtensions as allowedFileExtensions,
-} from './fileTypes';
+// import {
+//     FileTypesType,
+//     fileTypes as allowedFileTypes,
+//     fileExtensions as allowedFileExtensions,
+// } from './fileTypes';
 
 export type GetConfigType = <T>(key: string, defaultValue?: T) => T;
 
@@ -21,9 +21,9 @@ export type ConnectionConfigType = {
 
 export type VideoUploadConfigType = {
     thumbnailDimensions: string;
-    maxFiles: number;
-    maxFileSize: number;
-    maxTotalFileSize: number;
+    // maxFiles: number;
+    // maxFileSize: number;
+    // maxTotalFileSize: number;
     path: string;
     publicPath: string;
 };
@@ -33,7 +33,17 @@ export type VideoApiEndpointsConfigType = {
     get: string;
 };
 
+export type ContactApiEndpointsConfigType = {
+    submit: string;
+};
+
+export type ContactUploadConfigType = {
+    path: string;
+    publicPath: string;
+};
+
 export type ApiEndpointsConfigType = {
+    contact: ContactApiEndpointsConfigType;
     video: VideoApiEndpointsConfigType;
 };
 
@@ -52,11 +62,12 @@ export type WebVitalsConfigType = FeatureToggleConfigType & {
 };
 
 export type ConfigType = {
-    allowedFileTypes: Record<string, FileTypesType>;
-    allowedFileExtensions: string[];
+    // allowedFileTypes: Record<string, FileTypesType>;
+    // allowedFileExtensions: string[];
     appName: string;
     server: ConnectionConfigType;
     videoUpload: VideoUploadConfigType;
+    contactUpload: ContactUploadConfigType,
     endpoints: EndpointsConfigType;
     manifest: ManifestConfigType;
     serviceWorker: ServiceWorkerConfigType;
@@ -64,14 +75,18 @@ export type ConfigType = {
     get: GetConfigType;
 };
 
-const publicPath = 'data/uploads';
-const path = `build/browser/${publicPath}`;
-const maxFileSize = 1024 * 1024 * 150; // MB
-const maxFiles = 10;
+const videoUploadPublicPath = 'data/uploads/videos';
+const videoUploadLocalPath = `build/browser/${videoUploadPublicPath}`;
+const contactUploadPublicPath = 'data/uploads/contact';
+const contactUploadLocalPath = `build/browser/${contactUploadPublicPath}`;
+// const publicPath = 'data/uploads';
+// const path = `build/browser/${publicPath}`;
+// const maxFileSize = 1024 * 1024 * 150; // MB
+// const maxFiles = 10;
 const appName = 'Video Uploader';
 const config = {
-    allowedFileTypes,
-    allowedFileExtensions,
+    // allowedFileTypes,
+    // allowedFileExtensions,
     appName,
     server: {
         hostName: '0.0.0.0',
@@ -80,16 +95,23 @@ const config = {
             enabled: true,
         },
     },
+    contactUpload: {
+        path: contactUploadLocalPath,
+        publicPath: contactUploadPublicPath,
+    },
     videoUpload: {
         thumbnailDimensions: '320x180', // 16:9
-        maxFiles,
-        maxFileSize,
-        maxTotalFileSize: maxFileSize * maxFiles,
-        path,
-        publicPath,
+        // maxFiles,
+        // maxFileSize,
+        // maxTotalFileSize: maxFileSize * maxFiles,
+        path: videoUploadLocalPath,
+        publicPath: videoUploadPublicPath,
     },
     endpoints: {
         api: {
+            contact: {
+                submit: '/api/contact/submit',
+            },
             video: {
                 upload: '/api/video/upload',
                 get: '/api/video/get',
@@ -115,12 +137,12 @@ const config = {
 
 export const testConfig = {
     ...config,
-    videoUpload: {
-        ...config.videoUpload,
-        maxFiles: 5,
-        maxFileSize: 10,
-        maxTotalFileSize: 40,
-    },
+    // videoUpload: {
+    //     ...config.videoUpload,
+    //     // maxFiles: 5,
+    //     // maxFileSize: 10,
+    //     // maxTotalFileSize: 40,
+    // },
     serviceWorker: {
         enabled: false,
     },

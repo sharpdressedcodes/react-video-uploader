@@ -52,7 +52,7 @@ const generateComponent = async (name, componentPath = '') => {
     const typesIndexData = 'export type DefaultPropsType = {\n    className: string;\n};\n\nexport type PropsType = Partial<DefaultPropsType> & {};\n';
     const componentData = `import React, { memo } from 'react';\nimport { classNames } from '${commonPathPrefix}../../../common';\nimport { DefaultPropsType, PropsType } from '../types';\nimport '../styles/${className}.scss';\n\nexport const defaultProps: DefaultPropsType = {\n    className: '',\n};\n\nconst ${name} = ({\n    className = defaultProps.className,\n}: PropsType) => null;\n\n${name}.displayName = '${name}';\n\nexport default memo<PropsType>(${name});\n`;
     const stylesData = `.${className} {\n    // Enter styles here\n}\n`;
-    const indexData = `export { default as ${name}, defaultProps } from './components/${name}';\nexport { DefaultPropsType, PropsType } from './types';\n`;
+    const indexData = `export { default, defaultProps } from './components/${name}';\nexport { DefaultPropsType, PropsType } from './types';\n`;
     const directories = [
         '',
         '/components',
@@ -155,6 +155,11 @@ const parseArgs = args => {
 (async () => {
     try {
         const args = parseArgs(process.argv.slice(2));
+
+        if (!Object.keys(args).length) {
+            console.error('Error: No arguments specified.');
+            return;
+        }
 
         if (args.isComponent) {
             if (!args.name) {

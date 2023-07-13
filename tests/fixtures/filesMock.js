@@ -15,8 +15,8 @@ const filesMock = {
         new File(['    ftyp'], 'too-many-files-2.mp4', { type: 'video/mp4' }),
         new File(['    ftyp'], 'too-many-files-3.mp4', { type: 'video/mp4' }),
         new File(['    ftyp'], 'too-many-files-4.mp4', { type: 'video/mp4' }),
-        new File(['    ftyp'], 'too-many-files-4.mp4', { type: 'video/mp4' }),
-        new File(['    ftyp'], 'too-many-files-4.mp4', { type: 'video/mp4' }),
+        new File(['    ftyp'], 'too-many-files-5.mp4', { type: 'video/mp4' }),
+        new File(['    ftyp'], 'too-many-files-6.mp4', { type: 'video/mp4' }),
     ],
 };
 

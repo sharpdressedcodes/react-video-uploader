@@ -1,5 +1,4 @@
 import path from 'node:path';
-import multer from 'multer';
 import { Express, RequestHandler } from 'express';
 import { WebSocket } from 'ws';
 import {
@@ -11,12 +10,18 @@ import {
     FfProgressEventType,
 } from '../../utils/ffmpeg';
 import { rename, stat, unlink, writeFile } from '../../utils/fileSystem';
-import { createFileName, formatFileSize, isArrayEmpty, parseFileName } from '../../../common';
+import {
+    formatFileSize,
+    isArrayEmpty,
+    isObjectEmpty,
+    parseFileName,
+} from '../../../common';
+import validateFormFile from '../../../common/validation/validateFormFile';
 import { ConfigType } from '../../../config';
-import serverFileValidation from '../../validation/serverFileValidation';
 import { CreateStepType, ConvertFileStepType, ConvertProgressStepType } from '../../types';
 import { LoadedVideoType } from '../../../state/types';
-import { NormalisedFileType } from '../../../common/validation/fileValidation';
+import validateFileSignature from '../../validation/validateFileSignature';
+import componentConfig from '../../../components/pages/UploadPage/config';
 
 type ExpressFile = Express.Multer.File;
 
@@ -31,76 +36,95 @@ type DefaultUploadFileStepType = Pick<ConvertFileStepType, 'total'> & {
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+export const injectEmitMethods: RequestHandler = (req, res, next) => {
+    const webSocket: WebSocket = req.app.locals.getWebSocket();
+    const emit = (event: string, data: CreateStepType | ConvertFileStepType | ConvertProgressStepType) => {
+        webSocket?.send(JSON.stringify({ event, data }));
+    };
+    const emitStep = (step: number, status: string) => {
+        emit('create.step', {
+            ...defaultStepData,
+            step,
+            status,
+        });
+    };
+    const emitStepFile = (step: number, status: string, defaultData: any) => {
+        emit('convert.step.file', {
+            ...defaultData,
+            step,
+            status,
+        });
+    };
+    const emitStepFileProgress = (percent: number, defaultData: any) => {
+        emit('convert.step.file.progress', {
+            ...defaultData,
+            percent,
+        });
+    };
+
+    req.app.locals.emit = emit;
+    req.app.locals.emitStep = emitStep;
+    req.app.locals.emitStepFile = emitStepFile;
+    req.app.locals.emitStepFileProgress = emitStepFileProgress;
+
+    next();
+};
+
+export const emitUploadStatusStep: RequestHandler = (req, res, next) => {
+    const { emitStep } = req.app.locals;
+
+    emitStep(1, 'Uploading');
+    next();
+};
+
 const handleVideoCreate: RequestHandler = async (req, res, next) => {
     try {
         const config: ConfigType = req.app.locals.config;
-        const webSocket: WebSocket = req.app.locals.getWebSocket();
-        const emit = (event: string, data: CreateStepType | ConvertFileStepType | ConvertProgressStepType) => {
-            webSocket?.send(JSON.stringify({ event, data }));
-        };
-        const emitStep = (step: number, status: string) => {
-            emit('create.step', {
-                ...defaultStepData,
-                step,
-                status,
-            });
-        };
-        const emitStepFile = (step: number, status: string, defaultData: any) => {
-            emit('convert.step.file', {
-                ...defaultData,
-                step,
-                status,
-            });
-        };
-        const emitStepFileProgress = (step: number, status: string, percent: number, defaultData: any) => {
-            emit('convert.step.file.progress', {
-                ...defaultData,
-                step,
-                status,
-                percent,
-            });
-        };
+        const { emitStep, emitStepFile, emitStepFileProgress } = req.app.locals;
         const thumbnailDimensions = config.videoUpload.thumbnailDimensions;
         const uploadPath = config.videoUpload.path;
-        const storage = multer.diskStorage({
-            destination: (request, file, cb) => {
-                cb(null, uploadPath);
-            },
-            filename: (request, file, cb) => {
-                cb(null, createFileName(file));
-            },
-        });
-        const uploadFiles = multer({ storage }).array('file');
-        const uploadFilesAsync: RequestHandler = (request, response, next_) =>
-            new Promise<Express.Request['files']>((resolve, reject) => {
-                uploadFiles(request, response, err => {
-                    if (err) {
-                        reject(err);
-                        return;
+        // This is the same as client side validation, apart from validateFileSignature
+        const validateFile = async (): Promise<Record<string, string[]>> => {
+            const files = Array.from(req.files as ExpressFile[]);
+            const errors: Record<string, string[]> = validateFormFile(files, componentConfig.file.rules!);
+
+            if (!isArrayEmpty(files)) {
+                const results = await Promise.all(
+                    files.map(file => validateFileSignature(file, componentConfig.file.rules!.allowedFileTypes)),
+                );
+
+                results.forEach((result, index) => {
+                    if (result) {
+                        errors[index] = [result];
                     }
-
-                    resolve(request.files);
                 });
-            })
-        ;
+            }
 
-        emitStep(1, 'Uploading');
-        await uploadFilesAsync(req, res, next);
+            return errors;
+        };
+        const validateForm = async () => ({
+            file: await validateFile(),
+        });
+
+        // First step gets emitted before uploadParser middleware
+        // emitStep(1, 'Uploading');
 
         emitStep(2, 'Validating');
         const files = Array.from(req.files as ExpressFile[]);
-        const validationResult = await serverFileValidation({
-            files,
-            allowedFileTypes: config.allowedFileTypes,
-            allowedFileExtensions: config.allowedFileExtensions,
-            maxFiles: config.videoUpload.maxFiles,
-            maxFileSize: config.videoUpload.maxFileSize,
-            maxTotalFileSize: config.videoUpload.maxTotalFileSize,
-        });
-        const { invalidFiles, validFiles } = validationResult;
+        const validationResult = await validateForm();
+        const hasFileErrors = !isObjectEmpty(validationResult.file);
+
+        if (hasFileErrors) {
+            // if (hasFileErrors) {
+            await Promise.all(files.map(file => unlink(file.path)));
+            // }
+
+            res.json({ errors: validationResult });
+            return;
+        }
 
         emitStep(3, 'Parsing');
-        const promises = ((validFiles as ExpressFile[]) || []).map((file, index) => new Promise((resolve, reject) => {
+        const result = await Promise.all(files.map((file, index) => new Promise((resolve, reject) => {
             (async () => {
                 try {
                     const defaultStepFileData: DefaultUploadFileStepType = {
@@ -109,13 +133,12 @@ const handleVideoCreate: RequestHandler = async (req, res, next) => {
                         index,
                     };
                     const options: Record<string, string> = { ...(thumbnailDimensions ? { size: thumbnailDimensions } : {}) };
+                    const onProgress = (progress: FfProgressEventType) => {
+                        emitStepFileProgress(progress.percent, defaultStepFileData);
+                    };
 
                     emitStepFile(1, 'Converting video', defaultStepFileData);
-                    const converted = await convertVideo(file.path, {
-                        onProgress: (progress: FfProgressEventType) => {
-                            emitStepFileProgress(1, 'Converting', progress.percent, defaultStepFileData);
-                        },
-                    });
+                    const converted = await convertVideo(file.path, { onProgress });
 
                     await unlink(file.path);
                     await rename(`${uploadPath}${path.sep}${converted}`, file.path);
@@ -159,16 +182,9 @@ const handleVideoCreate: RequestHandler = async (req, res, next) => {
                     reject(err);
                 }
             })();
-        }));
-        const result = await Promise.all(promises);
+        })));
 
         emitStep(4, 'Done');
-
-        if (invalidFiles && !isArrayEmpty(invalidFiles)) {
-            await Promise.all(invalidFiles.map((file: NormalisedFileType) => unlink(file.path)));
-            res.json({ validation: validationResult });
-            return;
-        }
 
         if (!isProduction) {
             // eslint-disable-next-line no-console

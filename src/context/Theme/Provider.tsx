@@ -63,6 +63,7 @@ const Provider = ({ children }: ThemeProviderPropsType) => {
         return () => {
             if (mqlRef.current) {
                 mqlRef.current.removeEventListener('change', onChange);
+                mqlRef.current = null;
             }
         };
     }, [prefersDarkMode]);

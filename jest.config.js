@@ -7,6 +7,7 @@ module.exports = {
     coverageDirectory: './tests/unit/coverage',
     moduleNameMapper: {
         '\\.(css|scss)$': '<rootDir>/tests/unit/__mocks__/styleMock.js',
+        '\\.svg$': '<rootDir>/tests/unit/__mocks__/svgMock.js',
     },
     setupFilesAfterEnv: [
         '@testing-library/jest-dom',

@@ -1,0 +1,10 @@
+@use '../helpers/colours';
+@use '../mixins/prefers-dark-mode' as *;
+
+@mixin focus-outline($blurRadius: 5px, $colour: colours.$colour-focus, $dark-colour: colours.$colour-focus-dark) {
+    box-shadow: 0 0 $blurRadius 0 $colour;
+
+    @include prefers-dark-mode {
+        box-shadow: 0 0 $blurRadius 0 $dark-colour;
+    }
+}

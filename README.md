@@ -117,11 +117,9 @@ and [here](https://create-react-app.dev/docs/measuring-performance/).
 
 ## TODO
 
+* Waiting for https://github.com/iamturns/eslint-config-airbnb-typescript/pull/325 to get merged.
+Until this happens, we have to run `npm i --legacy-peer-deps` and
+can't properly run `npm audit` or `npm run lint` without errors. Disabled `lint:js` in `package.json`.
+* Cancel upload button
 * Get cypress tests working in pipeline (was getting address in use error, this also happens locally sometimes)
-* i18n
-  * https://www.i18next.com/
-  * https://locize.com/blog/react-i18next/
-  * https://phrase.com/blog/posts/localizing-react-apps-with-i18next/
-  * https://lokalise.com/blog/react-i18n-intl/
-  * https://github.com/privatenumber/webpack-localize-assets-plugin
 * Fix service worker issue in production.

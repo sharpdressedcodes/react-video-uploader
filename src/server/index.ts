@@ -4,29 +4,32 @@ import http from 'node:http';
 import { AddressInfo } from 'node:net';
 import express from 'express';
 import cors from 'cors';
-import csrf from 'csurf';
+import { csrfSync } from 'csrf-sync';
 import chalk from 'chalk';
-import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import {
     checkForBot,
     checkVideoId,
     // fakeFavIcon,
     hotReload,
-    injectCsrf,
     loadConfig,
+    loadSession,
     loadVideos,
     loadWebSocket,
     logErrors,
     render,
     securityHeaders,
     staticServer,
+    storeCsrfInSession,
     trapErrors,
+    uploadParser,
 } from './middleware';
-import { handleGetVideos, handleVideoCreate } from './api/video';
+import { handleGetVideos, handleVideoCreate, injectEmitMethods, emitUploadStatusStep } from './api/video';
+import handleContactSubmit from './api/contact/submit';
 import routePaths from '../routes/paths';
 import config from '../config';
 
+const sessionSecret = 'To be or not to be, said he, who was not.';
 const DEFAULT_PORT = 3000;
 const DEFAULT_HOST = '0.0.0.0';
 const app = express();
@@ -34,10 +37,18 @@ const server = http.createServer(app);
 const isProduction = process.env.NODE_ENV === 'production';
 const isFastRefresh = process.env.FAST_REFRESH === 'true';
 const isMac = os.platform() === 'darwin';
-const csrfMiddleware = csrf({ cookie: true, value: req => req.cookies.csrfToken });
-const parseForm = bodyParser.urlencoded({ extended: true });
+const {
+    // invalidCsrfTokenError, // This is just for convenience if you plan on making your own middleware.
+    generateToken, // Use this in your routes to generate, store, and get a CSRF token.
+    // getTokenFromRequest, // use this to retrieve the token submitted by a user
+    // getTokenFromState, // The default method for retrieving a token from state.
+    storeTokenInState, // The default method for storing a token in state.
+    // revokeToken, // Revokes/deletes a token by calling storeTokenInState(undefined)
+    csrfSynchronisedProtection, // This is the default CSRF protection middleware.
+} = csrfSync();
 let serverStartupMessage: string;
 
+// const bodyParser = () => express.urlencoded({ extended: true });
 const closeServer = (message: string, exitProcess = false) => {
     console.log(message);
 
@@ -74,10 +85,13 @@ const onServerError = (err: Error) => {
 const setupMiddleware = () => {
     app.use(cors());
     app.use(securityHeaders);
-    app.use(cookieParser());
+    app.use(loadSession(sessionSecret));
+    app.use(cookieParser(sessionSecret));
+    app.use(storeCsrfInSession(generateToken, storeTokenInState));
     app.use(loadConfig);
     app.use(checkForBot);
     app.use(loadWebSocket(server));
+    app.use(injectEmitMethods);
     // app.use(fakeFavIcon);
 
     if (isFastRefresh) {
@@ -97,18 +111,31 @@ const setupRoutes = () => {
 
     app.post(
         config.endpoints.api.video.upload,
-        parseForm,
-        csrfMiddleware,
+        // Not using bodyParser because we have a file field
+        // and using 'multipart/form-data' on the form.
+        // bodyParser(),
+        csrfSynchronisedProtection,
+        emitUploadStatusStep,
+        // req.files and req.body are both empty at this point.
+        uploadParser(config.videoUpload.path, 'file', true),
+        // req.files and req.body and now available.
         handleVideoCreate,
         handleGetVideos,
         logErrors,
         trapErrors,
     );
 
+    app.post(
+        config.endpoints.api.contact.submit,
+        csrfSynchronisedProtection,
+        uploadParser(config.contactUpload.path, 'files', true),
+        handleContactSubmit,
+        logErrors,
+        trapErrors,
+    );
+
     app.get(
         '*',
-        csrfMiddleware,
-        injectCsrf,
         loadVideos,
         render,
         logErrors,
@@ -161,4 +188,3 @@ const run = () => {
 };
 
 run();
-/* eslint-enable no-console */

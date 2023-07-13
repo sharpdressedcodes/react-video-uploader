@@ -55,7 +55,14 @@ const useWebSocket = ({
                 ref.current = null;
             }
         };
-    }, []);
+    }, [
+        onOpen,
+        onMessage,
+        onError,
+        onClose,
+        url,
+        protocols,
+    ]);
 
     return ref.current;
 };

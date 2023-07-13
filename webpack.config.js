@@ -60,13 +60,8 @@ const baseConfig = {
             },
             {
                 test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-                issuer: /\.jsx?$/,
+                issuer: /\.[jt]sx?$/,
                 use: ['babel-loader', '@svgr/webpack', 'url-loader'],
-            },
-            {
-                test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-                issuer: /\.tsx?$/,
-                use: ['ts-loader', '@svgr/webpack', 'url-loader'],
             },
             {
                 test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,

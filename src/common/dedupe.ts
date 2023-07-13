@@ -1,4 +1,4 @@
-const reducer = (acc: string[], curr: string): string[] => {
+const reducer = (acc: any[], curr: any): any[] => {
     if (acc.includes(curr)) {
         return acc;
     }
@@ -10,14 +10,14 @@ const reducer = (acc: string[], curr: string): string[] => {
 };
 
 // Set preserveFirst to `false` to keep last item instead of first.
-const dedupe = (arr: string[], preserveFirst: boolean = true): string[] => {
+const dedupe = (arr: any[], preserveFirst: boolean = true): any[] => {
     if (preserveFirst) {
-        return arr.reduce(reducer, [] as string[]);
+        return arr.reduce(reducer, [] as any[]);
     }
 
     return arr
         .reverse()
-        .reduce(reducer, [] as string[])
+        .reduce(reducer, [] as any[])
         .reverse()
     ;
 };

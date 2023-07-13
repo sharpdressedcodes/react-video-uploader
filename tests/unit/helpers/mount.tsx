@@ -1,6 +1,6 @@
 import React, { ReactElement, ReactNode, StrictMode } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Providers, { PropsType as ProvidersPropsType } from '../../../src/components/Providers';
 import configureStore, { RootState } from '../../../src/state/stores/app';
@@ -9,6 +9,17 @@ export { act, cleanup, fireEvent, render, screen, waitFor, waitForOptions } from
 export { default as userEvent } from '@testing-library/user-event';
 
 export type RootStateType = RootState;
+
+export const getElementByAttribute = (
+    attributeName: string,
+    attributeValue: string,
+) => screen.getByText((content, element) => element?.getAttribute(attributeName) === attributeValue);
+export const getElementByName = (name: string) => getElementByAttribute('name', name);
+export const getElementByType = (type: string) => getElementByAttribute('type', type);
+export const getSubmitButtonByText = (buttonText: string) => screen.getByText((content, element) =>
+    element?.tagName.toLowerCase() === 'button' &&
+    element?.getAttribute('type') === 'submit' &&
+    content.includes(buttonText));
 
 export const CustomProvider = ({ children, store }: ProvidersPropsType) => (
     <StrictMode>

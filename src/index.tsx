@@ -44,7 +44,8 @@ import config from './config';
                 }
 
                 if (config.serviceWorker.enabled) {
-                    const serviceWorkerRegistration = await import(/* webpackChunkName: "service-worker" */ './workers/service/serviceWorkerRegistration');
+                    const serviceWorkerRegistration =
+                        await import(/* webpackChunkName: "service-worker" */ './workers/service/serviceWorkerRegistration');
 
                     // If you want your app to work offline and load faster, you can change
                     // unregister() to register() below. Note this comes with some pitfalls.

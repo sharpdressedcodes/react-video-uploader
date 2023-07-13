@@ -172,9 +172,15 @@ const serverEntry: RequestHandler = (req, res, next) => new Promise<void>(resolv
                 url: req.url,
                 version: process.env.npm_package_version as string,
             });
+            const csrfScript = req?.session?.csrfToken ?
+                `<script>window.reactCsrfToken = '${req.session.csrfToken}';</script>` :
+                ''
+            ;
 
             if (!config.server.streaming.enabled) {
-                const str = renderToStaticMarkup(html);
+                const str = renderToStaticMarkup(html)
+                    .replace('</head>', `${csrfScript}</head>`)
+                ;
 
                 res.statusCode = 200;
                 res.setHeader('Content-type', 'text/html');
@@ -184,8 +190,7 @@ const serverEntry: RequestHandler = (req, res, next) => new Promise<void>(resolv
                 return;
             }
 
-            // const transform = createHtmlTransformStream('<script>console.log("transformed");</script>');
-            const transform = createHtmlTransformStream();
+            const transform = createHtmlTransformStream(csrfScript);
             const pipe = (stream: PipeableStream) => {
                 res.statusCode = hasError ? 500 : 200;
                 res.setHeader('Content-type', 'text/html');

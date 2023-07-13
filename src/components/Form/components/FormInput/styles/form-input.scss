@@ -1,0 +1,151 @@
+@use '../../../../../styles/helpers/colours';
+@use '../../../../../styles/mixins/focus-outline' as *;
+@use '../../../../../styles/mixins/prefers-dark-mode' as *;
+
+input.form-input,
+textarea.form-input {
+    &__input {
+        padding: 7px;
+        // Set `position: relative` because Chrome has an unresolved bug.
+        // When you focus on an input element, coloured text near it goes thinner/thicker/blurred.
+        // This was happening with 2 inputs, then a file input underneath.
+        // The red asterisk would go all funny when any of the above inputs were focused.
+        // It's most visible in dark mode.
+        // https://stackoverflow.com/questions/75669181/input-focus-causes-font-blurring-antialiasing-in-chrome
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=1423434
+        // This link shows an example of it. If you remove the `relative` class from the input, the bug appears.
+        // https://play.tailwindcss.com/4L5Q9u3qkK
+        position: relative;
+    }
+}
+
+textarea.form-input__input {
+    resize: none;
+}
+
+.form-input {
+    &--disabled {
+        //
+    }
+
+    &__label {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    &__input {
+        width: 100%;
+        border: 0;
+        border-radius: 5px;
+        font-size: 1em;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__toggle-password {
+        display: flex;
+
+        button {
+            background-color: transparent;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 3px;
+
+            svg {
+                height: 20px;
+                width: 20px;
+                display: flex;
+
+                path {
+                    fill: colours.$colour-form-input-toggle-password;
+                }
+            }
+
+            @keyframes toggle-password-keyframes {
+                0% {
+                    @include focus-outline(3px, colours.$colour-focus);
+                }
+
+                50% {
+                    @include focus-outline(5px, colours.$colour-focus);
+                }
+
+                100% {
+                    @include focus-outline(8px, colours.$colour-focus);
+                }
+            }
+
+            &:focus {
+                animation: toggle-password-keyframes 1s ease-in-out infinite;
+                outline: none;
+            }
+        }
+    }
+
+    &__input-wrapper {
+        display: flex;
+        align-items: center;
+        background-color: colours.$colour-form-input-bg;
+        border: 1px solid colours.$colour-form-element-border;
+        border-radius: 5px;
+        position: relative;
+
+        &--resizable-width {
+            width: fit-content;
+        }
+
+        .resize-gripper svg path {
+            fill: colours.$colour-form-element-border;
+        }
+    }
+
+    &--has-error .form-input__input-wrapper {
+        border: 1px solid colours.$colour-form-field-error;
+    }
+
+    &__input-wrapper:focus-within {
+        @include focus-outline;
+    }
+
+    @include prefers-dark-mode {
+        &__toggle-password {
+            @keyframes toggle-password-keyframes-dark {
+                0% {
+                    @include focus-outline(3px, colours.$colour-focus-dark);
+                }
+
+                50% {
+                    @include focus-outline(5px, colours.$colour-focus-dark);
+                }
+
+                100% {
+                    @include focus-outline(8px, colours.$colour-focus-dark);
+                }
+            }
+
+            button:focus {
+                animation: toggle-password-keyframes-dark 1s ease-in-out infinite;
+            }
+
+            svg path {
+                fill: colours.$colour-form-input-toggle-password-dark;
+            }
+        }
+
+        &__input-wrapper {
+            background-color: colours.$colour-form-input-bg-dark;
+            border-color: colours.$colour-form-element-border-dark;
+
+            .resize-gripper svg path {
+                fill: colours.$colour-form-element-border-dark;
+            }
+        }
+
+        &--has-error .form-input__input-wrapper {
+            border-color: colours.$colour-form-field-error-dark;
+        }
+    }
+}

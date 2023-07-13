@@ -2,6 +2,7 @@ export enum FileSignaturePositions {
     'start' = 'start',
     'end' = 'end',
 }
+
 export type FileSignaturePositionType = FileSignaturePositions.start | FileSignaturePositions.end;
 
 export type FileSignatureType = {
@@ -35,7 +36,7 @@ const threeGPFileSignature: Partial<FileSignatureType> = {
     value: 'ftyp3g',
 };
 
-export const fileTypes: Record<string, FileTypesType> = {
+export const videoFileTypes: Record<string, FileTypesType> = {
     'video/3gpp': { extensions: ['3gp'], signatures: [threeGPFileSignature] },
     'video/3gpp2': { extensions: ['3g2'], signatures: [threeGPFileSignature] },
     'video/mp2t': { extensions: ['ts'], signatures: [{ length: 1, value: '\x47' }] },
@@ -81,9 +82,17 @@ export const fileTypes: Record<string, FileTypesType> = {
     'video/x-msvideo': { extensions: ['avi'], signatures: [{ length: 4, value: 'RIFF' }] },
 };
 
-export const fileExtensions: string[] = Object
+export const fileTypes: Record<string, FileTypesType> = {
+    ...videoFileTypes,
+};
+
+export const videoFileExtensions: string[] = Object
     .values(fileTypes)
     .map((value: FileTypesType) => value.extensions)
     .flat()
     .sort()
 ;
+
+export const fileExtensions: string[] = [
+    ...videoFileExtensions,
+].sort();

@@ -1,13 +1,24 @@
 import { Buffer } from 'node:buffer';
 import { Express } from 'express';
+import { CustomErrorTemplateValidatorType } from '../../common/validation/customErrorTemplateValidator';
 import { close, open, read, stat } from '../utils/fileSystem';
-import { getFileExtension, isArrayEmpty } from '../../common';
+import { getFileExtension, getFileName, isArrayEmpty } from '../../common';
 import { defaultFileSignature, FileSignatureType, FileSignaturePositions, FileTypesType } from '../../config/fileTypes';
-import { ConfigType } from '../../config';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 type ExpressFile = Express.Multer.File;
+
+export type DefaultFileSignatureValidatorOptionsType = CustomErrorTemplateValidatorType;
+
+export type FileSignatureValidatorOptionsType = Partial<DefaultFileSignatureValidatorOptionsType> & {
+    value: Record<string, FileTypesType>;
+};
+
+export const defaultFileSignatureValidatorOptions: DefaultFileSignatureValidatorOptionsType = {
+    errorTemplate: '{{label}} {{filename}} is an invalid file.',
+    label: 'Value',
+};
 
 const validate = (file: ExpressFile) => (signature: FileSignatureType) => new Promise<boolean>((resolve, reject) => {
     (async () => {
@@ -56,42 +67,60 @@ const validate = (file: ExpressFile) => (signature: FileSignatureType) => new Pr
     })();
 });
 
-const validateFileSignature = (file: ExpressFile, allowedFileTypes?: ConfigType['allowedFileTypes']) => new Promise<boolean>((resolve, reject) => {
-    if (!allowedFileTypes) {
-        resolve(true);
+const validateFileSignature = (
+    value: ExpressFile,
+    options: FileSignatureValidatorOptionsType,
+) => new Promise<string>((resolve, reject) => {
+    const mergedOptions: FileSignatureValidatorOptionsType = {
+        ...defaultFileSignatureValidatorOptions,
+        ...options,
+    };
+
+    if (!mergedOptions.value) {
+        resolve('');
         return;
     }
 
     (async () => {
         const findSignatures = (extension: string) => {
             const entry = Object
-                .entries(allowedFileTypes)
+                .entries(mergedOptions.value!)
                 .find(([, v]) => v?.extensions?.includes(extension))
             ;
 
             return entry ? entry[1]?.signatures || [] : [];
         };
-        const fileExtension = getFileExtension(file);
+        const fileName = getFileName(value);
+        const fileExtension = getFileExtension(value);
 
         if (!fileExtension) {
-            resolve(true);
+            resolve('');
             return;
         }
 
         const signatures = findSignatures(fileExtension);
 
         if (isArrayEmpty(signatures)) {
-            resolve(true);
+            resolve('');
             return;
         }
 
         try {
-            // const results = await Promise.all(signatures.map(validate(file)));
             const results = await Promise.all(signatures.map(
-                signature => validate(file)(signature as FileSignatureType),
+                signature => validate(value)(signature as FileSignatureType),
             ));
 
-            resolve(results.every(result => result));
+            if (results.filter(Boolean).length === signatures.length) {
+                resolve('');
+                return;
+            }
+
+            resolve(
+                mergedOptions
+                    .errorTemplate!
+                    .replace(/\{\{label}}/g, mergedOptions.label!)
+                    .replace(/\{\{filename}}/g, fileName),
+            );
         } catch (err) {
             if (!isProduction) {
                 // eslint-disable-next-line no-console

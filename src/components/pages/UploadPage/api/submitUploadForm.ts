@@ -12,9 +12,10 @@ const submitUploadForm = ({
     onProgress = defaultProps.onProgress,
     options = defaultProps.options,
 }: SubmitUploadFormPropsType) => axios.post(url, data, {
-    ...options,
     adapter: 'xhr',
+    headers: { 'x-csrf-token': window.reactCsrfToken },
     onUploadProgress: onProgress,
+    ...options,
 });
 
 export default submitUploadForm;

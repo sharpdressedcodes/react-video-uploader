@@ -1,9 +1,17 @@
 import React from 'react';
-import mount, { act, fireEvent, screen, waitFor } from '../../../../../tests/unit/helpers/mount';
+import mount, {
+    act,
+    getElementByName,
+    getElementByType,
+    getSubmitButtonByText,
+    fireEvent,
+    screen,
+    waitFor,
+} from '../../../../../tests/unit/helpers/mount';
 import UploadPage from '../components/UploadPage';
 import { formatFileSize, isArrayEmpty } from '../../../../common';
 import filesMock from '../../../../../tests/fixtures/filesMock';
-import { testConfig } from '../../../../config';
+import componentConfig from '../config';
 
 type UploadProgressType = (event: Partial<ProgressEvent>) => void;
 type UploadProgressParametersType = (eventName: string, callback: UploadProgressType, useCapture?: boolean) => void;
@@ -12,6 +20,7 @@ type UploadProgressParametersType = (eventName: string, callback: UploadProgress
 let onProgress: Nullable<UploadProgressType> = null;
 let xhr: any = null;
 
+const submitButtonText = 'Upload';
 const mockData: Record<string, string> = { test: 'test' };
 const onAddEventListener: UploadProgressParametersType = (eventName, cb, useCapture) => {
     if (eventName === 'progress') {
@@ -48,11 +57,8 @@ const createXHRMock = (data = mockData) => {
 
     window.XMLHttpRequest = jest.fn().mockImplementation(xhrMockClass);
 };
-const getSubmitButton = () => screen.getByText((content, element) =>
-    element?.tagName.toLowerCase() === 'button' &&
-    element?.getAttribute('type') === 'submit' &&
-    content.includes('Upload'));
 const renderComponent = () => <UploadPage />;
+const getSubmitButton = () => getSubmitButtonByText(submitButtonText);
 
 describe('UploadPage component', () => {
     it('Should render the component in default state', () => {
@@ -60,10 +66,14 @@ describe('UploadPage component', () => {
 
         expect(screen.getByRole('heading')).toHaveTextContent('Upload Videos');
 
-        const allowedFileExtensions = testConfig.allowedFileExtensions;
-        const maxFiles = testConfig.videoUpload.maxFiles;
-        const maxFileSize = testConfig.videoUpload.maxFileSize;
-        const maxTotalFileSize = testConfig.videoUpload.maxTotalFileSize;
+        // const allowedFileExtensions = testConfig.allowedFileExtensions;
+        // const maxFiles = testConfig.videoUpload.maxFiles;
+        // const maxFileSize = testConfig.videoUpload.maxFileSize;
+        // const maxTotalFileSize = testConfig.videoUpload.maxTotalFileSize;
+        const allowedFileExtensions = componentConfig.file.rules!.allowedFileExtensions.value;
+        const maxFiles = componentConfig.file.rules!.maxArrayLength.value;
+        const maxFileSize = componentConfig.file.rules!.maxFileSize.value;
+        const maxTotalFileSize = componentConfig.file.rules!.maxTotalFileSize.value;
 
         if (!isArrayEmpty(allowedFileExtensions)) {
             const extensions = allowedFileExtensions.join(', ');
@@ -111,20 +121,21 @@ describe('UploadPage component', () => {
     it('Should fail validation because the file is too large', async () => {
         const { user } = mount(renderComponent());
         const submitButton = getSubmitButton();
-        const input = screen.getByText((content, element) => element?.getAttribute('type') === 'file');
+        const fileInput = getElementByType('file');
 
-        await user.upload(input, filesMock.fileTooLarge);
+        await user.upload(fileInput, filesMock.fileTooLarge);
 
         expect(submitButton).toHaveAttribute('disabled');
-        expect(screen.queryByText('No files selected')).toBeInTheDocument();
+        expect(screen.queryByText('No files selected')).not.toBeInTheDocument();
+        expect(screen.queryByText('Invalid')).toBeInTheDocument();
     });
 
     it('Should fail validation because the file has the wrong file extension', async () => {
         const { user } = mount(renderComponent());
         const submitButton = getSubmitButton();
-        const input = screen.getByText((content, element) => element?.getAttribute('type') === 'file');
+        const fileInput = getElementByType('file');
 
-        await user.upload(input, filesMock.fileWrongFileExtension);
+        await user.upload(fileInput, filesMock.fileWrongFileExtension);
 
         expect(submitButton).toHaveAttribute('disabled');
         expect(screen.queryByText('No files selected')).toBeInTheDocument();
@@ -133,31 +144,35 @@ describe('UploadPage component', () => {
     it('Should fail validation because the total size of files is too large', async () => {
         const { user } = mount(renderComponent());
         const submitButton = getSubmitButton();
-        const input = screen.getByText((content, element) => element?.getAttribute('type') === 'file');
+        const fileInput = getElementByType('file');
 
-        await user.upload(input, filesMock.filesTooLarge);
+        await user.upload(fileInput, filesMock.filesTooLarge);
 
         expect(submitButton).toHaveAttribute('disabled');
-        expect(screen.queryByText('No files selected')).toBeInTheDocument();
+        expect(screen.queryByText('No files selected')).not.toBeInTheDocument();
+        expect(screen.queryByText(filesMock.filesTooLarge[0].name)).toBeInTheDocument();
     });
 
     it('Should fail validation because there are too many files', async () => {
         const { user } = mount(renderComponent());
         const submitButton = getSubmitButton();
-        const input = screen.getByText((content, element) => element?.getAttribute('type') === 'file');
+        const fileInput = getElementByType('file');
 
-        await user.upload(input, filesMock.tooManyFiles);
+        await user.upload(fileInput, filesMock.tooManyFiles);
 
         expect(submitButton).toHaveAttribute('disabled');
-        expect(screen.queryByText('No files selected')).toBeInTheDocument();
+        expect(screen.queryByText('No files selected')).not.toBeInTheDocument();
+        expect(screen.queryByText(filesMock.tooManyFiles[0].name)).toBeInTheDocument();
     });
 
     it('Should pass validation', async () => {
         const { user } = mount(renderComponent());
         const submitButton = getSubmitButton();
-        const input = screen.getByText((content, element) => element?.getAttribute('type') === 'file');
+        const fileInput = getElementByType('file');
 
-        await user.upload(input, filesMock.pass);
+        expect(submitButton).toHaveAttribute('disabled');
+
+        await user.upload(fileInput, filesMock.pass);
         await waitFor(() => expect(submitButton).not.toHaveAttribute('disabled'));
 
         expect(screen.queryByText(filesMock.pass[0].name)).toBeInTheDocument();
@@ -170,9 +185,9 @@ describe('UploadPage component', () => {
         createXHRMock();
 
         const submitButton = getSubmitButton();
-        const input = screen.getByText((content, element) => element?.getAttribute('type') === 'file');
+        const fileInput = getElementByType('file');
 
-        await user.upload(input, filesMock.pass);
+        await user.upload(fileInput, filesMock.pass);
         await waitFor(() => expect(submitButton).not.toHaveAttribute('disabled'));
 
         await user.click(submitButton);

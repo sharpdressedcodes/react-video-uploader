@@ -1,2 +1,2 @@
-export { default as FormFields, defaultProps } from './components/FormFields';
+export { default, defaultProps } from './components/FormFields';
 export { DefaultPropsType, PropsType } from './types';

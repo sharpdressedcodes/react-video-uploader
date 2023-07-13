@@ -1,16 +1,45 @@
 import { Express } from 'express';
 import getFileExtension from '../getFileExtension';
+import getFileName from '../getFileName';
 import isArrayEmpty from '../isArrayEmpty';
+import { CustomErrorTemplateValidatorType } from './customErrorTemplateValidator';
 
-const validateFileExtension = (file: File | Express.Multer.File, allowedFileExtensions: string[] = []): boolean => {
-    const fileExtension = getFileExtension(file);
+type BrowserOrServerFile = File | Express.Multer.File;
 
-    if (!isArrayEmpty(allowedFileExtensions) && fileExtension) {
-        return Boolean(allowedFileExtensions.find(ext => ext.toLowerCase() === fileExtension.toLowerCase()));
+export type DefaultFileExtensionValidatorOptionsType = CustomErrorTemplateValidatorType;
+
+export type FileExtensionValidatorOptionsType = Partial<DefaultFileExtensionValidatorOptionsType> & {
+    value: string[];
+};
+
+export const defaultFileExtensionValidatorOptions: DefaultFileExtensionValidatorOptionsType = {
+    errorTemplate: '{{label}} {{filename}} has an unsupported file extension.',
+    label: 'Value',
+};
+
+const validateFileExtension = (
+    value: BrowserOrServerFile,
+    options: FileExtensionValidatorOptionsType,
+): string => {
+    const mergedOptions: FileExtensionValidatorOptionsType = {
+        ...defaultFileExtensionValidatorOptions,
+        ...options,
+    };
+    const fileName = getFileName(value);
+    const fileExtension = getFileExtension(value);
+
+    if (!isArrayEmpty(mergedOptions.value) && fileExtension) {
+        if (!mergedOptions.value!.find(ext => ext.toLowerCase() === fileExtension.toLowerCase())) {
+            return mergedOptions
+                .errorTemplate!
+                .replace(/\{\{label}}/g, mergedOptions.label!)
+                .replace(/\{\{filename}}/g, fileName)
+            ;
+        }
     }
 
     // No extensions means allow everything
-    return true;
+    return '';
 };
 
 export default validateFileExtension;
