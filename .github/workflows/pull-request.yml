@@ -47,9 +47,8 @@ jobs:
           docker ps -a
           \
           echo "Installing dependencies..."
-          echo "$(grep -v '"cypress":' package.json)" > package.json
-          rm cypress.config.js
-          docker-compose -f docker-compose.ci.yml exec -T node npm i --foreground-scripts
+          docker-compose -f docker-compose.ci.yml exec -T node npm i
+          docker-compose -f docker-compose.ci.yml exec -T sudo npx playwright install-deps
           \
           echo "Running build process..."
           docker-compose -f docker-compose.ci.yml exec -T node npm run build
@@ -59,6 +58,9 @@ jobs:
           \
           echo "Running unit tests..."
           docker-compose -f docker-compose.ci.yml exec -T node npm run test:ci
+          \
+          echo "Running e2e tests..."
+          docker-compose -f docker-compose.ci.yml exec -T node npm run test:e2e:ci
           \
           echo "Running audit..."
           docker-compose -f docker-compose.ci.yml exec -T node npm run audit:ci

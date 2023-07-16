@@ -27,6 +27,30 @@ export type BaseFormWithProgressStateType = BaseFormStateType & {
     progressPercentage: number;
 };
 
+// Note: these are here and not in Form component, so they can be used in tests,
+// without having to load the actual component.
+// ---------------------
+export const defaultComponentConfig: DefaultComponentConfigType = {
+    helpMessage: '',
+    placeholder: '',
+    rules: null,
+};
+
+export const defaultBaseFormState: BaseFormStateType = {
+    hasSubmit: false,
+    isSubmitting: false,
+    errorMessages: null,
+    infoMessages: null,
+    successMessages: null,
+    warningMessages: null,
+};
+
+export const defaultBaseFormWithProgressState: BaseFormWithProgressStateType = {
+    ...defaultBaseFormState,
+    progressPercentage: 0,
+};
+// ---------------------
+
 export type AllowedFormMethods = 'DIALOG' | 'GET' | 'POST';
 export type AllowedEncTypes = 'application/x-www-form-urlencoded' | 'multipart/form-data' | 'text/plain';
 

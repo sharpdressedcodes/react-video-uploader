@@ -7,7 +7,7 @@ type PropsType = {
 };
 
 const Provider = ({ children }: PropsType) => (
-    <Context.Provider value={ useMemo<ConfigType>(() => (process.env.NODE_ENV === 'test' ? testConfig : mainConfig), []) }>
+    <Context.Provider value={ useMemo<ConfigType>(() => (process.env.TEST ? testConfig : mainConfig), []) }>
         {children}
     </Context.Provider>
 );

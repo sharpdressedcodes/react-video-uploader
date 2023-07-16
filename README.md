@@ -90,20 +90,14 @@ npm test
 
 ### E2E
 
-Cypress will set a cookie `IS_TESTING = 1` before each test.
-The config will then be loaded based on this value, either normal or test config.
-
 ```shell
 npm run test:e2e
 ```
 
-If Cypress complains about not being installed properly,
-run this (the foreground-scripts arg will show hidden Cypress output):
+OR
 
 ```shell
-rm -rf node_modules ./cypress-cache/Cypress ./cypress-cache/mesa_shader_cache
-npm cache clean -f
-npm i --foreground-scripts
+npm run test:e2e:ui
 ```
 
 ## Measuring Performance
@@ -117,9 +111,5 @@ and [here](https://create-react-app.dev/docs/measuring-performance/).
 
 ## TODO
 
-* Waiting for https://github.com/iamturns/eslint-config-airbnb-typescript/pull/325 to get merged.
-Until this happens, we have to run `npm i --legacy-peer-deps` and
-can't properly run `npm audit` or `npm run lint` without errors. Disabled `lint:js` in `package.json`.
 * Cancel upload button
-* Get cypress tests working in pipeline (was getting address in use error, this also happens locally sometimes)
 * Fix service worker issue in production.

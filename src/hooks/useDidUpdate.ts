@@ -1,7 +1,7 @@
 import { DependencyList, useEffect, useRef } from 'react';
 import isEqual from 'lodash.isequal';
 
-const useDidUpdate = <T,>(effect: (prevProps: T) => void, dependencies: DependencyList): void => {
+const useDidUpdate = <T>(effect: (prevProps: T) => void, dependencies: DependencyList): void => {
     const hasMounted = useRef<boolean>(false);
     const prevProps = useRef<DependencyList>(dependencies);
 

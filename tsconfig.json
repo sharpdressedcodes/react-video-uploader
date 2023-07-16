@@ -29,15 +29,13 @@
         ".github",
         ".husky",
         "build",
-        "cypress-cache",
         "docker",
         "hooks",
         "**/node_modules/**",
-        // remove Cypress config as it causes collisions with Jest
-        // https://github.com/cypress-io/cypress/issues/22059
-        // Eg: expect(1 + 1).toBe(2);
-        // TS2339: Property 'toBe' does not exist on type 'Assertion'.
-        "./cypress.config.js"
+        "node-cache",
+        "/tests/e2e/screenshots",
+        "/tests/e2e/reports",
+        "/tests/e2e/results"
     ],
     "include": [
 //        "src/**/*",

@@ -14,11 +14,8 @@ import {
 } from '../../../../config/fileTypes';
 import validateFormFile from '../../../../common/validation/validateFormFile';
 import LinearProgressWithLabel from '../../../LinearProgressWithLabel';
-import Form, {
-    BaseFormMessageType,
-    BaseFormMessageDataType,
-    defaultBaseFormWithProgressState,
-} from '../../../Form';
+import Form, { BaseFormMessageType, BaseFormMessageDataType } from '../../../Form';
+import { defaultBaseFormWithProgressState } from '../../../Form/types';
 import FormNotes from '../../../Form/components/FormNotes';
 import FormNote from '../../../Form/components/FormNote';
 import FormFields from '../../../Form/components/FormFields';

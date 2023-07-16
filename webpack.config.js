@@ -16,6 +16,8 @@ process.traceDeprecation = true;
 const isProduction = process.env.NODE_ENV === 'production';
 const isServer = process.env.APP_ENV === 'server';
 const isFastRefresh = process.env.FAST_REFRESH === 'true';
+const isTesting = Boolean(process.env.TEST);
+
 const baseConfig = {
     watchOptions: {
         // aggregateTimeout: 600,
@@ -28,10 +30,13 @@ const baseConfig = {
             '.husky',
             '**/node_modules',
             'build',
-            'cypress-cache',
             'docker',
             'hooks',
+            'node-cache',
             'scripts',
+            '/tests/e2e/screenshots',
+            '/tests/e2e/reports',
+            '/tests/e2e/results',
             // 'server',
         ],
     },
@@ -43,7 +48,7 @@ const baseConfig = {
             {
                 test: /\.tsx?$/,
                 // use: 'ts-loader',
-                exclude: /(node_modules|cypress_cache)/,
+                exclude: /(node_modules|node-cache)/,
                 use: {
                     loader: 'ts-loader',
                     options: {
@@ -54,7 +59,7 @@ const baseConfig = {
             },
             {
                 test: /\.jsx?$/,
-                exclude: /(node_modules|cypress_cache)/,
+                exclude: /(node_modules|node-cache)/,
                 // use: { loader: 'babel-loader' },
                 use: ['source-map-loader', 'babel-loader'],
             },
@@ -113,8 +118,9 @@ const baseConfig = {
         }),
         new MiniCssExtractPlugin(),
         isFastRefresh && new ForkTsCheckerWebpackPlugin(),
-        isProduction && new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('production'),
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+            'process.env.TEST': JSON.stringify(isTesting),
         }),
         new ESLintPlugin(),
     ].filter(Boolean),

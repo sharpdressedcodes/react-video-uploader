@@ -1,7 +1,7 @@
-import { ComponentConfigType, defaultComponentConfig } from '../../../Form';
+import { ComponentConfigType, defaultComponentConfig } from '../../../Form/types';
 import { minEmailLength, maxEmailLength } from '../../../../common/validation/validateEmail';
 
-const isTesting = process.env.NODE_ENV === 'test';
+const isTesting = Boolean(process.env.TEST);
 const labels = {
     email: 'Email address',
     message: 'Message',
@@ -9,7 +9,7 @@ const labels = {
 };
 const messageMinLength = 3;
 const messageMaxLength = 1000;
-const maxFileSize = isTesting ? 10 : 1024 * 1024 * 150; // MB
+const maxFileSize = isTesting ? 12 : 1024 * 1024 * 150; // MB
 const maxFiles = isTesting ? 5 : 10;
 const maxTotalFileSize = isTesting ? 40 : maxFileSize * maxFiles;
 

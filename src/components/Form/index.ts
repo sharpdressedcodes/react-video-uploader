@@ -1,9 +1,6 @@
 export {
     default,
     defaultProps,
-    defaultBaseFormState,
-    defaultBaseFormWithProgressState,
-    defaultComponentConfig,
 } from './components/Form';
 export {
     AllowedFormMethods,
@@ -11,8 +8,13 @@ export {
     BaseFormMessageDataType,
     BaseFormStateType,
     BaseFormWithProgressStateType,
+    ComponentConfigType,
+    // Note: not exporting the below, otherwise linter complains when using
+    // import { ComponentConfigType, defaultComponentConfig } from '../../../Form/types';
+    // defaultBaseFormState,
+    // defaultBaseFormWithProgressState,
+    // defaultComponentConfig,
+    DefaultComponentConfigType,
     DefaultPropsType,
     PropsType,
-    DefaultComponentConfigType,
-    ComponentConfigType,
 } from './types';

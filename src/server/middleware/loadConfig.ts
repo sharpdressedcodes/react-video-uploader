@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import mainConfig, { testConfig } from '../../config';
 
-const isTesting = process.env.NODE_ENV === 'test';
+const isTesting = Boolean(process.env.TEST);
 
 const loadConfig: RequestHandler = (req, res, next) => {
     req.app.locals.isTesting = isTesting || (req.cookies && req.cookies.IS_TESTING === '1');

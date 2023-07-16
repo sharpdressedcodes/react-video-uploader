@@ -17,9 +17,7 @@
     },
     "globals": {
         "expect": true,
-        "Promise": true,
-        "Cypress": true,
-        "cy": true
+        "Promise": true
     },
     "plugins": [
         "@babel",

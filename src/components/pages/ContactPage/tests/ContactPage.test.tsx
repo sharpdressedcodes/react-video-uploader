@@ -10,7 +10,7 @@ import mount, {
 } from '../../../../../tests/unit/helpers/mount';
 import ContactPage from '../components/ContactPage';
 import { formatFileSize } from '../../../../common';
-import filesMock from '../../../../../tests/fixtures/filesMock';
+import fileFixtures from '../../../../../tests/unit/fixtures/files';
 import componentConfig from '../config';
 
 type UploadProgressType = (event: Partial<ProgressEvent>) => void;
@@ -175,7 +175,7 @@ describe('ContactPage component', () => {
         const submitButton = getSubmitButton();
         const fileInput = getElementByType('file');
 
-        await user.upload(fileInput, filesMock.fileTooLarge);
+        await user.upload(fileInput, fileFixtures.fileTooLarge);
 
         expect(submitButton).toHaveAttribute('disabled');
         expect(screen.queryByText('No files selected')).not.toBeInTheDocument();
@@ -186,22 +186,22 @@ describe('ContactPage component', () => {
         const submitButton = getSubmitButton();
         const fileInput = getElementByType('file');
 
-        await user.upload(fileInput, filesMock.filesTooLarge);
+        await user.upload(fileInput, fileFixtures.filesTooLarge);
 
         expect(submitButton).toHaveAttribute('disabled');
         expect(screen.queryByText('No files selected')).not.toBeInTheDocument();
-        expect(screen.queryByText(filesMock.filesTooLarge[0].name)).toBeInTheDocument();
+        expect(screen.queryByText(fileFixtures.filesTooLarge[0].name)).toBeInTheDocument();
     });
     it('Should fail validation because there are too many files', async () => {
         const { user } = mount(renderComponent());
         const submitButton = getSubmitButton();
         const fileInput = getElementByType('file');
 
-        await user.upload(fileInput, filesMock.tooManyFiles);
+        await user.upload(fileInput, fileFixtures.tooManyFiles);
 
         expect(submitButton).toHaveAttribute('disabled');
         expect(screen.queryByText('No files selected')).not.toBeInTheDocument();
-        expect(screen.queryByText(filesMock.tooManyFiles[0].name)).toBeInTheDocument();
+        expect(screen.queryByText(fileFixtures.tooManyFiles[0].name)).toBeInTheDocument();
     });
     it('Should pass validation', async () => {
         const { user } = mount(renderComponent());
@@ -213,11 +213,15 @@ describe('ContactPage component', () => {
         await user.paste(validEmail);
         await user.tab();
         await user.paste(validMessage);
-        await user.upload(fileInput, filesMock.pass);
+        await user.upload(fileInput, fileFixtures.pass);
         await waitFor(() => expect(submitButton).not.toHaveAttribute('disabled'));
 
-        expect(screen.queryByText(filesMock.pass[0].name)).toBeInTheDocument();
-        expect(screen.queryByText(formatFileSize(filesMock.pass[0].size))).toBeInTheDocument();
+        expect(screen.queryByText(fileFixtures.pass[0].name)).toBeInTheDocument();
+        expect(
+            screen.queryByText((content, element) => Boolean(
+                element?.classList.contains('file-size') && content === formatFileSize(fileFixtures.pass[0].size),
+            )),
+        ).toBeInTheDocument();
     });
     it('Should successfully upload a file and report progress', async () => {
         const { renderer, user } = mount(renderComponent());
@@ -230,7 +234,7 @@ describe('ContactPage component', () => {
         await user.paste(validEmail);
         await user.tab();
         await user.paste(validMessage);
-        await user.upload(fileInput, filesMock.pass);
+        await user.upload(fileInput, fileFixtures.pass);
         await waitFor(() => expect(submitButton).not.toHaveAttribute('disabled'));
 
         await user.click(submitButton);

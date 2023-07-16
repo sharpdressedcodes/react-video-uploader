@@ -8,11 +8,8 @@ import { maxEmailLength } from '../../../../common/validation/validateEmail';
 import validateFormFile from '../../../../common/validation/validateFormFile';
 import validateFormInput from '../../../../common/validation/validateFormInput';
 import LinearProgressWithLabel from '../../../LinearProgressWithLabel';
-import Form, {
-    BaseFormMessageType,
-    BaseFormMessageDataType,
-    defaultBaseFormWithProgressState,
-} from '../../../Form';
+import Form, { BaseFormMessageType, BaseFormMessageDataType } from '../../../Form';
+import { defaultBaseFormWithProgressState } from '../../../Form/types';
 import FormNotes from '../../../Form/components/FormNotes';
 import FormNote from '../../../Form/components/FormNote';
 import FormFields from '../../../Form/components/FormFields';

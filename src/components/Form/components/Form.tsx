@@ -1,33 +1,7 @@
 import React, { memo } from 'react';
 import { classNames } from '../../../common';
-import {
-    BaseFormStateType,
-    BaseFormWithProgressStateType,
-    DefaultComponentConfigType,
-    DefaultPropsType,
-    PropsType,
-} from '../types';
+import { DefaultPropsType, PropsType } from '../types';
 import '../styles/form.scss';
-
-export const defaultComponentConfig: DefaultComponentConfigType = {
-    helpMessage: '',
-    placeholder: '',
-    rules: null,
-};
-
-export const defaultBaseFormState: BaseFormStateType = {
-    hasSubmit: false,
-    isSubmitting: false,
-    errorMessages: null,
-    infoMessages: null,
-    successMessages: null,
-    warningMessages: null,
-};
-
-export const defaultBaseFormWithProgressState: BaseFormWithProgressStateType = {
-    ...defaultBaseFormState,
-    progressPercentage: 0,
-};
 
 export const defaultProps: DefaultPropsType = {
     autoComplete: '',
