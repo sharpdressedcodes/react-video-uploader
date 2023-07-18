@@ -6,3 +6,6 @@ yarn.lock -diff
 *.jpeg -diff
 *.gif -diff
 *.js.snap -diff
+*.jsx.snap -diff
+*.ts.snap -diff
+*.tsx.snap -diff

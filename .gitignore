@@ -2,18 +2,14 @@
 /.vscode/
 
 /build/
-/cypress-cache/
+/node-cache/
 /node_modules/
-/server/
 /tests/unit/coverage
 /tests/unit/**/__snapshots__
-/tests/e2e/downloads
 /tests/e2e/screenshots
-/tests/e2e/videos
+/tests/e2e/reports
+/tests/e2e/results
 
 .bash_history
 .env
 *.map
-/src/common/index.cjs
-/src/config/index.cjs
-/src/routes/paths.cjs

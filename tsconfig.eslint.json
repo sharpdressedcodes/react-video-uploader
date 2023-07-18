@@ -1,0 +1,21 @@
+{
+    "extends": "./tsconfig.json",
+    "exclude": [
+        ".idea",
+        ".vscode",
+        ".github",
+        ".husky",
+        "build",
+        "docker",
+        "hooks",
+        "node-cache",
+        "**/node_modules/**",
+        "/tests/e2e/screenshots",
+        "/tests/e2e/reports",
+        "/tests/e2e/results",
+    ],
+    "include": [
+        "./**/*",
+         "custom.d.ts"
+    ]
+}

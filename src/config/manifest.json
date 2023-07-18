@@ -1,11 +1,47 @@
 {
-    "short_name": "Video Uploader",
     "name": "React Video Uploader",
+    "short_name": "Video Uploader",
+    "description": "A simple video uploading application in React.",
     "icons": [
         {
-            "src": "images/favicon_16_24_32_64.ico",
+            "src": "images/logo16x16.ico",
             "type": "image/x-icon",
-            "sizes": "64x64 32x32 24x24 16x16"
+            "sizes": "16x16"
+        },
+        {
+            "src": "images/logo24x24.ico",
+            "type": "image/x-icon",
+            "sizes": "24x24"
+        },
+        {
+            "src": "images/logo32x32.ico",
+            "type": "image/x-icon",
+            "sizes": "32x32"
+        },
+        {
+            "src": "images/logo64x64.ico",
+            "type": "image/x-icon",
+            "sizes": "64x64"
+        },
+        {
+            "src": "images/logo16x16.png",
+            "type": "image/png",
+            "sizes": "16x16"
+        },
+        {
+            "src": "images/logo24x24.png",
+            "type": "image/png",
+            "sizes": "24x24"
+        },
+        {
+            "src": "images/logo32x32.png",
+            "type": "image/png",
+            "sizes": "32x32"
+        },
+        {
+            "src": "images/logo64x64.png",
+            "type": "image/png",
+            "sizes": "64x64"
         },
         {
             "src": "images/logo192x192.png",

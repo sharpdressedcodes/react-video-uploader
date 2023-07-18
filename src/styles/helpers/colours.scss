@@ -11,10 +11,56 @@ $colour-hyperlink-visited: blue;
 $colour-hyperlink-dark: color.adjust(blue, $lightness: 20%);
 $colour-hyperlink-visited-dark: color.adjust(blue, $lightness: 20%);
 //
-$colour-nav-hyperlink: #555;
-$colour-nav-hyperlink-active: #000;
-$colour-nav-hyperlink-dark: #888;
-$colour-nav-hyperlink-active-dark: #bbb;
+$colour-nav-hyperlink: #000;
+$colour-nav-hyperlink-active: #555;
+$colour-nav-hyperlink-dark: #bbb;
+$colour-nav-hyperlink-active-dark: #888;
 //
 $colour-spinner: #2277d0;
 $colour-spinner-dark: #92cbf7;
+//
+$colour-drop-zone-bg: #f1f1f1;
+$colour-drop-zone-bg-dark: #303030;
+$colour-drop-zone-bg-dragging: color.adjust($colour-drop-zone-bg, $lightness: -5%);
+$colour-drop-zone-bg-dragging-dark: color.adjust($colour-drop-zone-bg-dark, $lightness: 5%);
+$colour-drop-zone-border: #777;
+$colour-drop-zone-border-dark: #686868;
+$colour-drop-zone-text: $colour-primary;
+$colour-drop-zone-text-dark: $colour-primary-dark;
+//
+$colour-file-restrictions-title: color.adjust($colour-drop-zone-text, $lightness: 20%);
+$colour-file-restrictions-title-dark: color.adjust($colour-drop-zone-text-dark, $lightness: -20%);
+//
+$colour-form-field-help: color.adjust($colour-drop-zone-text, $lightness: 20%);
+$colour-form-field-help-dark: color.adjust($colour-drop-zone-text-dark, $lightness: -20%);
+//
+$colour-form-field-error: #d32f2f;
+$colour-form-field-error-dark: rgb(244 67 54);
+$colour-form-field-error-text: rgb(95 33 32);
+$colour-form-field-error-text-dark: rgb(244 199 199);
+$colour-form-field-info: #0288d1;
+$colour-form-field-info-dark: rgb(41 182 246);
+$colour-form-field-info-text: rgb(1 67 97);
+$colour-form-field-info-text-dark: rgb(184 231 251);
+$colour-form-field-success: #2e7d32;
+$colour-form-field-success-dark: rgb(102 187 106);
+$colour-form-field-success-text: rgb(30 70 32);
+$colour-form-field-success-text-dark: rgb(204 232 205);
+$colour-form-field-warning: #ed6c02;
+$colour-form-field-warning-dark: rgb(255 167 38);
+$colour-form-field-warning-text: rgb(102 60 0);
+$colour-form-field-warning-text-dark: rgb(255 226 183);
+//
+$colour-form-element-border: $colour-drop-zone-border;
+$colour-form-element-border-dark: $colour-drop-zone-border-dark;
+//
+$colour-form-input-bg: #fff;
+$colour-form-input-bg-dark: #3b3b3b;
+$colour-form-input-toggle-password: color.adjust($colour-drop-zone-text, $lightness: 20%);
+$colour-form-input-toggle-password-dark: color.adjust($colour-drop-zone-text-dark, $lightness: -20%);
+//
+$colour-form-required: $colour-form-field-error;
+$colour-form-required-dark: $colour-form-field-error-dark;
+//
+$colour-focus: #2277d0;
+$colour-focus-dark: #92cbf7;

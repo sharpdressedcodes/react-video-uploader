@@ -22,7 +22,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Run build, linting, tests and audit
         env:
@@ -47,18 +47,19 @@ jobs:
           docker ps -a
           \
           echo "Installing dependencies..."
-          echo "$(grep -v '"cypress":' package.json)" > package.json
-          rm cypress.config.js
-          docker-compose -f docker-compose.ci.yml exec -T node npm i --foreground-scripts
+          docker-compose -f docker-compose.ci.yml exec -T node npm i
           \
           echo "Running build process..."
-          docker-compose -f docker-compose.ci.yml exec -T node npm run build:ci
+          docker-compose -f docker-compose.ci.yml exec -T node npm run build
           \
           echo "Running linting..."
           docker-compose -f docker-compose.ci.yml exec -T node npm run lint
           \
           echo "Running unit tests..."
           docker-compose -f docker-compose.ci.yml exec -T node npm run test:ci
+          \
+          echo "Running e2e tests..."
+          docker-compose -f docker-compose.ci.yml exec -T node npm run test:e2e:ci
           \
           echo "Running audit..."
           docker-compose -f docker-compose.ci.yml exec -T node npm run audit:ci

@@ -3,7 +3,10 @@
 /.github/
 /.husky/
 /build/
-/cypress-cache/
 /docker/
 /hooks/
-/server/
+/node-cache/
+/tests/e2e/screenshots
+/tests/e2e/reports
+/tests/e2e/results
+*.json

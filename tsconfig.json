@@ -1,0 +1,46 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "allowUnreachableCode": false,
+        "allowSyntheticDefaultImports": true,
+        "alwaysStrict": true,
+        "esModuleInterop": true,
+        "jsx": "react",
+        "lib": [
+            "dom", "es2015"
+        ],
+        "module": "esnext",
+        "moduleResolution": "node",
+        // "noImplicitAny": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        // "noUnusedLocals": true,
+        "outDir": "./build/",
+        "resolveJsonModule": true,
+        // "sourceMap": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "target": "es6"
+    },
+    "exclude": [
+        ".idea",
+        ".vscode",
+        ".github",
+        ".husky",
+        "build",
+        "docker",
+        "hooks",
+        "**/node_modules/**",
+        "node-cache",
+        "/tests/e2e/screenshots",
+        "/tests/e2e/reports",
+        "/tests/e2e/results"
+    ],
+    "include": [
+//        "src/**/*",
+//        "tests/**/*",
+        "./**/*",
+        "custom.d.ts"
+    ]
+}

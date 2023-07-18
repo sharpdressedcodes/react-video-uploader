@@ -1,47 +1,69 @@
+/* eslint-env node */
 {
     "extends": [
-        "airbnb"
+        "airbnb",
+        "airbnb-typescript"
+//        "plugin:@typescript-eslint/recommended",
     ],
-    "parser": "@babel/eslint-parser",
     "parserOptions": {
+        "project": "./tsconfig.eslint.json",
         "ecmaVersion": "latest",
-        "babelOptions": {
-             "configFile": "./babel.config.js"
-        },
         "sourceType": "module"
     },
     "env": {
         "browser": true,
         "node": true,
-        "mocha": true,
-        "es6": true,
         "jest": true
     },
     "globals": {
         "expect": true,
-        "Promise": true,
-        "Cypress": true,
-        "cy": true
+        "Promise": true
     },
     "plugins": [
         "@babel",
         "destructuring",
         "import",
         "jsx-a11y",
-        "react"
+        "react",
+        "@typescript-eslint"
     ],
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
+    "root": true,
     "rules": {
         "@babel/new-cap": "error",
         "@babel/no-invalid-this": "error",
         "@babel/no-unused-expressions": 0,
         "@babel/object-curly-spacing": 0,
         "@babel/semi": "error",
+        "@typescript-eslint/comma-dangle": ["error", {
+            "arrays": "always-multiline",
+            "objects": "always-multiline",
+            "imports": "always-multiline",
+            "exports": "always-multiline",
+            "functions": "always-multiline",
+            // @typescript-eslint options
+            "enums": "always-multiline",
+            // Disabled generics because it gives errors in tsx files with <T,>
+            "generics": "ignore",
+            "tuples": "always-multiline"
+        }],
+        "@typescript-eslint/indent": 0,
+        "@typescript-eslint/no-explicit-any": 0,
+        "@typescript-eslint/no-unused-vars": 0,
+        "@typescript-eslint/no-var-requires": 0,
         "arrow-parens": ["error", "as-needed"],
-        "indent": ["error", 4, { "ignoredNodes": ["ConditionalExpression"], "SwitchCase": 1 }],
+        // Disabled for "@typescript-eslint/comma-dangle"
+        "comma-dangle": "off",
         "import/first": 0,
         "import/newline-after-import": ["error", { "count": 1 }],
         "import/no-cycle": 0,
         "import/prefer-default-export": 0,
+        "implicit-arrow-linebreak": 0,
+        "indent": ["error", 4, { "ignoredNodes": ["ConditionalExpression"], "SwitchCase": 1 }],
         "jsx-a11y/click-events-have-key-events": 0,
         "max-len": [
             "error",
@@ -74,7 +96,9 @@
         ],
         "no-trailing-spaces": ["error", { "ignoreComments": true }],
         "no-unused-vars": 0,
+        "no-void": 0,
         "object-curly-newline": 0,
+        "operator-linebreak": ["error", "after"],
         "padded-blocks": ["error", "never", { "allowSingleLineBlocks": false }],
         "padding-line-between-statements": [
             "error",

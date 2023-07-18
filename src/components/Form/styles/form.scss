@@ -1,0 +1,14 @@
+@use '../../../styles/helpers/colours';
+@use '../../../styles/mixins/prefers-dark-mode' as *;
+
+.form {
+    &-required {
+        color: colours.$colour-form-required;
+    }
+
+    @include prefers-dark-mode {
+        &-required {
+            color: colours.$colour-form-required-dark;
+        }
+    }
+}

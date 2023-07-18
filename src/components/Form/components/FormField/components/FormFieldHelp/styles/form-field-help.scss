@@ -1,0 +1,12 @@
+@use '../../../../../../../styles/helpers/colours';
+@use '../../../../../../../styles/mixins/prefers-dark-mode' as *;
+
+.form-field-help {
+    color: colours.$colour-form-field-help;
+    font-size: 85%;
+    margin-bottom: 5px;
+
+    @include prefers-dark-mode {
+        color: colours.$colour-form-field-help-dark;
+    }
+}

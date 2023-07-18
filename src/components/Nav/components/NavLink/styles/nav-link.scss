@@ -1,0 +1,24 @@
+@use '../../../../../styles/helpers/colours';
+@use '../../../../../styles/mixins/prefers-dark-mode' as *;
+
+.nav-link {
+    &:not(:last-child) {
+        margin-right: 20px;
+    }
+
+    a {
+        color: colours.$colour-nav-hyperlink;
+
+        &.active {
+            color: colours.$colour-nav-hyperlink-active;
+        }
+
+        @include prefers-dark-mode {
+            color: colours.$colour-nav-hyperlink-dark;
+
+            &.active {
+                color: colours.$colour-nav-hyperlink-active-dark;
+            }
+        }
+    }
+}

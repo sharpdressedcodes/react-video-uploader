@@ -1,0 +1,98 @@
+@use '../../../../../styles/helpers/colours';
+@use '../../../../../styles/mixins/breakpoint' as *;
+@use '../../../../../styles/mixins/focus-outline' as *;
+@use '../../../../../styles/mixins/prefers-dark-mode' as *;
+
+.form-file {
+    .file-restrictions {
+        margin-bottom: 10px;
+    }
+
+    &__wrapper {
+        background-color: colours.$colour-drop-zone-bg;
+        border: 1px solid colours.$colour-drop-zone-border;
+        border-radius: 5px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        &:focus-within {
+            @include focus-outline;
+        }
+
+        &--has-error {
+            border-color: colours.$colour-form-field-error;
+        }
+
+        @include prefers-dark-mode {
+            background-color: colours.$colour-drop-zone-bg-dark;
+            border: 1px solid colours.$colour-drop-zone-border-dark;
+
+            &--has-error {
+                border-color: colours.$colour-form-field-error-dark;
+            }
+        }
+    }
+
+    &__drop-zone {
+        &:focus-within {
+            @include focus-outline;
+        }
+
+        .form-file {
+            // outline: none;
+            box-shadow: none;
+        }
+
+        .file-restrictions {
+            margin: 10px 0 20px;
+        }
+
+        &--has-error {
+            .drop-zone__container {
+                border-color: colours.$colour-form-field-error;
+            }
+        }
+
+        .drop-zone {
+            &__content {
+                & > div {
+                    display: flex;
+                    align-items: center;
+                    flex-direction: column;
+                }
+
+                &-suffix {
+                    text-transform: none;
+                }
+            }
+        }
+
+        .file-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            // Remove outlined when focused
+            // outline: none;
+            box-shadow: none;
+        }
+
+        @include breakpoint(medium up) {
+            .file-wrapper {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        @include prefers-dark-mode {
+            &--has-error {
+                .drop-zone__container {
+                    border-color: colours.$colour-form-field-error-dark;
+                }
+            }
+        }
+    }
+}

@@ -23,7 +23,7 @@ docker run \
     --rm \
     --tty \
     --volume "${ROOT_DIR}":${CONTAINER_DIR} \
+    --volume "${ROOT_DIR}/node-cache":/home/node/.cache \
     --workdir ${CONTAINER_DIR} \
-    --network "host" \
     "${DOCKER_IMAGE}" \
     bash -c "$hookContents"

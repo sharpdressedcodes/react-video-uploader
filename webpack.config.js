@@ -7,6 +7,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const TerserPlugin = require('terser-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const PublishManifestIconsPlugin = require('./scripts/publish-manifest-icons-plugin');
 const manifestJson = require('./src/config/manifest.json');
 
@@ -15,24 +16,56 @@ process.traceDeprecation = true;
 const isProduction = process.env.NODE_ENV === 'production';
 const isServer = process.env.APP_ENV === 'server';
 const isFastRefresh = process.env.FAST_REFRESH === 'true';
+const isTesting = Boolean(process.env.TEST);
+
 const baseConfig = {
     watchOptions: {
         // aggregateTimeout: 600,
         // poll: 1000,
-        ignored: '**/node_modules',
+        // ignored: '**/node_modules',
+        ignored: [
+            '.idea',
+            '.vscode',
+            '.github',
+            '.husky',
+            '**/node_modules',
+            'build',
+            'docker',
+            'hooks',
+            'node-cache',
+            'scripts',
+            '/tests/e2e/screenshots',
+            '/tests/e2e/reports',
+            '/tests/e2e/results',
+            // 'server',
+        ],
     },
     mode: isProduction ? 'production' : 'development',
-    devtool: isProduction && !isServer ? undefined : 'cheap-module-source-map', // 'inline-source-map',
+    // devtool: isProduction && !isServer ? undefined : 'cheap-module-source-map', // 'inline-source-map',
+    devtool: isProduction && !isServer ? undefined : 'source-map', // 'inline-source-map',
     module: {
         rules: [
             {
+                test: /\.tsx?$/,
+                // use: 'ts-loader',
+                exclude: /(node_modules|node-cache)/,
+                use: {
+                    loader: 'ts-loader',
+                    options: {
+                        // configFile: './tsconfig.eslint.json',
+                        transpileOnly: isFastRefresh,
+                    },
+                },
+            },
+            {
                 test: /\.jsx?$/,
-                exclude: /node_modules/,
-                use: { loader: 'babel-loader' },
+                exclude: /(node_modules|node-cache)/,
+                // use: { loader: 'babel-loader' },
+                use: ['source-map-loader', 'babel-loader'],
             },
             {
                 test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-                issuer: /\.jsx?$/,
+                issuer: /\.[jt]sx?$/,
                 use: ['babel-loader', '@svgr/webpack', 'url-loader'],
             },
             {
@@ -83,11 +116,21 @@ const baseConfig = {
             //     sockIntegration: 'whm'
             // }
         }),
-        new MiniCssExtractPlugin({}),
-        !isProduction ? false : new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('production'),
+        new MiniCssExtractPlugin(),
+        isFastRefresh && new ForkTsCheckerWebpackPlugin(),
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+            'process.env.TEST': JSON.stringify(isTesting),
         }),
         new ESLintPlugin(),
+    ].filter(Boolean),
+    resolve: {
+        extensions: ['.tsx', '.ts', '.jsx', '.js'],
+    },
+    ignoreWarnings: [
+        isFastRefresh && {
+            message: /export .* was not found in/,
+        },
     ].filter(Boolean),
 };
 const browserConfig = {
@@ -100,12 +143,13 @@ const browserConfig = {
             'core-js/modules/es.promise',
             'core-js/modules/es.array.iterator',
             'normalize.css/normalize.css',
-            path.resolve('./src/index.js'),
+            path.resolve('./src/index.tsx'),
         ].filter(Boolean),
+        sw: path.resolve('./src/workers/service/serviceWorker.ts'),
     },
     output: {
         filename: '[name].js',
-        path: path.resolve('build'),
+        path: path.resolve('build/browser'),
     },
     module: {
         ...baseConfig.module,
@@ -192,11 +236,11 @@ const serverConfig = {
     name: 'server',
     target: 'node18',
     entry: {
-        'server-entry': path.resolve('./src/server/server-entry.js'),
+        server: path.resolve('./src/server/index.ts'),
     },
     output: {
         filename: '[name].js',
-        path: path.resolve('server'),
+        path: path.resolve('build/server'),
         // hotUpdateChunkFilename: '[id].hot-update.js',
         // hotUpdateMainFilename: '[runtime].[fullhash].hot-update.json',
         library: {

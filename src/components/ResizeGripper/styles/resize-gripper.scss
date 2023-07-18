@@ -1,0 +1,53 @@
+.resize-gripper {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .gripper {
+        &__handle {
+            background-color: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 5px;
+
+            svg {
+                height: 5px;
+                width: 26px;
+                pointer-events: none;
+            }
+        }
+
+        &__wrapper {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 100vw;
+            z-index: 999;
+        }
+    }
+
+    &.gripper-horizontal {
+        height: 100%;
+        width: 13px;
+        right: -15px;
+
+        .gripper__handle {
+            cursor: ew-resize;
+            transform: rotate(-90deg);
+        }
+    }
+
+    &.gripper-vertical {
+        width: 100%;
+        bottom: -16px;
+
+        .gripper__handle {
+            cursor: ns-resize;
+        }
+    }
+}

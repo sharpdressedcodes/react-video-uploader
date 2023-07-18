@@ -1,22 +1,18 @@
+@use '../../../../styles/helpers/colours';
 @use '../../../../styles/helpers/variables';
 @use '../../../../styles/mixins/breakpoint' as *;
+@use '../../../../styles/mixins/prefers-dark-mode' as *;
 
 .page-upload {
     max-width: variables.$container-max-width;
     margin: 0 auto;
 
-    .info-table {
-        margin-bottom: 25px;
-    }
-}
-
-.form-upload {
-    margin-bottom: 30px;
-}
-
-.status {
-    &-files {
+    .form-upload {
         margin-bottom: 30px;
+    }
+
+    .form-files {
+        margin-bottom: 20px;
 
         .file {
             margin-bottom: 20px;
@@ -37,14 +33,40 @@
                 margin-top: 10px;
             }
 
+            & > span.file-status {
+                &__badge {
+                    margin-left: 5px;
+                }
+
+                svg {
+                    width: 24px;
+                    height: 24px;
+
+                    path {
+                        fill: colours.$colour-form-field-error;
+
+                        @include prefers-dark-mode {
+                            fill: colours.$colour-form-field-error-dark;
+                        }
+                    }
+                }
+            }
+
             @include breakpoint(medium up) {
                 align-items: center;
                 white-space: nowrap;
                 flex-direction: row;
 
-                & > span.file-status {
+                & > span.file-name {
+                    position: relative;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                     width: 100%;
                 }
+
+                // & > span.file-status {
+                //    width: 100%;
+                // }
 
                 & > span[class*='file-'] {
                     display: initial;
@@ -64,4 +86,9 @@
             }
         }
     }
+
+    .form-progress {
+        margin-bottom: 30px;
+    }
 }
+
