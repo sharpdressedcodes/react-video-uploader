@@ -19,11 +19,20 @@ hookFile=${ROOT_DIR}/.husky/pre-push
 # Get the 5th line in the hook file
 hookContents=$(sed -n 5p $hookFile)
 
+#docker run \
+#    --rm \
+#    --tty \
+#    --volume "${ROOT_DIR}":${CONTAINER_DIR} \
+#    --volume "${ROOT_DIR}/node-cache":/home/node/.cache \
+#    --workdir ${CONTAINER_DIR} \
+#    --network "host" \
+#    "${DOCKER_IMAGE}" \
+#    bash -c "$hookContents"
 docker run \
     --rm \
     --tty \
     --volume "${ROOT_DIR}":${CONTAINER_DIR} \
+    --volume "${ROOT_DIR}/node-cache":/home/node/.cache \
     --workdir ${CONTAINER_DIR} \
-    --network "host" \
     "${DOCKER_IMAGE}" \
     bash -c "$hookContents"
