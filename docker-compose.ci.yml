@@ -17,8 +17,6 @@ services:
     container_name: node
     volumes:
       - ./:/home/node/app
-      - ./node-cache:/home/node/.cache
-      - /tmp/.X11-unix:/tmp/.X11-unix
     networks:
       - custom
     ports:
@@ -27,7 +25,6 @@ services:
     tty: true
     working_dir: /home/node/app
     environment:
-      DISPLAY: unix:0
       IS_DOCKER: 1
       TZ: ${TZ:-Australia/Sydney}
       USER_ID: ${USER_ID}
