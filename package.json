@@ -126,7 +126,7 @@
         "@babel/preset-react": "7.22.5",
         "@babel/preset-typescript": "7.22.5",
         "@babel/register": "7.22.5",
-        "@playwright/test": "1.36.0",
+        "@playwright/test": "1.36.1",
         "@pmmmwh/react-refresh-webpack-plugin": "0.5.10",
         "@svgr/webpack": "8.0.1",
         "@testing-library/jest-dom": "5.16.5",
