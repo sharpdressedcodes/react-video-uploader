@@ -24,7 +24,7 @@ as long as you don't upload any files.
 * SASS.
 * Docker.
 * Linting for TypeScript, JavaScript, SASS, MarkDown and Yaml.
-* Dark mode support `@media (prefers-color-scheme: dark)` via sass mixin `@include prefers-dark-mode() {}`.
+* Dark mode support `@media (prefers-color-scheme: dark)` via sass mixin `@include prefers-dark-mode {}`.
 
 ## With docker
 
