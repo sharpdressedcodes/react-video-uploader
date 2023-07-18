@@ -11,10 +11,10 @@ $colour-hyperlink-visited: blue;
 $colour-hyperlink-dark: color.adjust(blue, $lightness: 20%);
 $colour-hyperlink-visited-dark: color.adjust(blue, $lightness: 20%);
 //
-$colour-nav-hyperlink: #555;
-$colour-nav-hyperlink-active: #000;
-$colour-nav-hyperlink-dark: #888;
-$colour-nav-hyperlink-active-dark: #bbb;
+$colour-nav-hyperlink: #000;
+$colour-nav-hyperlink-active: #555;
+$colour-nav-hyperlink-dark: #bbb;
+$colour-nav-hyperlink-active-dark: #888;
 //
 $colour-spinner: #2277d0;
 $colour-spinner-dark: #92cbf7;
