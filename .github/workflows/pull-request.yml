@@ -48,7 +48,6 @@ jobs:
           \
           echo "Installing dependencies..."
           docker-compose -f docker-compose.ci.yml exec -T node npm i
-          docker-compose -f docker-compose.ci.yml exec -T sudo npx playwright install-deps
           \
           echo "Running build process..."
           docker-compose -f docker-compose.ci.yml exec -T node npm run build
