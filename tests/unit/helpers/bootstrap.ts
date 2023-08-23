@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom';
+
 // https://stackoverflow.com/questions/39830580/jest-test-fails-typeerror-window-matchmedia-is-not-a-function/64520587#64520587
 Object.defineProperty(window, 'matchMedia', {
     writable: true,
