@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import webpack from 'webpack';
 import { Configuration } from 'webpack/types';
 import devMiddleware from 'webpack-dev-middleware';

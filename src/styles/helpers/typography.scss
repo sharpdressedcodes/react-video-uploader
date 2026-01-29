@@ -4,7 +4,7 @@
 @use '@fontsource/roboto/scss/mixins' as RobotoMixin;
 @use '@fontsource/roboto/scss/metadata' as RobotoMetadata;
 //
-// Ubuntu Mono
+// Ubuntu Sans Mono
 $font-family-ubuntu-mono: string.quote(UbuntuMonoMetadata.$family), monospace;
 $font-style-ubuntu-mono-regular: 400;
 $font-style-ubuntu-mono-bold: 700;

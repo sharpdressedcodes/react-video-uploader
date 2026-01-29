@@ -1,5 +1,5 @@
 import React, { memo, useLayoutEffect, useRef, useState, useTransition } from 'react';
-import { Router, BrowserRouterProps } from 'react-router-dom';
+import { Router, BrowserRouterProps } from 'react-router';
 import { createBrowserHistory } from '@remix-run/router';
 import PageProgressBar from '../../PageProgressBar';
 
@@ -12,10 +12,13 @@ import PageProgressBar from '../../PageProgressBar';
  * and revert back to using BrowserRouter from react-router-dom.
  *
  * See https://github.com/remix-run/react-router/discussions/9850 for more
+ * 
+ * TODO: test removing this since v7 now has support
+ * https://reactrouter.com/explanation/react-transitions
  *
  */
 const BrowserRouter = ({ window, ...rest }: BrowserRouterProps) => {
-    const historyRef = useRef<ReturnType<typeof createBrowserHistory>>();
+    const historyRef = useRef<ReturnType<typeof createBrowserHistory>>(null);
 
     if (historyRef.current == null) {
         historyRef.current = createBrowserHistory({ window, v5Compat: true });

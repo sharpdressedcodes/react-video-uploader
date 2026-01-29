@@ -15,7 +15,8 @@ CONTAINER_DIR=/home/node/app
 
 # Get the project directory name
 PROJECT_NAME="$( basename "${ROOT_DIR}" )"
-DOCKER_IMAGE="${PROJECT_NAME}_node"
+#DOCKER_IMAGE="${PROJECT_NAME}_node"
+DOCKER_IMAGE="${PROJECT_NAME}-node"
 result=$( docker ps --format "{{.Image}}" --filter "name=node" | grep "$DOCKER_IMAGE" )
 
 if [[ "$result" == "" ]]; then
@@ -32,5 +33,5 @@ docker exec \
   -i \
   --tty \
   --workdir=$CONTAINER_DIR \
-  node \
+  "$DOCKER_IMAGE" \
   bash -c "$*"

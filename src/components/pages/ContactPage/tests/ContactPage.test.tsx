@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import mount, {
     act,
     getElementByName,
@@ -255,7 +256,9 @@ describe('ContactPage component', () => {
             (onProgress as UploadProgressType)(buildProgressEventData(2, 2));
         });
 
-        expect(renderer.queryByText('100%')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(renderer.queryByText('100%')).toBeInTheDocument();
+        });
 
         expect(xhr.onloadend).not.toBeNull();
         xhr.onloadend(buildProgressEventData(2, 2));

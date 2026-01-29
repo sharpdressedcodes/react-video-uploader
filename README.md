@@ -35,7 +35,7 @@ docker-compose up -d --build
 then exec into the container:
 
 ```shell
-docker exec -it node bash
+docker exec -it react-video-uploader-node bash
 ```
 
 Then continue on as normal
@@ -106,8 +106,8 @@ To measure any of the supported metrics,
 you need to pass a function into the `webVitals.callback` in `./src/config/index.ts`
 and set `webVitals.callback` to `true`.
 
-More info [here](https://www.npmjs.com/package/web-vitals)
-and [here](https://create-react-app.dev/docs/measuring-performance/).
+More info [web-vitals](https://www.npmjs.com/package/web-vitals)
+and [measuring-performance](https://create-react-app.dev/docs/measuring-performance/).
 
 ## TODO
 

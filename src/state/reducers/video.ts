@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { VideoStateType } from '../types';
 
@@ -11,11 +10,10 @@ export const videoSlice = createSlice({
     name: 'video',
     initialState,
     reducers: {
-        videoPlaybackError: (state, action: PayloadAction<string>) => {
-            state.videoPlaybackError = action.payload;
-
-            return state;
-        },
+        videoPlaybackError: (state, action: PayloadAction<string>) => ({
+            ...state,
+            videoPlaybackError: action.payload,
+        }),
     },
 });
 

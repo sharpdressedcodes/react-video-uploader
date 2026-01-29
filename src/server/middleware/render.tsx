@@ -2,8 +2,8 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 import React, { ReactNode, StrictMode } from 'react';
 import { PipeableStream, renderToPipeableStream, renderToStaticMarkup } from 'react-dom/server';
-import { StaticRouter } from 'react-router-dom/server';
-import { matchPath } from 'react-router-dom';
+import { StaticRouter } from 'react-router';
+import { matchPath } from 'react-router';
 import { RequestHandler } from 'express';
 import serialize from 'serialize-javascript';
 import App from '../../components/App';
@@ -152,7 +152,7 @@ const serverEntry: RequestHandler = (req, res, next) => new Promise<void>(resolv
             const activeRoute = routes.find(route => matchPath(route.path as string, req.url));// || {};
             const data = req.app.locals?.data?.videos || [];
             const store = configureStore({
-                loadVideosReducer: {
+                loadVideos: {
                     ...initialLoadVideosState,
                     videos: data,
                 },

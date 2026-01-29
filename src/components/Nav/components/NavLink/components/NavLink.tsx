@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { NavLink as RouterNavLink } from 'react-router-dom';
+import { NavLink as RouterNavLink } from 'react-router';
 import { classNames } from '../../../../../common';
 import { PropsType } from '../types';
 import '../styles/nav-link.scss';

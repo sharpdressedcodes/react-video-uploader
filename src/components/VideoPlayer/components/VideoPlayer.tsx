@@ -64,7 +64,6 @@ const VideoPlayer = ({
 
     return (
         <div className={ classNames('video-container', className) }>
-            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <video
                 autoPlay={ autoPlay }
                 controls={ controls }

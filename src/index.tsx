@@ -1,6 +1,6 @@
 import React, { StrictMode } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
-// import { BrowserRouter } from 'react-router-dom';
+// import { BrowserRouter } from 'react-router';
 import BrowserRouter from './components/BrowserRouter';
 import Providers from './components/Providers';
 import App from './components/App';
@@ -14,13 +14,12 @@ import config from './config';
             const isProduction = process.env.NODE_ENV === 'production';
 
             try {
-                const { reactPreloadedState: state, reactInitialData: data } = window;
-                const store = configureStore(state);
+                const store = configureStore(window.reactPreloadedState);
                 const jsx = (
                     <BrowserRouter>
                         <StrictMode>
                             <Providers store={ store }>
-                                <App data={ data } />
+                                <App data={ window.reactInitialData } />
                             </Providers>
                         </StrictMode>
                     </BrowserRouter>

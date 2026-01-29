@@ -1,5 +1,3 @@
-version: '3.4'
-
 networks:
   custom:
     driver: bridge
@@ -25,6 +23,7 @@ services:
     tty: true
     working_dir: /home/node/app
     environment:
+      CI: 1
       IS_DOCKER: 1
       TZ: ${TZ:-Australia/Sydney}
       USER_ID: ${USER_ID}

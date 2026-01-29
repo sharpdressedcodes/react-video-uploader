@@ -1,35 +1,39 @@
-version: '3.4'
-
 networks:
   custom:
     driver: bridge
 
 services:
   node:
-    #image: sharpdressedcodes/node:18.16.0-bullseye-slim
     build:
       context: ./docker/node
       dockerfile: Dockerfile
-    container_name: node
+      args:
+        - TZ=${TZ}
+        - USER_ID=${USER_ID}
+        - GROUP_ID=${GROUP_ID}
+    container_name: react-video-uploader-node
     volumes:
       - ./:/home/node/app
-      #- ./:/opt/project
-      #- /opt/project/node_modules/
       - ./docker/node/.bash_history:/home/node/.bash_history
       - ./node-cache:/home/node/.cache
       - /tmp/.X11-unix:/tmp/.X11-unix
     networks:
       - custom
+    #dns:
+      #- 8.8.8.8
+      #- 8.8.8.4
     ports:
       - '3000:3000'
-      - '8080:8080'
+      #- '8080:8080'
     restart: unless-stopped
     tty: true
+    # For playwright - kills zombie 🧟 processes
+    init: true
     working_dir: /home/node/app
     env_file:
       - .env
     environment:
-      DISPLAY: unix:0
+      DISPLAY: ${DISPLAY:-:0}
       IS_DOCKER: 1
       TZ: ${TZ:-Australia/Sydney}
 

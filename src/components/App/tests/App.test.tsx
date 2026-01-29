@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import mount, { screen, waitFor } from '../../../../tests/unit/helpers/mount';
 import videosMock from '../../../../tests/unit/__mocks__/videosMock';
 import App from '../components/App';

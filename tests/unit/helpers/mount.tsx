@@ -1,5 +1,5 @@
 import React, { ReactElement, ReactNode, StrictMode } from 'react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Providers, { PropsType as ProvidersPropsType } from '../../../src/components/Providers';

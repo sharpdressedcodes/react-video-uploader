@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import { ConfigContext, ToastContext } from '../../../../context';
 import { findItemByUuid, isObject, isObjectEmpty } from '../../../../common';
 import VideoPlayer from '../../../VideoPlayer';
 import useDidUpdate from '../../../../hooks/useDidUpdate';
 import { useAppSelector } from '../../../../state/hooks';
-import { LoadedVideoType } from '../../../../state/types';
+import { CombinedStateType, LoadedVideoType } from '../../../../state/types';
 import '../styles/video-player-page.scss';
 
 type DependenciesType = {
@@ -16,11 +16,11 @@ const VideoPlayerPage = () => {
     const config = useContext(ConfigContext);
     const toast = useContext(ToastContext);
     const { id } = useParams();
-    const { videoPlaybackError } = useAppSelector(({ videoReducer }) => videoReducer);
+    const { videoPlaybackError } = useAppSelector(({ video }: CombinedStateType) => video);
     const video = useAppSelector(
         ({
-            loadVideosReducer: { videos },
-        }) => (!videos ? null : findItemByUuid<LoadedVideoType>(id as string, videos)),
+            loadVideos: { videos },
+        }: CombinedStateType) => (!videos ? null : findItemByUuid<LoadedVideoType>(id as string, videos)),
     ) as LoadedVideoType;
     const hasVideo = Boolean(video) && isObject(video) && !isObjectEmpty(video);
 

@@ -1,11 +1,11 @@
 const reportWebVitals = (onPerfEntry: Nullable<(...args: any[]) => void> = null): void => {
     (async () => {
         if (onPerfEntry) {
-            const { onCLS, onFID, onFCP, onLCP, onTTFB } = await import(/* webpackChunkName: "web-vitals" */ 'web-vitals');
+            const { onCLS, onFCP, onINP, onLCP, onTTFB } = await import(/* webpackChunkName: "web-vitals" */ 'web-vitals');
 
             onCLS(onPerfEntry);
-            onFID(onPerfEntry);
             onFCP(onPerfEntry);
+            onINP(onPerfEntry);
             onLCP(onPerfEntry);
             onTTFB(onPerfEntry);
         }

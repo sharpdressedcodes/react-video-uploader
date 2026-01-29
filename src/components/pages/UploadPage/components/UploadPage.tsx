@@ -1,7 +1,7 @@
 import React, { FormEvent, ReactNode, useCallback, useContext, useRef } from 'react';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Button, { ButtonProps as MuiButtonProps } from '@mui/material/Button';
-import { AnyAction } from '@reduxjs/toolkit';
+import { UnknownAction } from '@reduxjs/toolkit';
 import { AxiosProgressEvent } from 'axios';
 import { ConfigContext, ToastContext } from '../../../../context';
 import {
@@ -37,7 +37,7 @@ import {
 } from '../../../../state/reducers/uploader';
 import { loadVideosSuccess } from '../../../../state/reducers/loadVideos';
 import { useAppDispatch, useAppSelector } from '../../../../state/hooks';
-import { LoadedVideoType } from '../../../../state/types';
+import { CombinedStateType, LoadedVideoType } from '../../../../state/types';
 import { ConvertFileStepType, ConvertProgressStepType/* , CreateStepType */ } from '../../../../server/types';
 import { FormStateType, SelectedFileType, StateType } from '../types';
 import submitUploadForm from '../api/submitUploadForm';
@@ -69,7 +69,7 @@ const UploadPage = () => {
     const config = useContext(ConfigContext);
     const toast = useContext(ToastContext);
     const dispatch = useAppDispatch();
-    const { error: uploadStateError, result: uploadStateResult } = useAppSelector(({ uploaderReducer }) => uploaderReducer);
+    const { error: uploadStateError, result: uploadStateResult } = useAppSelector(({ uploader }: CombinedStateType) => uploader);
     const formUrl = config.endpoints.api.video.upload;
     const [state, setState] = useSetState(UploadPage.DEFAULT_STATE);
     const [formState, setFormState] = useSetState(DEFAULT_FORM_STATE);
@@ -105,7 +105,7 @@ const UploadPage = () => {
 
         setState(newState);
     };
-    const dispatchAndWait = (action: AnyAction) => new Promise(resolve => {
+    const dispatchAndWait = (action: UnknownAction) => new Promise(resolve => {
         dispatch(action);
         setTimeout(resolve);
     });

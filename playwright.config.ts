@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { defineConfig, devices } from '@playwright/test';
 
 const baseURL = `http://localhost:${process.env.PORT || 3000}`;
@@ -47,7 +46,6 @@ export default defineConfig({
         // },
     ],
     webServer: {
-        // command: 'cross-env DEBUG=pw:webserver TEST=true npm run start',
         command: 'cross-env DEBUG=pw:webserver TEST=true npm run build && npm run start',
         reuseExistingServer: !process.env.CI,
         stderr: 'pipe',

@@ -36,6 +36,19 @@ export type VideoStateType = {
     video: Nullable<LoadedVideoType>;
 };
 
+export type UploaderStateType = {
+    error: Nullable<string>;
+    url: Nullable<string>;
+    progress: Nullable<number>;
+    result: Nullable<GetVideosResultType>;
+};
+
+export type CombinedStateType = {
+    uploader: UploaderStateType,
+    video: VideoStateType,
+    loadVideos: LoadVideosStateType,
+};
+
 export type GetVideosResultType = {
     item?: LoadedVideoType;
     items?: LoadedVideoType[];

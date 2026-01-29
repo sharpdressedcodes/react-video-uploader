@@ -13,7 +13,6 @@ const useForwardRef = <T>(ref: ForwardedRef<T>, initialValue: any = null) => {
             return;
         }
 
-        // eslint-disable-next-line no-param-reassign
         ref.current = targetRef.current;
     }, [ref]);
 

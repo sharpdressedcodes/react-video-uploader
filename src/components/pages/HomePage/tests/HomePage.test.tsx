@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import mount, { act } from '../../../../../tests/unit/helpers/mount';
 import videosMock from '../../../../../tests/unit/__mocks__/videosMock';
 import { loadVideosSuccess } from '../../../../state/reducers/loadVideos';
