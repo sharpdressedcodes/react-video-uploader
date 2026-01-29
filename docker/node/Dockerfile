@@ -1,4 +1,4 @@
-FROM 192.168.0.15:5678/node:24.13.0-trixie-slim-0.0.1
+FROM sharpdressedcodes/node:24.13.0-trixie-slim-0.0.1
 
 ARG USER_ID
 ARG GROUP_ID
