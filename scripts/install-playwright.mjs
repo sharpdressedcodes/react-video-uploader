@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 import { spawn } from 'node:child_process';
 
-//const isCi = process.env.CI !== undefined;
+const isCi = process.env.CI !== undefined;
 const isDocker = process.env.IS_DOCKER !== undefined;
 
 const onStdOut = data => {
@@ -20,8 +20,8 @@ const onClose = code => {
 };
 
 // Docker image has deps preinstalled
-if (!isDocker) {
-    const child = spawn('npx', ['playwright', 'install', '--with-deps']);
+if (isCi || !isDocker) {
+    const child = spawn('npx', ['playwright', 'install', !isDocker && '--with-deps'].filter(Boolean));
 
     child.stdout.on('data', onStdOut);
     child.stderr.on('data', onStdErr);
