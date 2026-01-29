@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { LoadedVideoType, LoadVideosStateType } from '../types';
 
@@ -11,17 +10,15 @@ export const loadVideosSlice = createSlice({
     name: 'loadVideos',
     initialState,
     reducers: {
-        loadVideosSuccess: (state, action: PayloadAction<LoadedVideoType[]>) => {
-            state.videosDownloadError = null;
-            state.videos = action.payload;
-
-            return state;
-        },
-        loadVideosError: (state, action: PayloadAction<string>) => {
-            state.videosDownloadError = action.payload;
-
-            return state;
-        },
+        loadVideosSuccess: (state, action: PayloadAction<LoadedVideoType[]>) => ({
+            ...state,
+            videosDownloadError: null,
+            videos: action.payload,
+        }),
+        loadVideosError: (state, action: PayloadAction<string>) => ({
+            ...state,
+            videosDownloadError: action.payload,
+        }),
     },
 });
 

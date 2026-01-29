@@ -47,7 +47,6 @@ export default defineConfig({
         // },
     ],
     webServer: {
-        // command: 'cross-env DEBUG=pw:webserver TEST=true npm run start',
         command: 'cross-env DEBUG=pw:webserver TEST=true npm run build && npm run start',
         reuseExistingServer: !process.env.CI,
         stderr: 'pipe',

@@ -4,7 +4,7 @@ import { findItemByUuid } from '../../common';
 
 const checkVideoId: RequestHandler = async (req, res, next) => {
     const uploadPath = req.app.locals.config.videoUpload.path;
-    const id = req.params.id;
+    const id = req.params.id as Nullable<string>;
 
     if (id !== null) {
         try {
@@ -15,7 +15,7 @@ const checkVideoId: RequestHandler = async (req, res, next) => {
             } else {
                 next();
             }
-        } catch (err) {
+        } catch (err: unknown) {
             next(err);
         }
     } else {

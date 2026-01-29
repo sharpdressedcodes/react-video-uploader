@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import os from 'node:os';
 import http from 'node:http';
 import { AddressInfo } from 'node:net';
@@ -50,11 +49,13 @@ let serverStartupMessage: string;
 
 // const bodyParser = () => express.urlencoded({ extended: true });
 const closeServer = (message: string, exitProcess = false) => {
+    // eslint-disable-next-line no-console
     console.log(message);
 
     try {
         server.close();
     } catch (err: unknown) {
+        // eslint-disable-next-line no-console
         console.error(`Error closing server: ${(err as Error).message}`);
     }
 
@@ -63,11 +64,13 @@ const closeServer = (message: string, exitProcess = false) => {
             process.exit();
         }
     } catch (err: unknown) {
+        // eslint-disable-next-line no-console
         console.error(`Error ending server process: ${(err as Error).message}`);
     }
 };
 const onBundleValid = () => {
     if (serverStartupMessage) {
+        // eslint-disable-next-line no-console
         console.log(serverStartupMessage);
         serverStartupMessage = '';
     }
@@ -102,7 +105,7 @@ const setupMiddleware = () => {
 };
 const setupRoutes = () => {
     app.get(
-        `${config.endpoints.api.video.get}/:id?`,
+        `${config.endpoints.api.video.get}/{:id}`,
         checkVideoId,
         handleGetVideos,
         logErrors,
@@ -135,7 +138,7 @@ const setupRoutes = () => {
     );
 
     app.get(
-        '*',
+        '/{*splat}',
         loadVideos,
         render,
         logErrors,
@@ -172,6 +175,7 @@ const listen = () => {
                 ].join('\n');
 
                 if (!isFastRefresh && !isProduction) {
+                    // eslint-disable-next-line no-console
                     console.log(serverStartupMessage);
                 }
             },

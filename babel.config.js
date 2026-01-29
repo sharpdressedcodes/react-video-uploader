@@ -30,7 +30,7 @@ module.exports = api => ({
         '@babel/plugin-proposal-destructuring-private',
         // Make sure that @babel/plugin-proposal-decorators comes before @babel/plugin-proposal-class-properties.
         ['@babel/plugin-proposal-decorators', { legacy: true }],
-        '@babel/plugin-proposal-class-properties',
+        //'@babel/plugin-proposal-class-properties',
         '@babel/plugin-proposal-export-default-from',
         ['@babel/plugin-transform-runtime', { regenerator: true }],
     ].filter(Boolean),

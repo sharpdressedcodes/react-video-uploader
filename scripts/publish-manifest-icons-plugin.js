@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 const fs = require('node:fs');
 const path = require('node:path');
 

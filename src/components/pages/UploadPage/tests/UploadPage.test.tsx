@@ -208,15 +208,17 @@ describe('UploadPage component', () => {
             (onProgress as UploadProgressType)(buildProgressEventData(2, 2));
         });
 
-        expect(renderer.queryByText('100%')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(renderer.queryByText('100%')).toBeInTheDocument();
+        });
 
         expect(xhr.onloadend).not.toBeNull();
         xhr.onloadend(buildProgressEventData(2, 2));
 
         await waitFor(() => {
-            const uploaderReducer = store.getState().uploaderReducer;
+            const { uploader: { result} } = store.getState();
 
-            return expect(uploaderReducer.result).toEqual(mockData);
+            return expect(result).toEqual(mockData);
         });
     });
 });

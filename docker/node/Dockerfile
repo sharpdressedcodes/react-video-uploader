@@ -1,4 +1,4 @@
-FROM sharpdressedcodes/node:18.16.0-bullseye-slim
+FROM 192.168.0.15:5678/node:24.13.0-trixie-slim-0.0.1
 
 ARG USER_ID
 ARG GROUP_ID
@@ -15,6 +15,8 @@ RUN \
         # ffmpeg deps
         ffmpeg \
         flvmeta \
+        # x11 deps
+        x11-apps \
         # Playwright deps
         libnss3 \
         libnspr4 \
@@ -48,7 +50,16 @@ RUN \
         libxt6  \
         libmanette-0.2  \
         libgles2  \
+        # Playwright ffmpeg
+        libgtk-4-1 \
+        libgraphene-1.0 \
+        libavif-dev \
     ; \
     rm -rf /var/lib/apt/lists/*
 
 USER node
+
+# RUN npx -y playwright install --with-deps
+
+# Override default command (node). This will add a route so this container can access the underlying host.
+CMD ["sh", "-c", "echo \"`/sbin/ip route | awk '/default/ { print $3 }'`\tdocker.host.internal\" | sudo tee -a /etc/hosts > /dev/null && node"]

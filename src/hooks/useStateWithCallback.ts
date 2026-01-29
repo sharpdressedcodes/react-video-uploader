@@ -8,7 +8,7 @@ export default function useStateWithCallback<T>(init: T): [T, SetStateAction<T>]
 export default function useStateWithCallback<T = undefined>(init?: T): [T | undefined, SetStateAction<T | undefined>];
 export default function useStateWithCallback<T>(init: T): [T, SetStateAction<T>] {
     const [state, setState] = useState<T>(init);
-    const ref = useRef<OnUpdateCallback<T>>();
+    const ref = useRef<OnUpdateCallback<T>>(undefined);
 
     const set: SetStateAction<T> = (newState, callback?): void => {
         ref.current = callback;

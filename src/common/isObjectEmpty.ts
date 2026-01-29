@@ -7,7 +7,7 @@
  */
 const isObjectEmpty = (obj: any): boolean => {
     try {
-        // eslint-disable-next-line guard-for-in, no-restricted-syntax, no-unreachable-loop
+        // eslint-disable-next-line no-restricted-syntax
         for (const k in obj) {
             return false;
         }

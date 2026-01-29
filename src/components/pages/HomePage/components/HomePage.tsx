@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { ConfigContext, ToastContext } from '../../../../context';
 import Teaser from '../../../Teaser';
 import TeaserList from '../../../TeaserList';
@@ -7,6 +7,7 @@ import { routePaths } from '../../../../routes';
 import { isArrayEmpty } from '../../../../common';
 import useDidUpdate from '../../../../hooks/useDidUpdate';
 import { useAppSelector } from '../../../../state/hooks';
+import { CombinedStateType } from '../../../../state/types';
 import '../styles/home-page.scss';
 
 type DependenciesType = {
@@ -16,7 +17,7 @@ type DependenciesType = {
 const HomePage = () => {
     const config = useContext(ConfigContext);
     const toast = useContext(ToastContext);
-    const { videos, videosDownloadError } = useAppSelector(({ loadVideosReducer }) => loadVideosReducer);
+    const { videos, videosDownloadError } = useAppSelector(({ loadVideos }: CombinedStateType) => loadVideos);
     const hasVideos = Array.isArray(videos) && !isArrayEmpty(videos);
     const renderItems = () => {
         const videoPath = config.videoUpload.publicPath;

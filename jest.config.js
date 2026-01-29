@@ -9,6 +9,7 @@ module.exports = {
         '\\.(css|scss)$': '<rootDir>/tests/unit/__mocks__/styleMock.js',
         '\\.svg$': '<rootDir>/tests/unit/__mocks__/svgMock.js',
     },
+    setupFiles: ['<rootDir>jest.setup.js'],
     setupFilesAfterEnv: [
         '@testing-library/jest-dom',
         '<rootDir>tests/unit/helpers/bootstrap.ts',
@@ -17,4 +18,7 @@ module.exports = {
     testEnvironmentOptions: {
         url: 'http://localhost:3000/',
     },
+    transformIgnorePatterns: [
+        'node_modules/(?!(uuid)/)',
+    ],
 };

@@ -1,15 +1,21 @@
-/* eslint-disable import/no-extraneous-dependencies */
-const path = require('node:path');
-const webpack = require('webpack');
-const nodeExternals = require('webpack-node-externals');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
-const ESLintPlugin = require('eslint-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const PublishManifestIconsPlugin = require('./scripts/publish-manifest-icons-plugin');
-const manifestJson = require('./src/config/manifest.json');
+// import { createRequire } from 'node:module';
+import path from 'node:path';
+
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+import ESLintPlugin from 'eslint-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+// import { defineReactCompilerLoaderOption, reactCompilerLoader } from 'react-compiler-webpack';
+import TerserPlugin from 'terser-webpack-plugin';
+import webpack from 'webpack';
+import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
+import nodeExternals from 'webpack-node-externals';
+
+import manifestJson from './src/config/manifest.json' with { type: 'json' };
+import PublishManifestIconsPlugin from './scripts/publish-manifest-icons-plugin.js';
+
+// Enable the use of require.resolve inside esm
+// const require = createRequire(import.meta.url);
 
 process.traceDeprecation = true;
 
@@ -18,12 +24,45 @@ const isServer = process.env.APP_ENV === 'server';
 const isFastRefresh = process.env.FAST_REFRESH === 'true';
 const isTesting = Boolean(process.env.TEST);
 
+// Disabled react compiler
+// const reactCompilerObject = {
+//     loader: reactCompilerLoader,
+//     options: defineReactCompilerLoaderOption({
+//         logger: {
+//             logEvent(filename, event) {
+//                 /* eslint-disable no-console */
+//                 if (event.kind === 'CompileError') {
+//                     let message = `❌ [React Compiler] skipped ${filename}`;
+
+//                     if (event.detail.loc) {
+//                         const { line, column } = event.detail.loc.start;
+
+//                         message += ` (${line}:${column})`;
+//                     }
+
+//                     console.error(message);
+//                     console.error(`Reason: ${event.detail.reason}`);
+
+//                     if (event.detail.description) {
+//                         console.error(`Details: ${event.detail.description}`);
+//                     }
+
+//                     if (event.detail.suggestions) {
+//                         console.error('Suggestions:', event.detail.suggestions);
+//                     }
+//                 }
+//                 /* eslint-enable no-console */
+//             }
+//         }
+//     }),
+// };
+
 const baseConfig = {
     watchOptions: {
         // aggregateTimeout: 600,
         // poll: 1000,
-        // ignored: '**/node_modules',
         ignored: [
+            '.editorconfig',
             '.idea',
             '.vscode',
             '.github',
@@ -47,21 +86,27 @@ const baseConfig = {
         rules: [
             {
                 test: /\.tsx?$/,
-                // use: 'ts-loader',
                 exclude: /(node_modules|node-cache)/,
-                use: {
-                    loader: 'ts-loader',
-                    options: {
-                        // configFile: './tsconfig.eslint.json',
-                        transpileOnly: isFastRefresh,
+                use: [
+                    //{ ...reactCompilerObject },
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            // configFile: './tsconfig.eslint.json',
+                            transpileOnly: isFastRefresh,
+                        },
                     },
-                },
+                ],
             },
             {
                 test: /\.jsx?$/,
                 exclude: /(node_modules|node-cache)/,
                 // use: { loader: 'babel-loader' },
-                use: ['source-map-loader', 'babel-loader'],
+                use: [
+                    'source-map-loader',
+                    'babel-loader',
+                    //{ ...reactCompilerObject },
+                ],
             },
             {
                 test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
@@ -103,8 +148,8 @@ const baseConfig = {
     performance: {
         // Uncomment to disable warning
         // hints: false,
-        maxEntrypointSize: 768000, // 750 KB
-        maxAssetSize: 768000, // 750 KB
+        maxEntrypointSize: 1048576, // 1MB
+        maxAssetSize: 1048576, // 1MB
     },
     plugins: [
         /* !isServer && */!isProduction && isFastRefresh && new webpack.HotModuleReplacementPlugin(),
@@ -117,15 +162,27 @@ const baseConfig = {
             // }
         }),
         new MiniCssExtractPlugin(),
-        isFastRefresh && new ForkTsCheckerWebpackPlugin(),
+        isFastRefresh && new ForkTsCheckerWebpackPlugin({
+            async: !isProduction,
+            typescript: { configFile: './tsconfig.json' },
+        }),
+        // !isServer && new webpack.ProvidePlugin({
+        //     // Make a global `process` variable that points to the `process` package,
+	    //     // because the `util` package expects there to be a global variable named `process`.
+        //     // Thanks to https://stackoverflow.com/a/65018686/14239942
+	    //     process: require.resolve('process/browser'),
+        // }),
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+            // 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
             'process.env.TEST': JSON.stringify(isTesting),
         }),
-        new ESLintPlugin(),
+        new ESLintPlugin({ failOnError: !isFastRefresh }),
     ].filter(Boolean),
     resolve: {
         extensions: ['.tsx', '.ts', '.jsx', '.js'],
+        // fallback: isServer ? {} : {
+        //     util: require.resolve('util'),
+        // }
     },
     ignoreWarnings: [
         isFastRefresh && {
@@ -177,6 +234,10 @@ const browserConfig = {
                         options: {
                             sassOptions: {
                                 outputStyle: 'compressed',
+                                // fontsource needs to update it's use of sass if-function
+                                // and global-builtin. Until then, we can just silence the warnings.
+                                // https://github.com/fontsource/fontsource/issues/1094
+                                silenceDeprecations: ['global-builtin', 'if-function'],
                             },
                             sourceMap: true,
                         },
@@ -234,7 +295,7 @@ const browserConfig = {
 const serverConfig = {
     ...baseConfig,
     name: 'server',
-    target: 'node18',
+    target: 'node24',
     entry: {
         server: path.resolve('./src/server/index.ts'),
     },
@@ -267,4 +328,4 @@ const serverConfig = {
     externalsPresets: { node: true },
 };
 
-module.exports = isServer ? serverConfig : browserConfig;
+export default isServer ? serverConfig : browserConfig;

@@ -1,7 +1,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import React, { memo, Suspense, useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 import GlobalSpinner from '../../GlobalSpinner';
 import Nav from '../../Nav';
 import { routes } from '../../../routes';

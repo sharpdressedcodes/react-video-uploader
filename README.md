@@ -35,7 +35,7 @@ docker-compose up -d --build
 then exec into the container:
 
 ```shell
-docker exec -it node bash
+docker exec -it react-video-uploader-node bash
 ```
 
 Then continue on as normal

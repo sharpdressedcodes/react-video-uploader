@@ -5,7 +5,7 @@
     $bp: $breakpoint;
     $modifier: '';
 
-    @if length($breakpoint) > 1 {
+    @if list.length($breakpoint) > 1 {
         $bp: list.nth($breakpoint, 1);
         $modifier: list.nth($breakpoint, 2);
     }

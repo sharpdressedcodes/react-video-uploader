@@ -7,7 +7,6 @@
  */
 const isArrayEmpty = (array: any): boolean => {
     try {
-        // eslint-disable-next-line no-restricted-syntax, no-unreachable-loop
         for (const k of (array as any[])) {
             return false;
         }

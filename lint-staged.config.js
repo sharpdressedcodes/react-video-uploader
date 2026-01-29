@@ -1,12 +1,10 @@
 const fs = require('node:fs');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const micromatch = require('micromatch');
 
 const cwd = process.cwd();
 const tsConfigFileName = './tsconfig.lint-staged.json';
 const isArrayEmpty = arr => {
     try {
-        // eslint-disable-next-line no-restricted-syntax, no-unreachable-loop
         for (const k of arr) {
             return false;
         }

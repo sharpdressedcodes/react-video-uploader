@@ -15,7 +15,8 @@ CONTAINER_DIR=/home/node/app
 
 # Get the project directory name
 PROJECT_NAME="$( basename "${ROOT_DIR}" )"
-DOCKER_IMAGE="${PROJECT_NAME}_node:latest"
+#DOCKER_IMAGE="${PROJECT_NAME}_node:latest"
+DOCKER_IMAGE="${PROJECT_NAME}-node"
 NODE_DIR="$ROOT_DIR"
 result=$( docker image inspect "${DOCKER_IMAGE}" )
 
